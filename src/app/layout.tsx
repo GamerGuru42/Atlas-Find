@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "AtlasFind - We don't list scholarships. We verify pathways.",
+  title: "AtlasFind - Your AI application strategist.",
   description: "AI-Powered Scholarship & Opportunity Research Agent",
 };
 
