@@ -191,14 +191,14 @@ export default function ChatPage() {
               </div>
               <h2 className={styles.emptyTitle}>I&apos;m AtlasFind</h2>
               <p className={styles.emptyText}>
-                Tell me about yourself — where you&apos;re from, what you want to study, and what degree level.
+                Tell me about yourself — your education level, field of study, and preferred continents.
                 I&apos;ll find verified opportunities that match your profile.
               </p>
               <div className={styles.suggestionChips}>
                 {[
-                  "I'm a Nigerian CS grad with 3.7 GPA, want a fully funded Masters in Europe",
-                  "Find me PhD scholarships in the UK for engineering",
-                  "What scholarships can I get with no work experience?",
+                  "I'm a Nigerian CS grad with 3.7 GPA, looking for funded Masters in Europe",
+                  "Find me PhD scholarships in North America for engineering",
+                  "What scholarships can I get for Asia?",
                 ].map((q) => (
                   <button
                     key={q}

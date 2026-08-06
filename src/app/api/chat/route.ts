@@ -78,7 +78,7 @@ ${conversationContext || 'No prior messages.'}
 STUDENT'S NEW MESSAGE:
 "${message}"
 
-Respond with a JSON object following the schema. Be conversational, strategic, and specific. If the student hasn't given enough info to search (nationality, field, degree level), ask clarifying questions first. If they have, set shouldSearch to true.`;
+Respond with a JSON object following the schema. Be conversational, strategic, and specific. If the student hasn't given enough info to search (nationality, field, degree level, or preferred regions), ask clarifying questions first. If they have, set shouldSearch to true.`;
 
         try {
           const result = await client.models.generateContent({
