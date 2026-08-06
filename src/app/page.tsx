@@ -19,15 +19,13 @@ export default function Home() {
           </div>
 
           <h1 className={styles.title}>
-            We don&apos;t list scholarships.
+            More than a search engine.
             <br />
-            <span className={styles.titleGradient}>We verify pathways.</span>
+            <span className={styles.titleGradient}>Your AI application strategist.</span>
           </h1>
 
           <p className={styles.subtitle}>
-            AtlasFind is your AI research agent that learns your profile,
-            searches verified opportunities in real-time, and guides you
-            from discovery to submission.
+            AtlasFind doesn't just list scholarships. It acts as your personal research agent—finding verified pathways, providing real application links, and tailoring strategies to your specific profile and background.
           </p>
 
           <div className={styles.actions}>

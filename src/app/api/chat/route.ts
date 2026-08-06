@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
     const client = getGeminiClient();
 
     if (client) {
-      // Check cache
-      const cacheKey = `intent:${message.toLowerCase().trim()}`;
+      // Use a context-aware cache key so the same question in different conversations gets fresh responses
+      const cacheKey = `intent:${message.toLowerCase().trim()}:${history.length}:${JSON.stringify(profile).slice(0,100)}`;
       const cached = getCached<GeminiResponse>(cacheKey);
 
       if (cached) {
@@ -82,7 +82,7 @@ Respond with a JSON object following the schema. Be conversational, strategic, a
 
         try {
           const result = await client.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
               responseMimeType: 'application/json',
@@ -160,26 +160,125 @@ function generateFallbackResponse(
   const updates: GeminiResponse['profileUpdates'] = {};
   let shouldSearch = false;
 
-  // Nationality detection
-  if (msg.includes('nigerian') || msg.includes('nigeria')) updates.nationality = 'Nigeria';
-  if (msg.includes('ghanaian') || msg.includes('ghana')) updates.nationality = 'Ghana';
-  if (msg.includes('kenyan') || msg.includes('kenya')) updates.nationality = 'Kenya';
-  if (msg.includes('indian') || msg.includes('india')) updates.nationality = 'India';
+  // === Nationality detection (comprehensive) ===
+  const nationalityMap: Record<string, string> = {
+    'nigerian': 'Nigeria', 'nigeria': 'Nigeria',
+    'ghanaian': 'Ghana', 'ghana': 'Ghana',
+    'kenyan': 'Kenya', 'kenya': 'Kenya',
+    'indian': 'India', 'india': 'India',
+    'pakistani': 'Pakistan', 'pakistan': 'Pakistan',
+    'bangladeshi': 'Bangladesh', 'bangladesh': 'Bangladesh',
+    'south african': 'South Africa', 'south africa': 'South Africa',
+    'ugandan': 'Uganda', 'uganda': 'Uganda',
+    'tanzanian': 'Tanzania', 'tanzania': 'Tanzania',
+    'cameroonian': 'Cameroon', 'cameroon': 'Cameroon',
+    'ethiopian': 'Ethiopia', 'ethiopia': 'Ethiopia',
+    'rwandan': 'Rwanda', 'rwanda': 'Rwanda',
+    'zambian': 'Zambia', 'zambia': 'Zambia',
+    'zimbabwean': 'Zimbabwe', 'zimbabwe': 'Zimbabwe',
+    'egyptian': 'Egypt', 'egypt': 'Egypt',
+    'moroccan': 'Morocco', 'morocco': 'Morocco',
+    'filipino': 'Philippines', 'philippines': 'Philippines',
+    'indonesian': 'Indonesia', 'indonesia': 'Indonesia',
+    'malaysian': 'Malaysia', 'malaysia': 'Malaysia',
+    'vietnamese': 'Vietnam', 'vietnam': 'Vietnam',
+    'thai': 'Thailand', 'thailand': 'Thailand',
+    'nepali': 'Nepal', 'nepal': 'Nepal',
+    'sri lankan': 'Sri Lanka', 'sri lanka': 'Sri Lanka',
+    'chinese': 'China', 'china': 'China',
+    'brazilian': 'Brazil', 'brazil': 'Brazil',
+    'colombian': 'Colombia', 'colombia': 'Colombia',
+    'mexican': 'Mexico', 'mexico': 'Mexico',
+    'turkish': 'Turkey', 'turkey': 'Turkey', 'türkiye': 'Turkey',
+    'jordanian': 'Jordan', 'jordan': 'Jordan',
+    'lebanese': 'Lebanon', 'lebanon': 'Lebanon',
+    'iraqi': 'Iraq', 'iraq': 'Iraq',
+    'syrian': 'Syria', 'syria': 'Syria',
+    'afghan': 'Afghanistan', 'afghanistan': 'Afghanistan',
+    'somali': 'Somalia', 'somalia': 'Somalia',
+  };
+  for (const [keyword, nation] of Object.entries(nationalityMap)) {
+    if (msg.includes(keyword)) { updates.nationality = nation; break; }
+  }
 
-  // Field detection
-  if (msg.includes('computer science') || msg.includes(' cs ') || msg.includes('cs,')) updates.fieldOfStudy = 'Computer Science';
-  if (msg.includes('engineering')) updates.fieldOfStudy = 'Engineering';
-  if (msg.includes('medicine') || msg.includes('medical')) updates.fieldOfStudy = 'Medicine';
-  if (msg.includes('nursing')) updates.fieldOfStudy = 'Nursing';
-  if (msg.includes('health') || msg.includes('public health')) updates.fieldOfStudy = 'Public Health';
-  if (msg.includes('business') || msg.includes('mba')) updates.fieldOfStudy = 'Business';
-  if (msg.includes('economics')) updates.fieldOfStudy = 'Economics';
-  if (msg.includes('law')) updates.fieldOfStudy = 'Law';
+  // === Field of study detection (comprehensive) ===
+  const fieldMap: [string[], string][] = [
+    [['computer science', ' cs ', 'cs,', 'cs.'], 'Computer Science'],
+    [['software engineering', 'software development'], 'Software Engineering'],
+    [['data science', 'data analytics', 'data analysis'], 'Data Science'],
+    [['artificial intelligence', ' ai ', 'machine learning'], 'Artificial Intelligence'],
+    [['cybersecurity', 'cyber security', 'information security'], 'Cybersecurity'],
+    [['information technology', ' it '], 'Information Technology'],
+    [['nursing'], 'Nursing'],
+    [['midwifery'], 'Midwifery'],
+    [['health promotion'], 'Health Promotion'],
+    [['public health'], 'Public Health'],
+    [['medicine', 'medical'], 'Medicine'],
+    [['pharmacy', 'pharmaceutical'], 'Pharmacy'],
+    [['dentistry', 'dental'], 'Dentistry'],
+    [['physiotherapy', 'physical therapy'], 'Physiotherapy'],
+    [['biomedical'], 'Biomedical Sciences'],
+    [['biochemistry'], 'Biochemistry'],
+    [['microbiology'], 'Microbiology'],
+    [['biology', 'biological'], 'Biology'],
+    [['chemistry'], 'Chemistry'],
+    [['physics'], 'Physics'],
+    [['mathematics', 'maths', 'math'], 'Mathematics'],
+    [['statistics'], 'Statistics'],
+    [['engineering'], 'Engineering'],
+    [['electrical engineering'], 'Electrical Engineering'],
+    [['mechanical engineering'], 'Mechanical Engineering'],
+    [['civil engineering'], 'Civil Engineering'],
+    [['chemical engineering'], 'Chemical Engineering'],
+    [['petroleum engineering'], 'Petroleum Engineering'],
+    [['architecture'], 'Architecture'],
+    [['business administration', 'business', 'mba'], 'Business Administration'],
+    [['accounting', 'accountancy'], 'Accounting'],
+    [['finance', 'financial'], 'Finance'],
+    [['economics'], 'Economics'],
+    [['marketing'], 'Marketing'],
+    [['management'], 'Management'],
+    [['entrepreneurship'], 'Entrepreneurship'],
+    [['law', 'legal studies', 'llm', 'llb'], 'Law'],
+    [['international relations'], 'International Relations'],
+    [['political science', 'politics'], 'Political Science'],
+    [['public administration', 'public policy'], 'Public Administration'],
+    [['social work'], 'Social Work'],
+    [['sociology'], 'Sociology'],
+    [['psychology'], 'Psychology'],
+    [['education', 'teaching', 'pedagogy'], 'Education'],
+    [['linguistics', 'language studies'], 'Linguistics'],
+    [['journalism', 'mass communication', 'media studies'], 'Journalism & Media'],
+    [['fine arts', 'visual arts', 'art'], 'Fine Arts'],
+    [['music'], 'Music'],
+    [['theatre', 'theater', 'performing arts'], 'Theatre & Performing Arts'],
+    [['agriculture', 'agricultural', 'agronomy'], 'Agriculture'],
+    [['environmental science', 'environmental studies'], 'Environmental Science'],
+    [['food science', 'food technology'], 'Food Science'],
+    [['nutrition', 'dietetics'], 'Nutrition & Dietetics'],
+    [['veterinary', 'vet medicine'], 'Veterinary Medicine'],
+    [['marine science', 'oceanography'], 'Marine Science'],
+    [['geology', 'earth science'], 'Geology'],
+    [['geography'], 'Geography'],
+    [['history'], 'History'],
+    [['philosophy'], 'Philosophy'],
+    [['theology', 'divinity', 'religious studies'], 'Theology'],
+    [['aviation', 'aeronautics'], 'Aviation'],
+    [['maritime', 'nautical'], 'Maritime Studies'],
+    [['urban planning', 'town planning'], 'Urban Planning'],
+    [['project management'], 'Project Management'],
+    [['supply chain', 'logistics'], 'Supply Chain & Logistics'],
+    [['human resources', ' hr '], 'Human Resources'],
+  ];
+  for (const [keywords, field] of fieldMap) {
+    if (keywords.some(k => msg.includes(k))) { updates.fieldOfStudy = field; break; }
+  }
 
-  // Degree level
-  if (msg.includes('masters') || msg.includes('master\'s') || msg.includes('msc')) updates.degreeLevel = 'masters';
-  if (msg.includes('phd') || msg.includes('doctoral')) updates.degreeLevel = 'phd';
-  if (msg.includes('undergraduate') || msg.includes('bachelors')) updates.degreeLevel = 'bachelors';
+  // === Degree level ===
+  if (msg.includes('masters') || msg.includes("master's") || msg.includes('msc') || msg.includes('ma ') || msg.includes('m.a.') || msg.includes('mba')) updates.degreeLevel = 'masters';
+  if (msg.includes('phd') || msg.includes('ph.d') || msg.includes('doctoral') || msg.includes('doctorate')) updates.degreeLevel = 'phd';
+  if (msg.includes('undergraduate') || msg.includes('bachelors') || msg.includes("bachelor's") || msg.includes('bsc') || msg.includes('b.sc')) updates.degreeLevel = 'bachelors';
+  if (msg.includes('diploma') || msg.includes('certificate') || msg.includes('vocational')) updates.degreeLevel = 'diploma';
 
   // GPA
   const gpaMatch = msg.match(/(\d+\.?\d*)\s*(?:\/\s*(\d+\.?\d*)|\s*gpa)/i);
@@ -189,16 +288,55 @@ function generateFallbackResponse(
   }
 
   // Funding
-  if (msg.includes('fully funded') || msg.includes('full scholarship') || msg.includes('can\'t afford')) {
+  if (msg.includes('fully funded') || msg.includes('full scholarship') || msg.includes("can't afford") || msg.includes('free') || msg.includes('no money')) {
     updates.fundingNeeds = 'fully_funded';
   }
 
-  // Region/country targets
-  if (msg.includes('europe') || msg.includes('european')) updates.targetRegions = ['Europe'];
-  if (msg.includes('uk') || msg.includes('united kingdom') || msg.includes('britain')) updates.targetCountries = [...(updates.targetCountries || []), 'United Kingdom'];
-  if (msg.includes('germany') || msg.includes('german')) updates.targetCountries = [...(updates.targetCountries || []), 'Germany'];
-  if (msg.includes('canada') || msg.includes('canadian')) updates.targetCountries = [...(updates.targetCountries || []), 'Canada'];
-  if (msg.includes('usa') || msg.includes('united states') || msg.includes('america')) updates.targetCountries = [...(updates.targetCountries || []), 'United States'];
+  // === Region/country targets (comprehensive) ===
+  if (msg.includes('europe') || msg.includes('european')) updates.targetRegions = [...(updates.targetRegions || []), 'Europe'];
+  if (msg.includes('asia') || msg.includes('asian')) updates.targetRegions = [...(updates.targetRegions || []), 'Asia'];
+  if (msg.includes('north america')) updates.targetRegions = [...(updates.targetRegions || []), 'North America'];
+  if (msg.includes('oceania') || msg.includes('australia') || msg.includes('new zealand')) updates.targetRegions = [...(updates.targetRegions || []), 'Oceania'];
+  if (msg.includes('middle east')) updates.targetRegions = [...(updates.targetRegions || []), 'Middle East'];
+  if (msg.includes('latin america') || msg.includes('south america')) updates.targetRegions = [...(updates.targetRegions || []), 'Latin America'];
+  if (msg.includes('africa') && !msg.includes('south africa')) updates.targetRegions = [...(updates.targetRegions || []), 'Africa'];
+
+  const countryTargets: Record<string, string> = {
+    'uk': 'United Kingdom', 'united kingdom': 'United Kingdom', 'britain': 'United Kingdom', 'england': 'United Kingdom',
+    'germany': 'Germany', 'german': 'Germany',
+    'canada': 'Canada', 'canadian': 'Canada',
+    'usa': 'United States', 'united states': 'United States', 'america': 'United States',
+    'australia': 'Australia', 'australian': 'Australia',
+    'new zealand': 'New Zealand',
+    'japan': 'Japan', 'japanese': 'Japan',
+    'south korea': 'South Korea', 'korea': 'South Korea',
+    'china': 'China',
+    'france': 'France', 'french': 'France',
+    'netherlands': 'Netherlands', 'holland': 'Netherlands', 'dutch': 'Netherlands',
+    'sweden': 'Sweden', 'swedish': 'Sweden',
+    'norway': 'Norway', 'norwegian': 'Norway',
+    'denmark': 'Denmark', 'danish': 'Denmark',
+    'finland': 'Finland', 'finnish': 'Finland',
+    'switzerland': 'Switzerland', 'swiss': 'Switzerland',
+    'italy': 'Italy', 'italian': 'Italy',
+    'spain': 'Spain', 'spanish': 'Spain',
+    'turkey': 'Turkey', 'türkiye': 'Turkey',
+    'hungary': 'Hungary', 'hungarian': 'Hungary',
+    'ireland': 'Ireland', 'irish': 'Ireland',
+    'belgium': 'Belgium',
+    'austria': 'Austria',
+    'singapore': 'Singapore',
+    'malaysia': 'Malaysia',
+    'uae': 'United Arab Emirates', 'dubai': 'United Arab Emirates',
+  };
+  for (const [keyword, country] of Object.entries(countryTargets)) {
+    if (msg.includes(keyword)) {
+      updates.targetCountries = [...(updates.targetCountries || []), country];
+    }
+  }
+  // Deduplicate
+  if (updates.targetCountries) updates.targetCountries = [...new Set(updates.targetCountries)];
+  if (updates.targetRegions) updates.targetRegions = [...new Set(updates.targetRegions)];
 
   // Work experience
   const expMatch = msg.match(/(\d+)\s*(?:years?|yrs?)\s*(?:of\s+)?(?:experience|work|professional)/i);
@@ -210,6 +348,9 @@ function generateFallbackResponse(
   }
   if (msg.includes('fintech') || msg.includes('finance')) {
     updates.workExperienceDetails = 'Fintech/financial services';
+  }
+  if (msg.includes('nurse') || msg.includes('hospital') || msg.includes('clinical')) {
+    updates.workExperienceField = 'Healthcare';
   }
 
   // Determine if we have enough to search
