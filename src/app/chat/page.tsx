@@ -37,7 +37,33 @@ export default function ChatPage() {
   const [goalStage, setGoalStage] = useState<GoalStage>('goal_identified');
   const [contextPills, setContextPills] = useState<ContextPill[]>([]);
   const [agentSteps, setAgentSteps] = useState<{ label: string; status: string }[]>([]);
+  const [savedOpps, setSavedOpps] = useState<any[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('saved_opportunities');
+    if (saved) {
+      try {
+        setSavedOpps(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const toggleSaveOpportunity = (opp: any) => {
+    setSavedOpps((prev) => {
+      const isSaved = prev.some((o) => o.id === opp.id);
+      let updated;
+      if (isSaved) {
+        updated = prev.filter((o) => o.id !== opp.id);
+      } else {
+        updated = [...prev, opp];
+      }
+      localStorage.setItem('saved_opportunities', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -297,6 +323,27 @@ export default function ChatPage() {
                           <a href={match.opportunity.sourceUrl} target="_blank" rel="noopener noreferrer" className={styles.sourceBtn}>
                             View Source
                           </a>
+                          <button 
+                            onClick={() => toggleSaveOpportunity(match.opportunity)} 
+                            className={styles.starBtn}
+                            title={savedOpps.some((o) => o.id === match.opportunity.id) ? "Remove from Favorites" : "Save to Favorites"}
+                            style={{
+                              background: 'transparent',
+                              border: '1px solid var(--border-default)',
+                              borderRadius: '4px',
+                              padding: '0.5rem',
+                              color: savedOpps.some((o) => o.id === match.opportunity.id) ? '#ffd700' : 'var(--text-muted)',
+                              cursor: 'pointer',
+                              fontSize: '1rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: '40px',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            ★
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -411,6 +458,32 @@ export default function ChatPage() {
             </span>
           </div>
         )}
+
+        {/* Saved Opportunities */}
+        <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-default)' }}>
+          <h4 className={styles.panelSubtitle}>Saved Pathways ({savedOpps.length})</h4>
+          {savedOpps.length === 0 ? (
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Star opportunities to save them here.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.75rem' }}>
+              {savedOpps.map((opp) => (
+                <div key={opp.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-surface-elevated)', padding: '0.5rem', borderRadius: '4px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opp.title}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{opp.sponsor}</div>
+                  </div>
+                  <button 
+                    onClick={() => toggleSaveOpportunity(opp)}
+                    style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.25rem' }}
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </aside>
     </div>
   );

@@ -1,6 +1,12 @@
+'use client';
+
 import React from 'react';
+import { usePathname } from 'next/navigation';
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname === '/chat') return null;
+
   return (
     <footer style={{
       padding: '2rem',
@@ -14,7 +20,7 @@ export function Footer() {
         AtlasFind
       </p>
       <p>
-        We don&apos;t list scholarships. We verify pathways.
+        Verify Pathways to Global Opportunities.
       </p>
       <p style={{ marginTop: '1rem', fontSize: '0.75rem' }}>
         Built by a student, for students. No fake teams. No paywalls on access.

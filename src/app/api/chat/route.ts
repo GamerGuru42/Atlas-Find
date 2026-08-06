@@ -170,6 +170,8 @@ function generateFallbackResponse(
   if (msg.includes('computer science') || msg.includes(' cs ') || msg.includes('cs,')) updates.fieldOfStudy = 'Computer Science';
   if (msg.includes('engineering')) updates.fieldOfStudy = 'Engineering';
   if (msg.includes('medicine') || msg.includes('medical')) updates.fieldOfStudy = 'Medicine';
+  if (msg.includes('nursing')) updates.fieldOfStudy = 'Nursing';
+  if (msg.includes('health') || msg.includes('public health')) updates.fieldOfStudy = 'Public Health';
   if (msg.includes('business') || msg.includes('mba')) updates.fieldOfStudy = 'Business';
   if (msg.includes('economics')) updates.fieldOfStudy = 'Economics';
   if (msg.includes('law')) updates.fieldOfStudy = 'Law';
@@ -243,12 +245,18 @@ function generateFallbackResponse(
     newGoalStage = 'goal_identified';
     suggestedQuestions = missing.map((m) => `What is your ${m}?`);
   } else {
-    responseMessage = `Welcome to AtlasFind! 👋 I'm your personal scholarship research agent.\n\nI don't just list scholarships. I learn who you are, find what fits you best, and give you real strategic advice.\n\nTell me about yourself: Where are you from? What do you want to study? What degree level? I'll take it from there.`;
-    suggestedQuestions = [
-      "I'm a Nigerian CS grad with 3.7 GPA, want a fully funded Masters in Europe",
-      "Find me PhD scholarships in the UK for engineering",
-      "What scholarships can I get with no work experience?",
-    ];
+    // If we are in the middle of a conversation, don't reset to the welcome message!
+    if (history.length > 0) {
+      responseMessage = `I'm here to help, but I need a bit more detail. Could you tell me what course or field of study you're interested in (for example, Nursing, Engineering, or Computer Science)?`;
+      suggestedQuestions = ['Nursing', 'Computer Science', 'Business Administration'];
+    } else {
+      responseMessage = `Welcome to AtlasFind! 👋 I'm your personal scholarship research agent.\n\nI don't just list scholarships. I learn who you are, find what fits you best, and give you real strategic advice.\n\nTell me about yourself: Where are you from? What do you want to study? What degree level? I'll take it from there.`;
+      suggestedQuestions = [
+        "I'm a Nigerian CS grad with 3.7 GPA, want a fully funded Masters in Europe",
+        "Find me PhD scholarships in the UK for engineering",
+        "What scholarships can I get with no work experience?",
+      ];
+    }
   }
 
   return {

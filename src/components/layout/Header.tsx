@@ -25,10 +25,10 @@ export async function Header() {
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.logo}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '4px' }}>
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor" />
-          <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
+          <circle cx="12" cy="12" r="10" stroke="var(--accent-primary)" strokeWidth="2.5" />
+          <path d="M12 6V18M6 12H18" stroke="var(--accent-primary)" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M9 9L15 15M15 9L9 15" stroke="var(--accent-primary)" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
         Atlas<span className={styles.logoAccent}>Find</span>
       </Link>
