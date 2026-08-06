@@ -2,8 +2,26 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '../ui/Button';
 import styles from './Header.module.css';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { LoginButton } from '../auth/LoginButton';
 
-export function Header() {
+export async function Header() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const { data: { session } } = await supabase.auth.getSession();
+
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.logo}>
@@ -21,9 +39,13 @@ export function Header() {
       </nav>
       
       <div className={styles.actions}>
-        <Link href="/chat">
-          <Button variant="primary" size="sm">Talk to Agent</Button>
-        </Link>
+        {session ? (
+          <Link href="/chat">
+            <Button variant="primary" size="sm">Talk to Agent</Button>
+          </Link>
+        ) : (
+          <LoginButton />
+        )}
       </div>
     </header>
   );
