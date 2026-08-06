@@ -57,6 +57,33 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+[data-theme='light'] {
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-input: #ffffff;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --accent-primary: #059669; /* Slightly darker green for contrast in light mode */
+  --accent-primary-dim: rgba(5, 150, 105, 0.15);
+  --accent-primary-glow: rgba(5, 150, 105, 0.2);
+  --accent-hover: #047857;
+
+  --accent-secondary: #2563eb;
+  --accent-secondary-dim: rgba(37, 99, 235, 0.12);
+
+  --border-default: rgba(15, 23, 42, 0.1);
+  --border-light: rgba(15, 23, 42, 0.05);
+  --border-accent: rgba(5, 150, 105, 0.3);
+
+  --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.1);
+}
+
 /* ===== Base Reset ===== */
 html, body {
   background-color: var(--bg-base);

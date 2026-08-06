@@ -6,6 +6,8 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { LoginButton } from '../auth/LoginButton';
 
+import { ThemeToggle } from './ThemeToggle';
+
 export async function Header() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -39,12 +41,20 @@ export async function Header() {
       </nav>
       
       <div className={styles.actions}>
+        <ThemeToggle />
         {session ? (
           <Link href="/chat">
             <Button variant="primary" size="sm">Talk to Agent</Button>
           </Link>
         ) : (
-          <LoginButton />
+          <>
+            <Link href="/login">
+              <Button variant="secondary" size="sm" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)' }}>Log in</Button>
+            </Link>
+            <Link href="/signup">
+              <Button variant="primary" size="sm">Sign up</Button>
+            </Link>
+          </>
         )}
       </div>
     </header>

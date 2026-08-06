@@ -14,6 +14,8 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
+
 export const metadata: Metadata = {
   title: "AtlasFind - We don't list scholarships. We verify pathways.",
   description: "AI-Powered Scholarship & Opportunity Research Agent",
@@ -25,11 +27,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false}>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
