@@ -23,25 +23,34 @@ model User {
 }
 
 model Opportunity {
-  id               String            @id @default(uuid())
-  title            String
-  sponsor          String
-  hostCountry      String
-  degreeLevel      String[]          // e.g., ["masters", "phd"]
-  fundingType      String
-  coverageDetails  Json              // {tuition: boolean, travel: boolean, living: boolean}
-  deadline         DateTime
-  applyUrl         String
-  sourceUrl        String
-  sourceDomain     String
-  trustTier        Int               @default(3) // 1 = High, 3 = Low
-  scamFlags        String[]
-  verificationStatus String          @default("unverified")
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                 String            @id @default(uuid())
+  title              String
+  sponsor            String
+  orgType            String            @default("government") @map("org_type")
+  hostCountry        String            @map("host_country")
+  eligibleCountries  String[]          @default([]) @map("eligible_countries")
+  disciplines        String[]          @default([])
+  degreeLevel        String[]          @map("degree_level")
+  fundingType        String            @map("funding_type")
+  coverageDetails    Json              @map("coverage_details")
+  deadline           DateTime
+  opensDate          DateTime?         @map("opens_date")
+  applyUrl           String            @map("apply_url")
+  sourceUrl          String            @map("source_url")
+  sourceDomain       String            @map("source_domain")
+  trustTier          Int               @default(3) @map("trust_tier")
+  scamFlag           Boolean           @default(false) @map("scam_flag")
+  verificationStatus String            @default("unverified") @map("verification_status")
+  description        String            @default("")
+  eligibility        String            @default("")
+  tags               String[]          @default([])
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
 
-  savedBy          SavedOpportunity[]
-  verificationLogs VerificationLog[]
+  savedBy            SavedOpportunity[]
+  verificationLogs   VerificationLog[]
+
+  @@map("opportunities")
 }
 
 model SavedOpportunity {
