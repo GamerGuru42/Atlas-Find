@@ -38,8 +38,11 @@ export default function ChatPage() {
   const [contextPills, setContextPills] = useState<ContextPill[]>([]);
   const [agentSteps, setAgentSteps] = useState<{ label: string; status: string }[]>([]);
   const [savedOpps, setSavedOpps] = useState<any[]>([]);
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('saved_opportunities');
@@ -182,6 +185,105 @@ export default function ChatPage() {
     }
   };
 
+  const startEditing = (msg: ChatMessage) => {
+    setEditingMessageId(msg.id);
+    setEditingContent(msg.content);
+    setTimeout(() => editTextareaRef.current?.focus(), 50);
+  };
+
+  const cancelEditing = () => {
+    setEditingMessageId(null);
+    setEditingContent('');
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editingContent.trim() || isLoading || !editingMessageId) return;
+
+    // Find the index of the message being edited
+    const editIndex = messages.findIndex((m) => m.id === editingMessageId);
+    if (editIndex === -1) return;
+
+    // Truncate: keep messages before the edited one, replace it with new content
+    const editedMessage: ChatMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: editingContent.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    const truncatedMessages = [...messages.slice(0, editIndex), editedMessage];
+    setMessages(truncatedMessages);
+    setEditingMessageId(null);
+    setEditingContent('');
+    setIsLoading(true);
+    setAgentSteps([{ label: 'Parsing your intent...', status: 'running' }]);
+
+    try {
+      const history = truncatedMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: editedMessage.content, history, profile, goalStage }),
+      });
+
+      setAgentSteps([
+        { label: 'Parsing your intent', status: 'done' },
+        { label: 'Searching verified database...', status: 'running' },
+      ]);
+      await new Promise((r) => setTimeout(r, 400));
+
+      setAgentSteps([
+        { label: 'Parsing your intent', status: 'done' },
+        { label: 'Searching verified database', status: 'done' },
+        { label: 'Scoring matches...', status: 'running' },
+      ]);
+      await new Promise((r) => setTimeout(r, 300));
+
+      const data = await res.json();
+
+      setAgentSteps([
+        { label: 'Parsing your intent', status: 'done' },
+        { label: 'Searching verified database', status: 'done' },
+        { label: 'Scoring matches', status: 'done' },
+        { label: 'Building response', status: 'done' },
+      ]);
+      await new Promise((r) => setTimeout(r, 200));
+
+      if (data.response) {
+        setMessages((prev) => [...prev, data.response]);
+      }
+      if (data.updatedProfile) setProfile(data.updatedProfile);
+      if (data.goalStage) setGoalStage(data.goalStage);
+      if (data.response?.contextPillsAdded) {
+        setContextPills((prev) => {
+          const existing = new Set(prev.map((p) => p.key));
+          const newPills = data.response.contextPillsAdded.filter(
+            (p: ContextPill) => !existing.has(p.key)
+          );
+          return [...prev, ...newPills];
+        });
+      }
+    } catch (err) {
+      console.error('Edit chat error:', err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'agent',
+          content: 'Sorry, something went wrong. Please try again.',
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setAgentSteps([]);
+    }
+  };
+
   const handleSuggestionClick = (question: string) => {
     setInput(question);
   };
@@ -270,7 +372,41 @@ export default function ChatPage() {
                 </div>
               )}
               <div className={`${styles.messageBubble} ${msg.role === 'user' ? styles.bubbleUser : styles.bubbleAgent}`}>
-                <p className={styles.messageText}>{msg.content}</p>
+                {/* Editable user message */}
+                {msg.role === 'user' && editingMessageId === msg.id ? (
+                  <div className={styles.editContainer}>
+                    <textarea
+                      ref={editTextareaRef}
+                      className={styles.editTextarea}
+                      value={editingContent}
+                      onChange={(e) => setEditingContent(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleEditSubmit();
+                        }
+                        if (e.key === 'Escape') cancelEditing();
+                      }}
+                      rows={3}
+                    />
+                    <div className={styles.editActions}>
+                      <button onClick={cancelEditing} className={styles.editCancelBtn}>Cancel</button>
+                      <button onClick={handleEditSubmit} className={styles.editSaveBtn} disabled={!editingContent.trim()}>Send</button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className={styles.messageText}>{msg.content}</p>
+                    {msg.role === 'user' && !isLoading && (
+                      <button onClick={() => startEditing(msg)} className={styles.editBtn} title="Edit message">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                      </button>
+                    )}
+                  </>
+                )}
 
                 {/* Opportunity Cards */}
                 {msg.opportunityCards && msg.opportunityCards.length > 0 && (
