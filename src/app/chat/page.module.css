@@ -530,7 +530,7 @@
 .input {
   width: 100%;
   padding: 1rem 3.5rem 1rem 1.5rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-default);
   background: var(--bg-surface-elevated);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -539,6 +539,10 @@
   color: var(--text-primary);
   outline: none;
   transition: all 0.25s var(--ease-out);
+  resize: none;
+  overflow-y: auto;
+  min-height: 3.5rem;
+  max-height: 200px;
 }
 
 .input::placeholder {
@@ -557,8 +561,7 @@
 .sendButton {
   position: absolute;
   right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 0.5rem;
   background: var(--accent-primary);
   color: var(--bg-base);
   border: none;

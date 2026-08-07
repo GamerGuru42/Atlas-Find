@@ -39,6 +39,7 @@ export default function ChatPage() {
   const [agentSteps, setAgentSteps] = useState<{ label: string; status: string }[]>([]);
   const [savedOpps, setSavedOpps] = useState<any[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('saved_opportunities');
@@ -65,9 +66,28 @@ export default function ChatPage() {
     });
   };
 
+  // Auto-scroll to bottom of chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, agentSteps]);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  }, [input]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!isLoading && input.trim()) {
+        const fakeEvent = new Event('submit', { cancelable: true }) as unknown as React.FormEvent;
+        handleSubmit(fakeEvent);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -406,13 +426,15 @@ export default function ChatPage() {
         {/* Input Area */}
         <div className={styles.inputArea}>
           <form className={styles.inputWrapper} onSubmit={handleSubmit}>
-            <input
-              type="text"
+            <textarea
+              ref={textareaRef}
               className={styles.input}
               placeholder="Tell me what you're looking for..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               disabled={isLoading}
+              rows={1}
             />
             <button type="submit" className={styles.sendButton} aria-label="Send message" disabled={isLoading || !input.trim()}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
