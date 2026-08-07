@@ -45,7 +45,7 @@ export default function DiscoverPage() {
         opp.disciplines.some(d => d.toLowerCase().includes(search.toLowerCase()));
       
       const matchesRegion = !selectedRegion || getRegion(opp.hostCountry) === selectedRegion;
-      const matchesDegree = !selectedDegree || opp.degreeLevel.includes(selectedDegree);
+      const matchesDegree = !selectedDegree || opp.degreeLevel.includes(selectedDegree as any);
       const matchesFunding = !selectedFunding || opp.fundingType === selectedFunding;
 
       return matchesSearch && matchesRegion && matchesDegree && matchesFunding;
