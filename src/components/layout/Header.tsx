@@ -4,9 +4,10 @@ import { Button } from '../ui/Button';
 import styles from './Header.module.css';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { LoginButton } from '../auth/LoginButton';
+
 
 import { ThemeToggle } from './ThemeToggle';
+import { MobileMenu } from './MobileMenu';
 
 export async function Header() {
   const cookieStore = await cookies();
@@ -35,27 +36,34 @@ export async function Header() {
         Atlas<span className={styles.logoAccent}>Find</span>
       </Link>
       
-      <nav className={styles.nav}>
-        <Link href="/discover" className={styles.navLink}>Discover</Link>
-        <Link href="/transparency" className={styles.navLink}>Transparency</Link>
-      </nav>
-      
-      <div className={styles.actions}>
+      <div className={styles.desktopNav}>
+        <nav className={styles.nav}>
+          <Link href="/discover" className={styles.navLink}>Discover</Link>
+          <Link href="/transparency" className={styles.navLink}>Transparency</Link>
+        </nav>
+        
+        <div className={styles.actions}>
+          <ThemeToggle />
+          {session ? (
+            <Link href="/chat">
+              <Button variant="primary" size="sm">Talk to Agent</Button>
+            </Link>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="secondary" size="sm" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)' }}>Log in</Button>
+              </Link>
+              <Link href="/signup">
+                <Button variant="primary" size="sm">Sign up</Button>
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className={styles.mobileNavContainer}>
         <ThemeToggle />
-        {session ? (
-          <Link href="/chat">
-            <Button variant="primary" size="sm">Talk to Agent</Button>
-          </Link>
-        ) : (
-          <>
-            <Link href="/login">
-              <Button variant="secondary" size="sm" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)' }}>Log in</Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="primary" size="sm">Sign up</Button>
-            </Link>
-          </>
-        )}
+        <MobileMenu isLoggedIn={!!session} />
       </div>
     </header>
   );

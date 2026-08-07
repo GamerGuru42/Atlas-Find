@@ -62,3 +62,27 @@
   gap: 1rem;
   align-items: center;
 }
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.mobileNavContainer {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktopNav {
+    display: none;
+  }
+  .mobileNavContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .header {
+    padding: 1rem;
+  }
+}

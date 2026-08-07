@@ -634,6 +634,9 @@
   overflow-y: auto;
   min-height: 3.5rem;
   max-height: 200px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .input::placeholder {
@@ -760,4 +763,34 @@
     left: 1.5rem;
     right: 1.5rem;
   }
+}
+
+.thinkingIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+
+.thinkingDot {
+  animation: dotBlink 1.4s infinite both;
+}
+
+.thinkingDot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.thinkingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.thinkingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBlink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
 }

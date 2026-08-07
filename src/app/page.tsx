@@ -25,7 +25,7 @@ export default function Home() {
           </h1>
 
           <p className={styles.subtitle}>
-            AtlasFind doesn't just list scholarships. It acts as your personal research agent—finding verified pathways, providing real application links, and tailoring strategies to your specific profile and background.
+            AtlasFind doesn&apos;t just list scholarships. It acts as your personal research agent—finding verified pathways, providing real application links, and tailoring strategies to your specific profile and background.
           </p>
 
           <div className={styles.actions}>

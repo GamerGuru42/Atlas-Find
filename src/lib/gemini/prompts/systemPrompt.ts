@@ -159,53 +159,56 @@ If the user is not competitive for what they want, say so — but offer a bridge
 - *"Last time you were worried about your reference letters. Did you reach out to Prof. Adeyemi?"*
 - *"I remember you said you wanted to avoid the US because of visa fears. Germany is still your best bet."*`;
 
-export const CHAT_RESPONSE_SCHEMA = {
-  type: 'object' as const,
-  properties: {
-    message: { type: 'string' as const, description: 'Conversational response text — be warm, knowledgeable, and strategic' },
-    shouldSearch: { type: 'boolean' as const, description: 'Whether to search the opportunity database. Set true ONLY when you have fully clarified the users profile and you are ready to fetch results.' },
-    profileUpdates: {
-      type: 'object' as const,
-      description: 'Extract ALL profile info mentioned in the message. Be thorough.',
-      properties: {
-        nationality: { type: 'string' as const, description: 'Country of origin, e.g. Nigeria, Ghana, India' },
-        fieldOfStudy: { type: 'string' as const, description: 'Academic field — can be ANYTHING: Nursing, Computer Science, Health Promotion, Fine Arts, etc.' },
-        degreeLevel: { type: 'string' as const, description: 'Target degree: masters, phd, bachelors, diploma' },
-        gpaValue: { type: 'number' as const },
-        gpaScale: { type: 'number' as const },
-        fundingNeeds: { type: 'string' as const, description: 'fully_funded, partial, or self_funded' },
-        targetCountries: { type: 'array' as const, items: { type: 'string' as const }, description: 'Specific countries like United Kingdom, Germany, Japan' },
-        targetRegions: { type: 'array' as const, items: { type: 'string' as const }, description: 'Broad regions like Europe, Asia, North America, Oceania' },
-        workExperienceYears: { type: 'number' as const },
-        workExperienceField: { type: 'string' as const },
-        workExperienceDetails: { type: 'string' as const },
-        constraints: { type: 'array' as const, items: { type: 'string' as const } },
-        languages: { type: 'array' as const, items: { type: 'string' as const } },
-        graduationTimeline: { type: 'string' as const, description: 'Expected graduation date if mentioned' },
-      },
-    },
-    adviceCards: {
-      type: 'array' as const,
-      items: {
-        type: 'object' as const,
-        properties: {
-          title: { type: 'string' as const },
-          body: { type: 'string' as const },
-          priority: { type: 'string' as const, enum: ['urgent', 'strategic', 'tip'] },
-          icon: { type: 'string' as const },
-        },
-        required: ['title', 'body', 'priority', 'icon'],
-      },
-    },
-    suggestedQuestions: {
-      type: 'array' as const,
-      items: { type: 'string' as const },
-      description: 'Smart follow-up questions the user might want to ask',
-    },
-    goalStage: {
-      type: 'string' as const,
-      enum: ['goal_identified', 'profile_built', 'options_researched', 'strategy_set', 'documents_ready', 'submitted'],
-    },
-  },
-  required: ['message', 'shouldSearch'],
-};
+import { z } from 'zod';
+
+export const AtlasResponseSchema = z.object({
+  // The conversational text the user reads
+  message: z.string().describe(
+    "Warm, strategic, natural language response. Think before searching. Ask clarifying questions when needed. Reference previous context naturally."
+  ),
+
+  // Opportunity cards for the UI
+  opportunities: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    matchScore: z.number().min(0).max(100),
+    category: z.enum(['top_pick', 'stretch_goal', 'safety_option']),
+    deadline: z.string().optional().describe("ISO date or 'Rolling'"),
+    whyMatch: z.string().describe("Personalized 'Why You Match' explanation"),
+    concerns: z.string().optional().describe("Honest gap analysis if any"),
+    nextAction: z.string().optional().describe("One specific action for this week"),
+  })).optional(),
+
+  // Advice cards (strategic tips, timeline warnings, etc.)
+  advice: z.array(z.object({
+    type: z.enum(['strategic', 'timeline', 'warning', 'tip']),
+    content: z.string(),
+  })).optional(),
+
+  // Context pills showing what Atlas knows about the user
+  contextPills: z.array(z.object({
+    label: z.string(),
+    value: z.string(),
+    source: z.enum(['stated', 'inferred', 'previous_session']),
+  })).optional(),
+
+  // What Atlas learned this turn (for DB persistence)
+  memoryUpdates: z.array(z.string()).optional(),
+
+  // Suggested next steps for the user
+  nextSteps: z.array(z.string()).optional(),
+
+  // Where the user is in their journey
+  goalStage: z.enum([
+    'goal_identified',
+    'profile_built',
+    'options_researched',
+    'strategy_set',
+    'timeline_created',
+    'documents_ready',
+    'submitted'
+  ]).optional(),
+
+  // If true, Atlas is asking a clarifying question before giving full recommendations
+  clarifyingQuestion: z.boolean().default(false),
+});

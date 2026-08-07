@@ -1,23 +1,26 @@
 import React from 'react';
 import Link from 'next/link';
 import { LoginButton } from '@/components/auth/LoginButton';
+import styles from '@/components/auth/Auth.module.css';
 
 export default function LoginPage() {
   return (
-    <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-      <div className="glass-card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>Welcome back</h1>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.95rem' }}>
+    <div className={styles.authContainer}>
+      <div className={styles.glowOrb1} />
+      <div className={styles.glowOrb2} />
+      <div className={styles.authCard}>
+        <h1 className={styles.title}>Welcome back</h1>
+        <p className={styles.subtitle}>
           Log in to continue your research journey with AtlasFind.
         </p>
         
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+        <div className={styles.buttonWrapper}>
           <LoginButton />
         </div>
         
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-          Don't have an account?{' '}
-          <Link href="/signup" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+        <p className={styles.footerText}>
+          Don&apos;t have an account?
+          <Link href="/signup" className={styles.link}>
             Sign up
           </Link>
         </p>
