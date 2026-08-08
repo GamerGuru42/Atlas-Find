@@ -25,6 +25,8 @@ interface Opportunity {
   fundingType: string;
   coverageDetails: CoverageDetails;
   deadline: string;
+  opensDate?: string;
+  updatedAt: string;
   applyUrl: string;
   sourceUrl: string;
   sourceDomain: string;
@@ -236,6 +238,45 @@ export default function DiscoverPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.25rem' }}>
           {opportunities.map((opp) => {
             const coverage = opp.coverageDetails as CoverageDetails;
+            
+            // Calculate Days Left
+            const now = new Date();
+            const deadline = new Date(opp.deadline);
+            now.setHours(0,0,0,0);
+            deadline.setHours(0,0,0,0);
+            const timeDiff = deadline.getTime() - now.getTime();
+            const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            let urgencyColor = 'var(--text-secondary)';
+            let urgencyBg = 'transparent';
+            let urgencyText = '';
+            let countdownText = '';
+            
+            if (daysLeft < 0) {
+              urgencyColor = '#8b949e'; // Gray
+              urgencyBg = 'rgba(139, 148, 158, 0.1)';
+              urgencyText = 'Closed';
+              countdownText = `Closed on ${deadline.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            } else if (daysLeft < 14) {
+              urgencyColor = '#ff6b6b'; // Red
+              urgencyBg = 'rgba(255, 107, 107, 0.1)';
+              urgencyText = 'Closing Soon';
+              countdownText = `${daysLeft} days left`;
+            } else if (daysLeft <= 30) {
+              urgencyColor = '#ffab00'; // Orange
+              urgencyBg = 'rgba(255, 171, 0, 0.1)';
+              urgencyText = 'Apply Soon';
+              countdownText = `${daysLeft} days left`;
+            } else {
+              urgencyColor = 'var(--accent-primary, #00ff87)'; // Green
+              urgencyBg = 'rgba(0, 255, 135, 0.1)';
+              urgencyText = 'Plenty of Time';
+              countdownText = `${daysLeft} days left`;
+            }
+
+            // Calculate hours since last verification
+            const hoursSinceVerified = Math.max(1, Math.floor((new Date().getTime() - new Date(opp.updatedAt).getTime()) / (1000 * 60 * 60)));
+
             return (
               <div
                 key={opp.id}
@@ -301,14 +342,38 @@ export default function DiscoverPage() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5, margin: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {opp.description}
                 </p>
+                
+                {/* Dates Section */}
+                <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'var(--bg-surface-elevated)', borderRadius: '6px', fontSize: '0.8rem' }}>
+                  {opp.opensDate && new Date(opp.opensDate) > new Date() && (
+                    <div style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                      <strong>Opens:</strong> {new Date(opp.opensDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)' }}>Apply by:</strong> {deadline.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                    <span style={{
+                      color: urgencyColor,
+                      background: urgencyBg,
+                      padding: '0.15rem 0.4rem',
+                      borderRadius: '4px',
+                      fontWeight: 600,
+                      fontSize: '0.7rem'
+                    }}>
+                      {urgencyText} · {countdownText}
+                    </span>
+                  </div>
+                </div>
 
                 {/* Footer */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-default)', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, color: 'var(--accent-primary, #00ff87)' }}>
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent-primary, #00ff87)', display: 'inline-block' }} />
-                    Verified · {opp.sourceDomain}
+                    Verified {hoursSinceVerified}h ago
                   </div>
-                  <div>⏰ {new Date(opp.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                  <div style={{ color: 'var(--text-muted)' }}>{opp.sourceDomain}</div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.5rem' }}>

@@ -1,0 +1,86 @@
+.userMenuContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-surface-elevated, rgba(255,255,255,0.05));
+  border: 1px solid var(--border-default, rgba(255,255,255,0.1));
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.userButton:hover {
+  background: var(--bg-surface-elevated-hover, rgba(255,255,255,0.1));
+  border-color: var(--border-hover, rgba(255,255,255,0.2));
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--bg-surface, #161b22);
+  border: 1px solid var(--border-default, rgba(255,255,255,0.1));
+  border-radius: var(--radius-md, 8px);
+  padding: 0.5rem;
+  min-width: 200px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.userInfo {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-default, rgba(255,255,255,0.1));
+  margin-bottom: 0.25rem;
+}
+
+.userEmail {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8b949e);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary, #ffffff);
+  font-family: inherit;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.menuItem:hover {
+  background: var(--bg-surface-elevated, rgba(255,255,255,0.05));
+  text-decoration: none;
+}
+
+.logoutButton {
+  color: #ff6b6b;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 107, 107, 0.1);
+}

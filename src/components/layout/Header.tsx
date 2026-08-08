@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 
 import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
+import { UserMenu } from './UserMenu';
 
 export async function Header() {
   const cookieStore = await cookies();
@@ -45,9 +46,12 @@ export async function Header() {
         <div className={styles.actions}>
           <ThemeToggle />
           {session ? (
-            <Link href="/chat">
-              <Button variant="primary" size="sm">Talk to Agent</Button>
-            </Link>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <Link href="/chat">
+                <Button variant="primary" size="sm">Talk to Agent</Button>
+              </Link>
+              <UserMenu userEmail={session.user.email || 'User'} />
+            </div>
           ) : (
             <>
               <Link href="/login">
