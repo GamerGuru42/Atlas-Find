@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [opportunities, count] = await Promise.all([
+    let [opportunities, count] = await Promise.all([
       prisma.opportunity.findMany({
         where,
         orderBy: { deadline: 'asc' },
@@ -46,6 +46,22 @@ export async function GET(request: NextRequest) {
       }),
       prisma.opportunity.count({ where }),
     ]);
+
+    // Fallback: If no verified opportunities match, try fetching unverified ones (but not scams)
+    if (count === 0 && where.verificationStatus === 'verified') {
+      delete where.verificationStatus;
+      const fallbackResult = await Promise.all([
+        prisma.opportunity.findMany({
+          where,
+          orderBy: { deadline: 'asc' },
+          skip: offset,
+          take: limit,
+        }),
+        prisma.opportunity.count({ where }),
+      ]);
+      opportunities = fallbackResult[0];
+      count = fallbackResult[1];
+    }
 
     return NextResponse.json({
       opportunities,

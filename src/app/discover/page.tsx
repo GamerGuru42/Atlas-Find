@@ -243,7 +243,27 @@ export default function DiscoverPage() {
                 style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3, margin: 0 }}>{opp.title}</h3>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, lineHeight: 1.3, margin: 0 }}>
+                    {opp.title}
+                    {opp.verificationStatus !== 'verified' && (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        padding: '0.15rem 0.4rem',
+                        background: 'rgba(255, 171, 0, 0.1)',
+                        color: '#ffab00',
+                        border: '1px solid rgba(255, 171, 0, 0.3)',
+                        borderRadius: '4px',
+                        marginLeft: '0.5rem',
+                        verticalAlign: 'middle',
+                      }}>
+                        ⚠️ Under Review
+                      </span>
+                    )}
+                  </h3>
                   <span style={{
                     flexShrink: 0,
                     padding: '0.2rem 0.6rem',
