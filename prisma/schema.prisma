@@ -49,8 +49,31 @@ model Opportunity {
 
   savedBy            SavedOpportunity[]
   verificationLogs   VerificationLog[]
+  intakes            Intake[]
 
   @@map("opportunities")
+}
+
+model Intake {
+  id               String      @id @default(uuid())
+  opportunityId    String      @map("opportunity_id")
+  opportunity      Opportunity @relation(fields: [opportunityId], references: [id])
+
+  intakeName       String      @map("intake_name")       // "2026/2027 Academic Year"
+  opensDate        DateTime?   @map("opens_date")         // When applications OPEN
+  deadlineDate     DateTime?   @map("deadline_date")      // When applications CLOSE
+  notificationDate DateTime?   @map("notification_date")  // When winners are announced
+  startDate        DateTime?   @map("start_date")         // When program BEGINS
+
+  isRolling        Boolean     @default(false) @map("is_rolling")
+  isPredicted      Boolean     @default(false) @map("is_predicted")
+
+  status           String      @default("open")           // open, closed, upcoming, rolling, predicted
+
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  @@map("intakes")
 }
 
 model SavedOpportunity {
