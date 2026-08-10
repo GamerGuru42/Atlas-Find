@@ -110,23 +110,20 @@ export default function ChatPage() {
   };
 
   return (
-    <div className={styles.container}>
-      {/* Sidebar logic omitted for brevity in rewrite, but we keep main layout */}
+    <div className={styles.chatContainer}>
       <main className={styles.mainChat}>
-        <div className={styles.chatHeader}>
-          <div className={styles.headerInfo}>
-            <h2>AtlasFind AI</h2>
-            <span className={styles.statusDot}></span>
-            <span className={styles.statusText}>Agent Active</span>
-          </div>
+        <div style={{ padding: '1rem 2rem', borderBottom: '1px solid var(--border-default)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>AtlasFind AI</h2>
+          <span style={{ width: '8px', height: '8px', background: 'var(--accent-primary)', borderRadius: '50%', display: 'inline-block' }}></span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Agent Active</span>
         </div>
 
-        <div className={styles.messagesContainer}>
+        <div className={styles.chatHistory}>
           {messages.length === 0 && (
             <div className={styles.emptyState}>
-              <div className={styles.welcomeIcon}>✨</div>
-              <h2>Hi, I&apos;m Atlas.</h2>
-              <p>I can help you find verified scholarships, fellowships, and grants tailored to your profile.</p>
+              <div className={styles.emptyStateIcon}>✨</div>
+              <h2 className={styles.emptyTitle}>Hi, I&apos;m Atlas.</h2>
+              <p className={styles.emptyText}>I can help you find verified scholarships, fellowships, and grants tailored to your profile.</p>
             </div>
           )}
 
