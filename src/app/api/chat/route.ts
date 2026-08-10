@@ -54,94 +54,139 @@ function simpleHash(str: string): string {
 }
 
 export async function POST(req: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
-
-  const { data: { session } } = await supabase.auth.getSession();
-  const userId = session?.user?.id;
-
-  const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
-      })
-    : null;
-
-  let body;
   try {
-    body = await req.json();
-  } catch (e) {
-    return new Response('Invalid JSON', { status: 400 });
-  }
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
+        },
+      }
+    );
 
-  const { message = '', history = [] } = body;
-  const lastMessage = message;
-
-  const user = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
-  const profile = (user?.profileJson as Record<string, any>) || {};
-
-  const cacheKey = `chat:${userId || 'anon'}:${simpleHash(lastMessage + JSON.stringify(profile))}`;
-  if (redis) {
-    const cached = await redis.get(cacheKey);
-    if (cached) {
-      return new Response(JSON.stringify(cached), {
-        headers: { 'Content-Type': 'application/json' },
-      });
+    let userId: string | undefined;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      userId = session?.user?.id;
+    } catch {
+      // Not logged in — that's fine, continue as anonymous
     }
-  }
 
-  const opportunities = await prisma.opportunity.findMany({
-    where: {
-      verificationStatus: 'verified',
-      scamFlag: false,
-      deadline: { gte: new Date() },
-    },
-    take: 10,
-  });
+    // Only create Redis if env vars look real (not placeholders)
+    let redis: Redis | null = null;
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || '';
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
+    if (redisUrl.startsWith('https://') && redisUrl.length > 15 && redisToken.length > 10) {
+      try {
+        redis = new Redis({ url: redisUrl, token: redisToken });
+      } catch {
+        redis = null;
+      }
+    }
 
-  const dbContext = `User Profile: ${JSON.stringify(profile)}\nVerified Opportunities: ${JSON.stringify(opportunities)}`;
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response('Invalid JSON', { status: 400 });
+    }
 
-  const result = streamObject({
-    model: google('gemini-1.5-flash'),
-    schema: AtlasResponseSchema,
-    system: SYSTEM_PROMPT,
-    messages: [
-      { role: 'system', content: dbContext },
-      ...history.map((m: any) => ({
-        role: m.role === 'agent' ? 'assistant' : (m.role === 'user' ? 'user' : 'system'),
-        content: m.content || ''
-      })),
-      { role: 'user', content: message },
-    ],
-    temperature: 0.7,
-  });
+    const { message = '', history = [] } = body;
+    if (!message.trim()) {
+      return new Response('Message is required', { status: 400 });
+    }
 
-  result.object.then(async (final) => {
+    let user = null;
+    let profile: Record<string, any> = {};
+    if (userId) {
+      try {
+        user = await prisma.user.findUnique({ where: { id: userId } });
+        profile = (user?.profileJson as Record<string, any>) || {};
+      } catch {
+        // DB error — continue without profile
+      }
+    }
+
+    // Check cache (gracefully)
+    const cacheKey = `chat:${userId || 'anon'}:${simpleHash(message + JSON.stringify(profile))}`;
     if (redis) {
-      await redis.setex(cacheKey, 86400, JSON.stringify(final));
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+          return new Response(JSON.stringify(cached), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      } catch {
+        // Cache miss or error — continue to AI
+      }
     }
-    if (final.memoryUpdates?.length && user) {
-      const updatedProfile = { ...profile };
-      final.memoryUpdates.forEach((update) => {
-        const [key, value] = update.split(':');
-        if (key && value) updatedProfile[key.trim()] = value.trim();
-      });
-      await prisma.user.update({
-        where: { id: userId },
-        data: { profileJson: updatedProfile },
-      });
-    }
-  }).catch(() => {});
 
-  return result.toTextStreamResponse();
+    // Get opportunities (gracefully)
+    let opportunities: any[] = [];
+    try {
+      opportunities = await prisma.opportunity.findMany({
+        where: {
+          scamFlag: false,
+          deadline: { gte: new Date() },
+        },
+        take: 15,
+      });
+    } catch {
+      // DB error — continue with empty opportunities
+    }
+
+    const dbContext = opportunities.length > 0
+      ? `User Profile: ${JSON.stringify(profile)}\nVerified Opportunities: ${JSON.stringify(opportunities)}`
+      : `User Profile: ${JSON.stringify(profile)}\nNo opportunities loaded from database yet.`;
+
+    const result = streamObject({
+      model: google('gemini-2.0-flash'),
+      schema: AtlasResponseSchema,
+      system: SYSTEM_PROMPT,
+      messages: [
+        { role: 'system', content: dbContext },
+        ...history.map((m: any) => ({
+          role: m.role === 'agent' ? 'assistant' : (m.role === 'user' ? 'user' : 'system'),
+          content: m.content || ''
+        })),
+        { role: 'user', content: message },
+      ],
+      temperature: 0.7,
+    });
+
+    // Background: cache result + update profile (non-blocking)
+    result.object.then(async (final) => {
+      try {
+        if (redis) {
+          await redis.setex(cacheKey, 86400, JSON.stringify(final));
+        }
+        if (final.memoryUpdates?.length && user && userId) {
+          const updatedProfile = { ...profile };
+          final.memoryUpdates.forEach((update) => {
+            const [key, value] = update.split(':');
+            if (key && value) updatedProfile[key.trim()] = value.trim();
+          });
+          await prisma.user.update({
+            where: { id: userId },
+            data: { profileJson: updatedProfile },
+          });
+        }
+      } catch {
+        // Background task failed — don't crash
+      }
+    }).catch(() => {});
+
+    return result.toTextStreamResponse();
+  } catch (error: any) {
+    console.error('[Chat API Error]', error?.message || error);
+    return new Response(
+      JSON.stringify({ error: 'Something went wrong. Please try again.' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 }
