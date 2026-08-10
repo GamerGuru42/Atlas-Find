@@ -5,6 +5,9 @@ import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { SYSTEM_PROMPT } from '@/lib/gemini/prompts/systemPrompt';
 
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
 const prisma = new PrismaClient();
 
 const AtlasResponseSchema = z.object({
@@ -47,6 +50,22 @@ function simpleHash(str: string): string {
 }
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const { data: { session } } = await supabase.auth.getSession();
+  const userId = session?.user?.id;
+
   const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Redis({
         url: process.env.UPSTASH_REDIS_REST_URL,
@@ -54,13 +73,20 @@ export async function POST(req: Request) {
       })
     : null;
 
-  const { messages, userId } = await req.json();
-  const lastMessage = messages[messages.length - 1]?.content || '';
+  let body;
+  try {
+    body = await req.json();
+  } catch (e) {
+    return new Response('Invalid JSON', { status: 400 });
+  }
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const { message = '', history = [] } = body;
+  const lastMessage = message;
+
+  const user = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
   const profile = (user?.profileJson as Record<string, any>) || {};
 
-  const cacheKey = `chat:${userId}:${simpleHash(lastMessage + JSON.stringify(profile))}`;
+  const cacheKey = `chat:${userId || 'anon'}:${simpleHash(lastMessage + JSON.stringify(profile))}`;
   if (redis) {
     const cached = await redis.get(cacheKey);
     if (cached) {
@@ -87,7 +113,11 @@ export async function POST(req: Request) {
     system: SYSTEM_PROMPT,
     messages: [
       { role: 'system', content: dbContext },
-      ...messages,
+      ...history.map((m: any) => ({
+        role: m.role === 'agent' ? 'assistant' : (m.role === 'user' ? 'user' : 'system'),
+        content: m.content || ''
+      })),
+      { role: 'user', content: message },
     ],
     temperature: 0.7,
   });
