@@ -16,6 +16,7 @@ interface CoverageDetails {
 interface Opportunity {
   id: string;
   title: string;
+  type: string;
   sponsor: string;
   orgType: string;
   hostCountry: string;
@@ -37,6 +38,17 @@ interface Opportunity {
   tags: string[];
 }
 
+const OPPORTUNITY_TABS = [
+  { key: 'ALL', label: 'All', emoji: '' },
+  { key: 'SCHOLARSHIP', label: 'Scholarships', emoji: '🎓' },
+  { key: 'INTERNSHIP', label: 'Internships', emoji: '💼' },
+  { key: 'APPRENTICESHIP', label: 'Apprenticeships', emoji: '🔧' },
+  { key: 'FELLOWSHIP', label: 'Fellowships', emoji: '🔬' },
+  { key: 'GRANT', label: 'Grants', emoji: '💰' },
+  { key: 'EXCHANGE', label: 'Exchanges', emoji: '🌍' },
+  { key: 'RESEARCH_POSITION', label: 'Research', emoji: '🧪' },
+] as const;
+
 const COUNTRIES = [
   'United Kingdom', 'Germany', 'France', 'Netherlands', 'Sweden', 'Switzerland',
   'Hungary', 'Turkey', 'United States', 'Canada', 'Japan', 'South Korea', 'China',
@@ -48,8 +60,10 @@ export default function DiscoverPage() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedDegree, setSelectedDegree] = useState<string | null>(null);
   const [selectedFunding, setSelectedFunding] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState('ALL');
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [offset, setOffset] = useState(0);
@@ -63,6 +77,7 @@ export default function DiscoverPage() {
       if (selectedCountry) params.set('country', selectedCountry);
       if (selectedDegree) params.set('level', selectedDegree);
       if (selectedFunding) params.set('fundingType', selectedFunding);
+      if (selectedType !== 'ALL') params.set('type', selectedType);
       params.set('limit', String(LIMIT));
       params.set('offset', String(newOffset));
 
@@ -83,7 +98,26 @@ export default function DiscoverPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [search, selectedCountry, selectedDegree, selectedFunding]);
+  }, [search, selectedCountry, selectedDegree, selectedFunding, selectedType]);
+
+  // Fetch type counts on mount
+  useEffect(() => {
+    async function fetchCounts() {
+      try {
+        const res = await fetch('/api/discover?limit=1000&offset=0');
+        const data = await res.json();
+        if (data.opportunities) {
+          const counts: Record<string, number> = { ALL: data.count };
+          for (const opp of data.opportunities) {
+            const t = opp.type || 'SCHOLARSHIP';
+            counts[t] = (counts[t] || 0) + 1;
+          }
+          setTypeCounts(counts);
+        }
+      } catch { /* ignore */ }
+    }
+    fetchCounts();
+  }, []);
 
   // Fetch on mount and when filters change
   useEffect(() => {
@@ -102,9 +136,10 @@ export default function DiscoverPage() {
     setSelectedCountry(null);
     setSelectedDegree(null);
     setSelectedFunding(null);
+    setSelectedType('ALL');
   };
 
-  const hasActiveFilters = search || selectedCountry || selectedDegree || selectedFunding;
+  const hasActiveFilters = search || selectedCountry || selectedDegree || selectedFunding || selectedType !== 'ALL';
 
   return (
     <div style={{ minHeight: 'calc(100vh - 72px)', padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -115,6 +150,58 @@ export default function DiscoverPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6 }}>
           Browse our verified database of scholarships, fellowships, and funded programs. Every listing is checked against its original source.
         </p>
+      </div>
+
+      {/* Type Tabs */}
+      <div style={{
+        display: 'flex',
+        gap: '0.5rem',
+        overflowX: 'auto',
+        paddingBottom: '1rem',
+        marginBottom: '1rem',
+        borderBottom: '1px solid var(--border-default)',
+        scrollbarWidth: 'none',
+      }}>
+        {OPPORTUNITY_TABS.map(tab => {
+          const isActive = selectedType === tab.key;
+          const count = typeCounts[tab.key];
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setSelectedType(tab.key)}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-full, 50px)',
+                border: `1px solid ${isActive ? 'var(--accent-primary, #00ff87)' : 'var(--border-default)'}`,
+                background: isActive ? 'var(--accent-primary-dim, rgba(0,255,135,0.1))' : 'transparent',
+                color: isActive ? 'var(--accent-primary, #00ff87)' : 'var(--text-secondary)',
+                fontFamily: 'inherit',
+                fontSize: '0.85rem',
+                fontWeight: isActive ? 700 : 500,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {tab.emoji && <span>{tab.emoji}</span>}
+              {tab.label}
+              {count !== undefined && (
+                <span style={{
+                  fontSize: '0.7rem',
+                  background: isActive ? 'rgba(0,255,135,0.2)' : 'rgba(255,255,255,0.05)',
+                  padding: '0.1rem 0.4rem',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                }}>
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Filters */}

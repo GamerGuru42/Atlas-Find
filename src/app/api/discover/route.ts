@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const country = searchParams.get('country');
   const fundingType = searchParams.get('fundingType');
   const search = searchParams.get('search');
+  const type = searchParams.get('type');
   const limit = parseInt(searchParams.get('limit') || '20');
   const offset = parseInt(searchParams.get('offset') || '0');
 
@@ -18,6 +19,9 @@ export async function GET(request: NextRequest) {
       scamFlag: false,
     };
 
+    if (type && type !== 'ALL') {
+      where.type = type;
+    }
     if (level) {
       where.degreeLevel = { has: level };
     }
