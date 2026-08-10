@@ -140,7 +140,7 @@ export default function ChatPage() {
                   </div>
                 )}
                 
-                <div className={styles.messageBubble}>
+                <div className={`${styles.messageBubble} ${msg.role === 'user' ? styles.bubbleUser : styles.bubbleAgent}`}>
                   <div className={styles.messageText}>{msg.content}</div>
                 </div>
 
@@ -203,7 +203,7 @@ export default function ChatPage() {
                   </svg>
                 </div>
                 
-                <div className={styles.messageBubble}>
+                <div className={`${styles.messageBubble} ${styles.bubbleAgent}`}>
                   <div className={styles.messageText}>
                     {object?.message || (
                       <span className={styles.thinkingIndicator}>
