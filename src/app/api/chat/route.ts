@@ -54,6 +54,21 @@ function simpleHash(str: string): string {
 }
 
 export async function POST(req: Request) {
+  /*
+  TEST THIS API DIRECTLY WITH CURL:
+  curl -X POST http://localhost:3000/api/chat \
+    -H "Content-Type: application/json" \
+    -d "{\"message\":\"hello\", \"history\":[]}"
+  */
+
+  if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('[Chat API] AI API key not configured.');
+    return new Response(JSON.stringify({ error: "AI API key not configured" }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   try {
     const cookieStore = await cookies();
     const supabase = createServerClient(
@@ -144,17 +159,18 @@ export async function POST(req: Request) {
       ? `User Profile: ${JSON.stringify(profile)}\nVerified Opportunities: ${JSON.stringify(opportunities)}`
       : `User Profile: ${JSON.stringify(profile)}\nNo opportunities loaded from database yet.`;
 
+    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n---\n\n${dbContext}`;
+
     const result = streamObject({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-2.0-flash-lite'),
       schema: AtlasResponseSchema,
-      system: SYSTEM_PROMPT,
+      system: fullSystemPrompt,
       messages: [
-        { role: 'system', content: dbContext },
         ...history.map((m: any) => ({
-          role: m.role === 'agent' ? 'assistant' : (m.role === 'user' ? 'user' : 'system'),
+          role: m.role === 'agent' ? ('assistant' as const) : ('user' as const),
           content: m.content || ''
         })),
-        { role: 'user', content: message },
+        { role: 'user' as const, content: message },
       ],
       temperature: 0.7,
     });
@@ -185,7 +201,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('[Chat API Error]', error?.message || error);
     return new Response(
-      JSON.stringify({ error: 'Something went wrong. Please try again.' }),
+      JSON.stringify({ error: error?.message || 'Something went wrong. Please try again.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

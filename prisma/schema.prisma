@@ -22,24 +22,16 @@ model User {
   savedOpportunities SavedOpportunity[]
 }
 
-enum OpportunityType {
-  SCHOLARSHIP
-  INTERNSHIP
-  APPRENTICESHIP
-  FELLOWSHIP
-  GRANT
-  EXCHANGE
-  RESEARCH_POSITION
-  WORK_STUDY
-}
+// enum removed
 
 model Opportunity {
   id                 String            @id @default(uuid())
   title              String
-  type               OpportunityType   @default(SCHOLARSHIP)
+  type               String            @default("SCHOLARSHIP")
   sponsor            String
   orgType            String            @default("government") @map("org_type")
   hostCountry        String            @map("host_country")
+  continent          String?
   eligibleCountries  String[]          @default([]) @map("eligible_countries")
   disciplines        String[]          @default([])
   degreeLevel        String[]          @map("degree_level")

@@ -47,6 +47,24 @@ export default function ChatPage() {
   const { submit, isLoading, object, error } = experimental_useObject({
     api: '/api/chat',
     schema: AtlasResponseSchema,
+    onError: (err) => {
+      console.error('[Chat Page Error]', err);
+      // Attempt to parse JSON error from AI SDK
+      let errorMsg = err?.message || 'Unknown error';
+      if (err?.message?.includes('JSON')) {
+        // Sometimes the SDK wraps it. Try to parse.
+        errorMsg = err.message;
+      }
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'agent',
+          content: `⚠️ Agent is temporarily unavailable. [${errorMsg}]`,
+          timestamp: new Date().toISOString(),
+        }
+      ]);
+    },
     onFinish: ({ object: finalObject }) => {
       if (finalObject) {
         setMessages((prev) => [
