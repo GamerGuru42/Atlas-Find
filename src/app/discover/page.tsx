@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, MapPin, Briefcase, GraduationCap, DollarSign, Filter, ChevronDown, CheckCircle2, Calendar } from 'lucide-react';
+import { Search, MapPin, Briefcase, GraduationCap, DollarSign, Filter, CheckCircle2, Calendar } from 'lucide-react';
 import { OpportunityModal } from './OpportunityModal';
+import styles from './page.module.css';
 
 const OPPORTUNITY_TABS = [
   { key: 'ALL', label: 'All', emoji: '' },
@@ -122,209 +123,203 @@ function DiscoverContent() {
   };
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 72px)' }} className="bg-black text-white pb-20">
+    <div className={styles.container}>
       
       {/* Header & Sticky Tabs */}
-      <div className="sticky top-[72px] z-30 bg-black/80 backdrop-blur-xl border-b border-[var(--border-default)] pt-8 pb-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-6">
-            <div>
-              <h1 className="text-3xl font-extrabold tracking-tight mb-2">Discover</h1>
-              <p className="text-[var(--text-secondary)] text-sm max-w-2xl">
-                Browse our verified database of global opportunities. Use the tabs and filters to find the perfect match for your profile.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
-            {OPPORTUNITY_TABS.map(tab => {
-              const isActive = typeParam === tab.key;
-              const count = tab.key === 'ALL' ? Object.values(typeCounts).reduce((a, b) => a + b, 0) : typeCounts[tab.key] || 0;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => handleTypeChange(tab.key)}
-                  className={`snap-start flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200 text-sm font-semibold
-                    ${isActive 
-                      ? 'bg-[rgba(0,255,135,0.1)] border-[var(--accent-primary)] text-[var(--accent-primary)]' 
-                      : 'bg-transparent border-[var(--border-default)] text-[var(--text-secondary)] hover:text-white hover:border-white/20'}`}
-                >
-                  {tab.emoji && <span>{tab.emoji}</span>}
-                  {tab.label}
-                  {count > 0 && (
-                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] ml-1 ${isActive ? 'bg-[rgba(0,255,135,0.2)] text-[var(--accent-primary)]' : 'bg-white/10 text-white'}`}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Discover</h1>
+        <p className={styles.subtitle}>
+          Browse our verified database of global opportunities. Use the tabs and filters to find the perfect match for your profile.
+        </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+      <div className={styles.tabsScroll}>
+        {OPPORTUNITY_TABS.map(tab => {
+          const isActive = typeParam === tab.key;
+          const count = tab.key === 'ALL' ? Object.values(typeCounts).reduce((a, b) => a + b, 0) : typeCounts[tab.key] || 0;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => handleTypeChange(tab.key)}
+              className={`${styles.tab} ${isActive ? styles.active : ''}`}
+            >
+              {tab.emoji && <span>{tab.emoji}</span>}
+              {tab.label}
+              {count > 0 && (
+                <span className={styles.tabCount}>
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className={styles.mainLayout}>
         
         {/* Sidebar Filters */}
-        <div className={`w-full md:w-64 flex-shrink-0 ${showFilters ? 'block' : 'hidden md:block'}`}>
-          <div className="sticky top-[200px] space-y-6">
-            
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                value={searchParam}
-                onChange={handleSearch}
-                className="w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-default)] rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
-              />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-2">
-                <Filter size={14}/> Filters
-              </h3>
-              <button onClick={clearAllFilters} className="text-xs text-[var(--accent-primary)] hover:underline">Clear All</button>
-            </div>
-
-            {/* Funding Filter */}
-            {filterOptions.fundingTypes && (
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Funding</h4>
-                <div className="space-y-2">
-                  {filterOptions.fundingTypes.map((ft: string) => (
-                    <label key={ft} className="flex items-center gap-2 text-sm cursor-pointer group">
-                      <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${selectedFunding.includes(ft) ? 'bg-[var(--accent-primary)] border-[var(--accent-primary)] text-black' : 'border-[var(--border-default)] group-hover:border-white/40'}`}>
-                        {selectedFunding.includes(ft) && <CheckCircle2 size={12} />}
-                      </div>
-                      <span className="capitalize">{ft.replace('_', ' ')}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Country Filter */}
-            {filterOptions.hostCountries && (
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Host Country</h4>
-                <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                  {filterOptions.hostCountries.map((c: string) => (
-                    <label key={c} className="flex items-center gap-2 text-sm cursor-pointer group">
-                      <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${selectedCountries.includes(c) ? 'bg-[var(--accent-primary)] border-[var(--accent-primary)] text-black' : 'border-[var(--border-default)] group-hover:border-white/40'}`}>
-                        {selectedCountries.includes(c) && <CheckCircle2 size={12} />}
-                      </div>
-                      <span>{c}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-             {/* Degree Level Filter */}
-             {filterOptions.degreeLevels && (
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Degree Level</h4>
-                <div className="space-y-2">
-                  {filterOptions.degreeLevels.map((dl: string) => (
-                    <label key={dl} className="flex items-center gap-2 text-sm cursor-pointer group">
-                      <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${selectedLevels.includes(dl) ? 'bg-[var(--accent-primary)] border-[var(--accent-primary)] text-black' : 'border-[var(--border-default)] group-hover:border-white/40'}`}>
-                        {selectedLevels.includes(dl) && <CheckCircle2 size={12} />}
-                      </div>
-                      <span className="capitalize">{dl}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
+        <div className={`${styles.sidebar} ${showFilters ? '' : styles.hiddenMobile}`}>
+          <div className={styles.searchContainer}>
+            <Search className={styles.searchIcon} size={18} />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={searchParam}
+              onChange={handleSearch}
+              className={styles.searchInput}
+            />
           </div>
+
+          <div className={styles.filtersTitle}>
+            <Filter size={18}/> Filters
+            <button onClick={clearAllFilters} className={styles.clearAllBtn}>Clear All</button>
+          </div>
+
+          {/* Funding Filter */}
+          {filterOptions.fundingTypes && (
+            <div className={styles.filterSection}>
+              <h4 className={styles.filterSectionTitle}>Funding</h4>
+              <div className={styles.filterList}>
+                {filterOptions.fundingTypes.map((ft: string) => (
+                  <label key={ft} className={styles.filterLabel} onClick={() => toggleArrayFilter(setSelectedFunding, selectedFunding, ft, 'fundingType')}>
+                    <div className={`${styles.checkbox} ${selectedFunding.includes(ft) ? styles.checked : ''}`}>
+                      {selectedFunding.includes(ft) && <CheckCircle2 size={12} />}
+                    </div>
+                    <span style={{ textTransform: 'capitalize' }}>{ft.replace('_', ' ')}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Country Filter */}
+          {filterOptions.hostCountries && (
+            <div className={styles.filterSection}>
+              <h4 className={styles.filterSectionTitle}>Host Country</h4>
+              <div className={styles.filterList}>
+                {filterOptions.hostCountries.map((c: string) => (
+                  <label key={c} className={styles.filterLabel} onClick={() => toggleArrayFilter(setSelectedCountries, selectedCountries, c, 'hostCountry')}>
+                    <div className={`${styles.checkbox} ${selectedCountries.includes(c) ? styles.checked : ''}`}>
+                      {selectedCountries.includes(c) && <CheckCircle2 size={12} />}
+                    </div>
+                    <span>{c}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+           {/* Degree Level Filter */}
+           {filterOptions.degreeLevels && (
+            <div className={styles.filterSection}>
+              <h4 className={styles.filterSectionTitle}>Degree Level</h4>
+              <div className={styles.filterList}>
+                {filterOptions.degreeLevels.map((dl: string) => (
+                  <label key={dl} className={styles.filterLabel} onClick={() => toggleArrayFilter(setSelectedLevels, selectedLevels, dl, 'level')}>
+                    <div className={`${styles.checkbox} ${selectedLevels.includes(dl) ? styles.checked : ''}`}>
+                      {selectedLevels.includes(dl) && <CheckCircle2 size={12} />}
+                    </div>
+                    <span style={{ textTransform: 'capitalize' }}>{dl}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Main Grid */}
-        <div className="flex-1">
-          <div className="mb-4 flex justify-between items-center md:hidden">
-            <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 text-sm border border-[var(--border-default)] px-4 py-2 rounded-lg">
+        {/* Content Area */}
+        <div className={styles.contentArea}>
+          <div className={styles.mobileHeader}>
+            <button onClick={() => setShowFilters(!showFilters)} className={styles.mobileFilterToggle}>
               <Filter size={16} /> Filters
             </button>
-            <span className="text-sm text-[var(--text-secondary)]">{totalCount} results</span>
+            <span className={styles.resultsCount}>{totalCount} results</span>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={styles.grid}>
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="h-64 bg-[var(--bg-surface-elevated)] rounded-2xl border border-[var(--border-default)] animate-pulse" />
+                <div key={i} className={styles.loadingCard} />
               ))}
             </div>
           ) : opportunities.length === 0 ? (
-            <div className="text-center py-20 border border-dashed border-[var(--border-default)] rounded-2xl bg-[var(--bg-surface-elevated)]">
-              <Search className="mx-auto text-[var(--text-secondary)] mb-4" size={48} />
-              <h3 className="text-xl font-bold mb-2">No opportunities found</h3>
-              <p className="text-[var(--text-secondary)] max-w-md mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
-              <button onClick={clearAllFilters} className="mt-6 px-6 py-2 bg-[var(--accent-primary)] text-black font-semibold rounded-lg hover:bg-[#00e67a] transition">
-                Clear Filters
-              </button>
+            <div className={styles.emptyState}>
+              <Search className={styles.emptyIcon} size={48} />
+              <h3 className={styles.emptyTitle}>No opportunities match your specific filters yet</h3>
+              <p className={styles.emptyDesc}>
+                Know of one that fits? Help the community grow.
+              </p>
+              <div className={styles.emptyActions}>
+                <button onClick={clearAllFilters} className={styles.secondaryBtn}>
+                  Clear Filters
+                </button>
+                <Link href={`/submit-opportunity?description=${encodeURIComponent(searchParam || '')}`} className={styles.primaryBtn}>
+                  Submit an Opportunity
+                </Link>
+              </div>
             </div>
           ) : (
             <>
-              <div className="hidden md:block mb-4 text-sm text-[var(--text-secondary)]">
+              <div className={styles.resultsCount} style={{ marginBottom: '1rem' }}>
                 Showing {opportunities.length} of {totalCount} opportunities
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className={styles.grid}>
                 {opportunities.map((opp) => (
-                  <div key={opp.id} className="flex flex-col bg-[var(--bg-surface-elevated)] rounded-2xl p-5 border border-[var(--border-default)] hover:border-[var(--accent-primary)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,255,135,0.1)] group">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-white/5 rounded-md text-[var(--text-secondary)]">
+                  <div key={opp.id} className={styles.card} onClick={() => updateURL({ modal: opp.id })}>
+                    <div className={styles.cardHeader}>
+                      <span className={styles.cardType}>
                         {opp.type.replace('_', ' ')}
                       </span>
-                      {opp.trustTier === 1 && <span title="Verified Source"><CheckCircle2 size={16} className="text-blue-400" /></span>}
+                      {opp.trustTier === 1 && (
+                        <span title="Verified Source" className={styles.cardVerified}>
+                          <CheckCircle2 size={16} />
+                        </span>
+                      )}
                     </div>
                     
-                    <h3 className="text-lg font-bold mb-2 leading-tight group-hover:text-[var(--accent-primary)] transition-colors">{opp.title}</h3>
-                    <p className="text-sm text-[var(--text-secondary)] mb-4 flex items-center gap-1.5"><Briefcase size={14}/> {opp.sponsor}</p>
+                    <h3 className={styles.cardTitle}>{opp.title}</h3>
+                    <p className={styles.cardSponsor}><Briefcase size={14}/> {opp.sponsor}</p>
                     
-                    <div className="mt-auto space-y-2 mb-6">
-                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                        <MapPin size={14} className="text-white/50" />
+                    <div className={styles.cardDetails}>
+                      <div className={styles.cardDetailItem}>
+                        <MapPin size={14} className={styles.cardDetailIcon} />
                         {opp.hostCountry}
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                        <DollarSign size={14} className="text-white/50" />
-                        <span className="capitalize">{opp.fundingType?.replace('_', ' ')}</span>
+                      <div className={styles.cardDetailItem}>
+                        <DollarSign size={14} className={styles.cardDetailIcon} />
+                        <span style={{ textTransform: 'capitalize' }}>{opp.fundingType?.replace('_', ' ')}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                        <Calendar size={14} className="text-white/50" />
+                      <div className={styles.cardDetailItem}>
+                        <Calendar size={14} className={styles.cardDetailIcon} />
                         Due: {new Date(opp.deadline).toLocaleDateString()}
                       </div>
                     </div>
 
-                    <button 
-                      onClick={() => updateURL({ modal: opp.id })}
-                      className="w-full py-2.5 rounded-xl border border-[var(--border-default)] font-semibold text-sm hover:bg-[var(--accent-primary)] hover:text-black hover:border-[var(--accent-primary)] transition-all"
-                    >
-                      View Details
-                    </button>
+                    <div className={styles.cardFooter}>
+                      <span className={styles.cardDate}>Added {new Date(opp.createdAt).toLocaleDateString()}</span>
+                      <button className={styles.cardButton}>View Details</button>
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-12 flex justify-center gap-2">
+                <div className={styles.pagination}>
                   <button 
                     disabled={pageParam <= 1}
                     onClick={() => updateURL({ page: String(pageParam - 1) })}
-                    className="px-4 py-2 border border-[var(--border-default)] rounded-lg disabled:opacity-50 hover:bg-white/5"
+                    className={styles.pageBtn}
                   >
                     Previous
                   </button>
-                  <div className="flex items-center px-4 font-semibold text-sm">
+                  <div className={styles.pageInfo}>
                     Page {pageParam} of {totalPages}
                   </div>
                   <button 
                     disabled={pageParam >= totalPages}
                     onClick={() => updateURL({ page: String(pageParam + 1) })}
-                    className="px-4 py-2 border border-[var(--border-default)] rounded-lg disabled:opacity-50 hover:bg-white/5"
+                    className={styles.pageBtn}
                   >
                     Next
                   </button>
@@ -342,7 +337,7 @@ function DiscoverContent() {
 
 export default function DiscoverPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-[var(--accent-primary)]">Loading Discover...</div>}>
+    <Suspense fallback={<div className={styles.container} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading Discover...</div>}>
       <DiscoverContent />
     </Suspense>
   );

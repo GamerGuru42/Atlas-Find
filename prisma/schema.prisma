@@ -39,7 +39,7 @@ model Opportunity {
   coverageDetails    Json              @map("coverage_details")
   deadline           DateTime
   opensDate          DateTime?         @map("opens_date")
-  applyUrl           String            @map("apply_url")
+  applyUrl           String            @unique @map("apply_url")
   sourceUrl          String            @map("source_url")
   sourceDomain       String            @map("source_domain")
   trustTier          Int               @default(3) @map("trust_tier")
@@ -48,6 +48,8 @@ model Opportunity {
   description        String            @default("")
   eligibility        String            @default("")
   tags               String[]          @default([])
+  submittedBy        String?           @map("submitted_by")
+  submittedAt        DateTime?         @map("submitted_at")
   createdAt          DateTime          @default(now()) @map("created_at")
   updatedAt          DateTime          @updatedAt @map("updated_at")
 

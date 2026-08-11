@@ -1,0 +1,309 @@
+.submitContainer {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+.glowOrb1 {
+  position: absolute;
+  top: -15%;
+  right: 15%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(0, 230, 153, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+  animation: subtleFloat 9s ease-in-out infinite;
+  z-index: 0;
+}
+
+.glowOrb2 {
+  position: absolute;
+  bottom: -20%;
+  left: 10%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  animation: subtleFloat 11s ease-in-out infinite reverse;
+  z-index: 0;
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(240, 246, 252, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 246, 252, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.formCard {
+  max-width: 560px;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: rgba(17, 24, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg, 16px);
+  padding: 2.5rem;
+}
+
+.headerIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.title {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.required {
+  color: var(--accent-primary);
+  margin-left: 2px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--bg-surface-elevated, rgba(22, 30, 40, 0.8));
+  border: 1px solid var(--border-light, rgba(48, 54, 61, 0.6));
+  border-radius: var(--radius-md, 8px);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(0, 230, 153, 0.1);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-muted, rgba(139, 148, 158, 0.5));
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+
+.select option {
+  background: var(--bg-surface, #161e28);
+  color: var(--text-primary);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
+  line-height: 1.5;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: -0.2rem;
+}
+
+.charCountWarn {
+  color: #f0883e;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover, #00cc88));
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  letter-spacing: 0.02em;
+  margin-top: 0.5rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 230, 153, 0.25);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.successCard {
+  max-width: 480px;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+  background: rgba(17, 24, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg, 16px);
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  animation: successPop 0.5s ease-out;
+}
+
+.successTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.successMessage {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.successActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryLink,
+.secondaryLink {
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-md, 8px);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.primaryLink {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover, #00cc88));
+  color: var(--bg-base);
+}
+
+.primaryLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 230, 153, 0.25);
+}
+
+.secondaryLink {
+  background: var(--bg-surface-elevated, rgba(22, 30, 40, 0.8));
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.secondaryLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error {
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+  border-radius: var(--radius-md, 8px);
+  padding: 0.75rem 1rem;
+  color: #f85149;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes successPop {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes subtleFloat {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, -15px); }
+}
+
+@media (max-width: 640px) {
+  .formCard,
+  .successCard {
+    padding: 1.75rem 1.25rem;
+    margin: 0 0.5rem;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+}
