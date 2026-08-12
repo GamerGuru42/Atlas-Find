@@ -36,7 +36,7 @@ export default function SignupPage() {
         )}
         
         <div className={styles.buttonWrapper}>
-          <LoginButton />
+          <LoginButton mode="signup" />
         </div>
         
         <p className={styles.footerText}>
