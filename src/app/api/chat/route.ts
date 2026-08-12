@@ -13,7 +13,7 @@ import { cookies } from 'next/headers';
 const prisma = new PrismaClient();
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
@@ -117,19 +117,20 @@ ${dbContext}
 
 # Guidelines
 - **Always use Markdown formatting** for readability (bold text for emphasis, bullet points for lists, etc.).
-- Be conversational and engaging. Do NOT output raw JSON blocks.
-- If you recommend an opportunity from the context, clearly highlight why it's a good fit.
+- Be highly conversational, empathetic, and smart. Offer strategic advice tailored to the user's profile, acting as an expert mentor. Do NOT just dump a list of links.
+- If you recommend an opportunity from the context, clearly highlight why it's a good fit and calculate a rough "match score" based on their profile.
 - **CRITICAL**: Whenever you mention an opportunity, you MUST explicitly state its application deadline EXACTLY as it appears in the database (e.g. "**Deadline:** October 15, 2026"). Treat these dates as real and verified, and highlight them.
 - Always include the **Application Link** directly, using the \`applyUrl\`. 
-- Ask follow-up questions one at a time to build the user's profile step-by-step.
+- Proactively suggest next steps or ask ONE clarifying question to build the user's profile step-by-step.
     `;
     const coreMessages = await convertToModelMessages(messages);
 
     const result = streamText({
-      model: google('gemini-3.6-flash'),
+      model: google('gemini-3.6-flash'), // assuming this resolves properly based on previous usage
       system: instructions,
       messages: coreMessages,
       temperature: 0.7,
+      maxTokens: 3000,
     });
 
     return result.toUIMessageStreamResponse();
