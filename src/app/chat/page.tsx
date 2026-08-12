@@ -11,7 +11,7 @@ export default function ChatPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState("");
 
-  const { messages, append, status, error } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     id: 'chat',
     onError: (err) => {
       console.error('[Chat Page Error]', err);
@@ -25,11 +25,11 @@ export default function ChatPage() {
   };
 
   const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
+    if (e) e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
     
-    append({ role: 'user', content: trimmed });
+    sendMessage({ text: trimmed });
     setInput('');
   };
 
@@ -103,11 +103,11 @@ export default function ChatPage() {
                 
                 <div className={`${styles.messageBubble} ${msg.role === 'user' ? styles.bubbleUser : styles.bubbleAgent}`}>
                   {msg.role === 'user' ? (
-                    <div className={styles.messageText}>{msg.content || (msg.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || '')}</div>
+                    <div className={styles.messageText}>{msg.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || ''}</div>
                   ) : (
                     <div className={styles.messageTextMarkdown}>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {msg.content || (msg.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || '')}
+                        {msg.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || ''}
                       </ReactMarkdown>
                     </div>
                   )}
