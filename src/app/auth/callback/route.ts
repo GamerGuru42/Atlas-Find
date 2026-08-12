@@ -32,8 +32,23 @@ export async function GET(request: Request) {
       }
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      console.error('[Auth Callback Error]', error);
+      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
+    }
+
+    const forwardedHost = request.headers.get('x-forwarded-host'); // original origin before load balancer
+    const isLocalEnv = process.env.NODE_ENV === 'development';
+    
+    if (isLocalEnv) {
+      return NextResponse.redirect(`${origin}/chat`);
+    } else if (forwardedHost) {
+      return NextResponse.redirect(`https://${forwardedHost}/chat`);
+    } else {
+      return NextResponse.redirect(`${origin}/chat`);
+    }
   }
 
-  return NextResponse.redirect(`${origin}/chat`);
+  return NextResponse.redirect(`${origin}/login?error=NoCodeProvided`);
 }
