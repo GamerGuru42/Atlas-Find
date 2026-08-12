@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
     const from = params.get('From'); // e.g., whatsapp:+1234567890
     const body = params.get('Body') || '';
     
-    console.log(`[WhatsApp Webhook] Received from ${from}: ${body}`);
 
     // Here we will eventually:
     // 1. Fetch user from DB using 'from' (Prisma)
