@@ -1,66 +1,21 @@
-import { streamObject } from 'ai';
+import { streamText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 });
-import { Redis } from '@upstash/redis';
-import { PrismaClient } from '@prisma/client';
-import { z } from 'zod';
-import { SYSTEM_PROMPT } from '@/lib/gemini/prompts/systemPrompt';
 
+import { PrismaClient } from '@prisma/client';
+import { SYSTEM_PROMPT } from '@/lib/gemini/prompts/systemPrompt';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 const prisma = new PrismaClient();
 
-const AtlasResponseSchema = z.object({
-  message: z.string(),
-  opportunities: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    matchScore: z.number().min(0).max(100),
-    category: z.enum(['top_pick', 'stretch_goal', 'safety_option']),
-    deadline: z.string().optional(),
-    whyMatch: z.string(),
-    concerns: z.string().optional(),
-    nextAction: z.string().optional(),
-  })).optional(),
-  advice: z.array(z.object({
-    type: z.enum(['strategic', 'timeline', 'warning', 'tip']),
-    content: z.string(),
-  })).optional(),
-  contextPills: z.array(z.object({
-    label: z.string(),
-    value: z.string(),
-    source: z.enum(['stated', 'inferred', 'previous_session']),
-  })).optional(),
-  memoryUpdates: z.array(z.string()).optional(),
-  nextSteps: z.array(z.string()).optional(),
-  goalStage: z.enum([
-    'goal_identified', 'profile_built', 'options_researched',
-    'strategy_set', 'timeline_created', 'documents_ready', 'submitted'
-  ]).optional(),
-  clarifyingQuestion: z.boolean().default(false),
-});
-
-function simpleHash(str: string): string {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = ((h << 5) - h) + str.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h).toString(36);
-}
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  /*
-  TEST THIS API DIRECTLY WITH CURL:
-  curl -X POST http://localhost:3000/api/chat \
-    -H "Content-Type: application/json" \
-    -d "{\"message\":\"hello\", \"history\":[]}"
-  */
-
   if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('[Chat API] AI API key not configured.');
     return new Response(JSON.stringify({ error: "AI API key not configured" }), {
@@ -88,19 +43,7 @@ export async function POST(req: Request) {
       const { data: { session } } = await supabase.auth.getSession();
       userId = session?.user?.id;
     } catch {
-      // Not logged in — that's fine, continue as anonymous
-    }
-
-    // Only create Redis if env vars look real (not placeholders)
-    let redis: Redis | null = null;
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || '';
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
-    if (redisUrl.startsWith('https://') && redisUrl.length > 15 && redisToken.length > 10) {
-      try {
-        redis = new Redis({ url: redisUrl, token: redisToken });
-      } catch {
-        redis = null;
-      }
+      // Not logged in — continue as anonymous
     }
 
     let body;
@@ -110,38 +53,22 @@ export async function POST(req: Request) {
       return new Response('Invalid JSON', { status: 400 });
     }
 
-    const { message = '', history = [] } = body;
-    if (!message.trim()) {
-      return new Response('Message is required', { status: 400 });
+    const { messages } = body;
+    if (!messages || !Array.isArray(messages)) {
+      return new Response('Messages array is required', { status: 400 });
     }
 
-    let user = null;
     let profile: Record<string, any> = {};
     if (userId) {
       try {
-        user = await prisma.user.findUnique({ where: { id: userId } });
+        const user = await prisma.user.findUnique({ where: { id: userId } });
         profile = (user?.profileJson as Record<string, any>) || {};
       } catch {
         // DB error — continue without profile
       }
     }
 
-    // Check cache (gracefully)
-    const cacheKey = `chat:${userId || 'anon'}:${simpleHash(message + JSON.stringify(profile))}`;
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-          return new Response(JSON.stringify(cached), {
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      } catch {
-        // Cache miss or error — continue to AI
-      }
-    }
-
-    // Get opportunities (gracefully)
+    // Get verified opportunities for context
     let opportunities: any[] = [];
     try {
       opportunities = await prisma.opportunity.findMany({
@@ -149,53 +76,41 @@ export async function POST(req: Request) {
           scamFlag: false,
           deadline: { gte: new Date() },
         },
-        take: 15,
+        take: 15, // Provide the top 15 verified opportunities as context
       });
     } catch {
       // DB error — continue with empty opportunities
     }
 
     const dbContext = opportunities.length > 0
-      ? `User Profile: ${JSON.stringify(profile)}\nVerified Opportunities: ${JSON.stringify(opportunities)}`
-      : `User Profile: ${JSON.stringify(profile)}\nNo opportunities loaded from database yet.`;
+      ? `User Profile: ${JSON.stringify(profile)}\n\nAvailable Verified Opportunities for you to recommend to the user if they fit their profile:\n${JSON.stringify(opportunities, null, 2)}`
+      : `User Profile: ${JSON.stringify(profile)}\nNo active opportunities loaded from database at this moment.`;
 
-    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n---\n\n${dbContext}`;
+    const instructions = `
+You are Atlas, a highly intelligent, conversational, and intuitive AI Agent specializing in global opportunities (scholarships, internships, fellowships, etc.). 
+Your personality is similar to ChatGPT, Claude, and Gemini — helpful, insightful, and natural.
 
-    const result = streamObject({
+${SYSTEM_PROMPT}
+
+# Context Database
+Use the following user profile and verified database opportunities to inform your responses. 
+If an opportunity matches the user's request, mention it naturally in your text response and provide its details (like applyUrl or deadline) beautifully formatted using Markdown.
+
+${dbContext}
+
+# Guidelines
+- **Always use Markdown formatting** for readability (bold text for emphasis, bullet points for lists, etc.).
+- Be conversational and engaging. Do NOT output raw JSON blocks.
+- If you recommend an opportunity from the context, clearly highlight why it's a good fit.
+- Ask follow-up questions one at a time to build the user's profile step-by-step.
+    `;
+
+    const result = streamText({
       model: google('gemini-2.0-flash-lite'),
-      schema: AtlasResponseSchema,
-      system: fullSystemPrompt,
-      messages: [
-        ...history.map((m: any) => ({
-          role: m.role === 'agent' ? ('assistant' as const) : ('user' as const),
-          content: m.content || ''
-        })),
-        { role: 'user' as const, content: message },
-      ],
+      system: instructions,
+      messages,
       temperature: 0.7,
     });
-
-    // Background: cache result + update profile (non-blocking)
-    result.object.then(async (final) => {
-      try {
-        if (redis) {
-          await redis.setex(cacheKey, 86400, JSON.stringify(final));
-        }
-        if (final.memoryUpdates?.length && user && userId) {
-          const updatedProfile = { ...profile };
-          final.memoryUpdates.forEach((update) => {
-            const [key, value] = update.split(':');
-            if (key && value) updatedProfile[key.trim()] = value.trim();
-          });
-          await prisma.user.update({
-            where: { id: userId },
-            data: { profileJson: updatedProfile },
-          });
-        }
-      } catch {
-        // Background task failed — don't crash
-      }
-    }).catch(() => {});
 
     return result.toTextStreamResponse();
   } catch (error: any) {

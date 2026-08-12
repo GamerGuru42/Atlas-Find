@@ -6,10 +6,21 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, applyUrl, type, hostCountry, hostContinent, deadline, sponsor, description, submittedBy } = body;
+    const { type, deadline } = body;
+    let { title, applyUrl, hostCountry, hostContinent, sponsor, description, submittedBy } = body;
+
+    // Basic sanitization: strip HTML tags
+    const stripHtml = (str: string | undefined) => str ? str.replace(/<[^>]*>?/gm, '').trim() : str;
+    
+    title = stripHtml(title);
+    hostCountry = stripHtml(hostCountry);
+    hostContinent = stripHtml(hostContinent);
+    sponsor = stripHtml(sponsor);
+    description = stripHtml(description);
+    submittedBy = stripHtml(submittedBy);
 
     // Validate required fields
-    if (!title?.trim() || !applyUrl?.trim()) {
+    if (!title || !applyUrl?.trim()) {
       return NextResponse.json(
         { error: 'Title and Application URL are required.' },
         { status: 400 }

@@ -17,8 +17,18 @@ const jetbrainsMono = JetBrains_Mono({
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "AtlasFind - Your AI application strategist.",
-  description: "AI-Powered Scholarship & Opportunity Research Agent",
+  title: "AtlasFind | Discover Scholarships, Internships & Global Opportunities",
+  description: "Find fully funded scholarships, internships, fellowships, and study abroad opportunities worldwide.",
+  openGraph: {
+    title: "AtlasFind | Discover Scholarships, Internships & Global Opportunities",
+    description: "Find fully funded scholarships, internships, fellowships, and study abroad opportunities worldwide.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AtlasFind | Discover Scholarships, Internships & Global Opportunities",
+    description: "Find fully funded scholarships, internships, fellowships, and study abroad opportunities worldwide.",
+  },
 };
 
 export default function RootLayout({
