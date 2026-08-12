@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+﻿import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -42,7 +42,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: '£1,133/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: 'Â£1,133/month' },
     deadline: new Date('2026-11-05'),
     opensDate: new Date('2026-08-06'),
     applyUrl: 'https://www.chevening.org/scholarships/',
@@ -66,7 +66,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Engineering', 'Computer Science', 'Public Health', 'Agriculture', 'Economics', 'Environmental Science'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€934/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚¬934/month' },
     deadline: new Date('2026-10-15'),
     applyUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/',
     sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/epos/',
@@ -112,7 +112,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€1,400/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚¬1,400/month' },
     deadline: new Date('2027-01-15'),
     applyUrl: 'https://erasmus-plus.ec.europa.eu/opportunities/opportunities-for-individuals/students/erasmus-mundus-joint-masters',
     sourceUrl: 'https://erasmus-plus.ec.europa.eu/',
@@ -135,7 +135,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£1,236/month (London) or £1,043/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£1,236/month (London) or Â£1,043/month' },
     deadline: new Date('2026-12-19'),
     applyUrl: 'https://cscuk.fcdo.gov.uk/scholarships/',
     sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/',
@@ -158,7 +158,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['bachelors', 'masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '¥143,000-145,000/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â¥143,000-145,000/month' },
     deadline: new Date('2027-04-15'),
     applyUrl: 'https://www.studyinjapan.go.jp/en/smap-stopj-applications-702.html',
     sourceUrl: 'https://www.studyinjapan.go.jp/en/',
@@ -227,7 +227,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Engineering', 'Science', 'Economics', 'Management', 'Law', 'Political Science'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€1,181/month (masters) or €1,700/month (PhD)' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚¬1,181/month (masters) or â‚¬1,700/month (PhD)' },
     deadline: new Date('2027-01-10'),
     applyUrl: 'https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence',
     sourceUrl: 'https://www.campusfrance.org/',
@@ -242,7 +242,7 @@ const opportunities: SeedOpportunity[] = [
   {
     title: 'Turkiye Burslari (Turkey Scholarships)',
     type: 'SCHOLARSHIP',
-    sponsor: 'Republic of Türkiye',
+    sponsor: 'Republic of TÃ¼rkiye',
     orgType: 'government',
     hostCountry: 'Turkey',
     continent: 'Europe',
@@ -250,7 +250,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['bachelors', 'masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: '₺3,500-7,000/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: 'â‚º3,500-7,000/month' },
     deadline: new Date('2027-02-20'),
     applyUrl: 'https://turkiyeburslari.gov.tr/',
     sourceUrl: 'https://turkiyeburslari.gov.tr/',
@@ -258,7 +258,7 @@ const opportunities: SeedOpportunity[] = [
     trustTier: 1,
     scamFlag: false,
     verificationStatus: 'verified',
-    description: 'Türkiye Scholarships is a government-funded, competitive scholarship program, awarded to outstanding students and researchers to pursue full-time or short-term programs in top Turkish universities.',
+    description: 'TÃ¼rkiye Scholarships is a government-funded, competitive scholarship program, awarded to outstanding students and researchers to pursue full-time or short-term programs in top Turkish universities.',
     eligibility: 'Non-Turkish citizen, under 21 for bachelors, under 30 for masters, under 35 for PhD. Strong academic record.',
     tags: ['fully-funded', 'turkey', 'bachelors', 'masters', 'phd'],
   },
@@ -296,7 +296,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['bachelors', 'masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '₩1,000,000/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚©1,000,000/month' },
     deadline: new Date('2027-03-31'),
     applyUrl: 'https://www.studyinkorea.go.kr/en/sub/gks/allnew_invite.do',
     sourceUrl: 'https://www.studyinkorea.go.kr/en/',
@@ -365,7 +365,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: '€1,050/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: 'â‚¬1,050/month' },
     deadline: new Date('2027-03-01'),
     applyUrl: 'https://www.nuffic.nl/en/subjects/orange-knowledge-programme',
     sourceUrl: 'https://www.nuffic.nl/',
@@ -434,7 +434,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£1,000+/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£1,000+/month' },
     deadline: new Date('2026-09-30'),
     applyUrl: 'https://www.marshallscholarship.org/apply',
     sourceUrl: 'https://www.marshallscholarship.org/',
@@ -457,7 +457,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€1,000/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚¬1,000/month' },
     deadline: new Date('2027-02-01'),
     applyUrl: 'https://www.vliruos.be/en/scholarships',
     sourceUrl: 'https://www.vliruos.be/',
@@ -507,7 +507,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£21,000/year' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£21,000/year' },
     deadline: new Date('2026-12-03'),
     applyUrl: 'https://www.gatescambridge.org/apply/',
     sourceUrl: 'https://www.gatescambridge.org/',
@@ -530,7 +530,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '£18,180/year' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'Â£18,180/year' },
     deadline: new Date('2026-10-01'),
     applyUrl: 'https://www.rhodeshouse.ox.ac.uk/scholarships/apply/',
     sourceUrl: 'https://www.rhodeshouse.ox.ac.uk/scholarships/',
@@ -819,9 +819,9 @@ const opportunities: SeedOpportunity[] = [
     tags: ['fully-funded', 'women', 'phd', 'postdoc', 'stem', 'developing-countries'],
   },
   {
-    title: "L'Oréal-UNESCO For Women in Science Fellowships",
+    title: "L'OrÃ©al-UNESCO For Women in Science Fellowships",
     type: 'FELLOWSHIP',
-    sponsor: "L'Oréal Foundation & UNESCO",
+    sponsor: "L'OrÃ©al Foundation & UNESCO",
     orgType: 'international',
     hostCountry: 'Multiple Countries',
     continent: 'Global',
@@ -829,7 +829,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Life Sciences', 'Physical Sciences', 'Mathematics', 'Computer Science', 'Engineering'],
     degreeLevel: ['phd', 'postdoc'],
     fundingType: 'partial',
-    coverageDetails: { tuition: false, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '€15,000-€40,000' },
+    coverageDetails: { tuition: false, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'â‚¬15,000-â‚¬40,000' },
     deadline: new Date('2027-06-15'),
     applyUrl: 'https://www.forwomeninscience.com/en/fellowships',
     sourceUrl: 'https://www.forwomeninscience.com/',
@@ -879,7 +879,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£18,622/year' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£18,622/year' },
     deadline: new Date('2027-01-15'),
     applyUrl: 'https://www.ox.ac.uk/clarendon/',
     sourceUrl: 'https://www.ox.ac.uk/clarendon/',
@@ -902,7 +902,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£18,622/year' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£18,622/year' },
     deadline: new Date('2027-01-06'),
     applyUrl: 'https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/weidenfeld-hoffmann-scholarships-and-leadership-programme/',
     sourceUrl: 'https://www.ox.ac.uk/',
@@ -915,7 +915,7 @@ const opportunities: SeedOpportunity[] = [
     tags: ['fully-funded', 'uk', 'oxford', 'masters', 'leadership', 'developing-countries'],
   },
   {
-    title: 'Skoll Scholarship (Oxford Saïd Business School)',
+    title: 'Skoll Scholarship (Oxford SaÃ¯d Business School)',
     type: 'SCHOLARSHIP',
     sponsor: 'Skoll Foundation / University of Oxford',
     orgType: 'university',
@@ -925,7 +925,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['MBA', 'Social Entrepreneurship'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Full tuition + £15,000 living costs' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Full tuition + Â£15,000 living costs' },
     deadline: new Date('2027-01-06'),
     applyUrl: 'https://www.sbs.ox.ac.uk/programmes/mba/fees-funding/scholarships/skoll-scholarship',
     sourceUrl: 'https://www.sbs.ox.ac.uk/',
@@ -994,7 +994,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£18,500/year' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Â£18,500/year' },
     deadline: new Date('2026-12-05'),
     applyUrl: 'https://www.cambridgetrust.org/scholarships/',
     sourceUrl: 'https://www.cambridgetrust.org/',
@@ -1053,7 +1053,7 @@ const opportunities: SeedOpportunity[] = [
     tags: ['fully-funded', 'china', 'masters', 'interdisciplinary', 'asia', 'prestigious'],
   },
   {
-    title: 'Denning Scholarship (Saïd Business School, Oxford)',
+    title: 'Denning Scholarship (SaÃ¯d Business School, Oxford)',
     type: 'SCHOLARSHIP',
     sponsor: 'University of Oxford',
     orgType: 'university',
@@ -1063,7 +1063,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['MBA', 'Business', 'Management'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Tuition + £15,000 living costs' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Tuition + Â£15,000 living costs' },
     deadline: new Date('2027-01-06'),
     applyUrl: 'https://www.sbs.ox.ac.uk/programmes/mba/fees-funding/scholarships',
     sourceUrl: 'https://www.sbs.ox.ac.uk/',
@@ -1109,7 +1109,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Development Studies', 'Engineering', 'Agriculture', 'Environmental Science', 'Economics', 'Public Health'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: '¥150,000/month' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: 'Â¥150,000/month' },
     deadline: new Date('2027-04-30'),
     applyUrl: 'https://www.afdb.org/en/about-us/careers/japan-africa-dream-scholarship-jads-program',
     sourceUrl: 'https://www.afdb.org/',
@@ -1301,7 +1301,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Computer Science', 'Computer Engineering', 'Data Science', 'Statistics'],
     degreeLevel: ['bachelors', 'masters'],
     fundingType: 'partial',
-    coverageDetails: { tuition: false, travel: false, living: false, insurance: false, accommodation: false, visa: false, stipendAmount: '₹100,000 scholarship award + mentorship' },
+    coverageDetails: { tuition: false, travel: false, living: false, insurance: false, accommodation: false, visa: false, stipendAmount: 'â‚¹100,000 scholarship award + mentorship' },
     deadline: new Date('2026-10-15'),
     applyUrl: 'https://www.adobe.com/careers/university/india-women-in-technology.html',
     sourceUrl: 'https://www.adobe.com/',
@@ -1617,7 +1617,7 @@ const opportunities: SeedOpportunity[] = [
     tags: ['fully-funded', 'international', 'bachelors', 'masters', 'phd', 'development'],
   },
   {
-    title: 'ADB–Japan Scholarship Program',
+    title: 'ADBâ€“Japan Scholarship Program',
     type: 'SCHOLARSHIP',
     sponsor: 'Asian Development Bank / Government of Japan',
     orgType: 'international',
@@ -1792,7 +1792,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: true, visa: false, stipendAmount: '€12,000/year + tuition + housing' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: false, accommodation: true, visa: false, stipendAmount: 'â‚¬12,000/year + tuition + housing' },
     deadline: new Date('2026-10-01'),
     applyUrl: 'https://www.us-irelandalliance.org/mitchellscholarship',
     sourceUrl: 'https://www.us-irelandalliance.org/',
@@ -1961,7 +1961,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['Engineering', 'Computer Science', 'Natural Sciences', 'Business', 'Industrial Design'],
     degreeLevel: ['masters', 'phd'],
     fundingType: 'fully_funded',
-    coverageDetails: { tuition: true, travel: false, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '₩350,000/month (master\'s) or higher for PhD' },
+    coverageDetails: { tuition: true, travel: false, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚©350,000/month (master\'s) or higher for PhD' },
     deadline: new Date('2027-03-15'),
     applyUrl: 'https://admission.kaist.ac.kr/',
     sourceUrl: 'https://www.kaist.ac.kr/',
@@ -1984,7 +1984,7 @@ const opportunities: SeedOpportunity[] = [
     disciplines: ['All disciplines'],
     degreeLevel: ['masters'],
     fundingType: 'partial',
-    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€1,000/month top-up' },
+    coverageDetails: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'â‚¬1,000/month top-up' },
     deadline: new Date('2027-03-01'),
     applyUrl: 'https://www.ugent.be/en/ghentuniv/principles/diversity-inclusion/scholarships',
     sourceUrl: 'https://www.ugent.be/',
@@ -2022,7 +2022,7 @@ const opportunities: SeedOpportunity[] = [
 ];
 
 async function main() {
-  console.log(`🌱 Seeding ${opportunities.length} verified opportunities...`);
+  console.log(`ðŸŒ± Seeding ${opportunities.length} verified opportunities...`);
 
   let created = 0;
   let updated = 0;
@@ -2042,7 +2042,7 @@ async function main() {
           disciplines: opp.disciplines,
           degreeLevel: opp.degreeLevel,
           fundingType: opp.fundingType,
-          coverageDetails: opp.coverageDetails,
+          coverageDetails: opp.coverageDetails as any,
           deadline: opp.deadline,
           opensDate: opp.opensDate || null,
           sourceUrl: opp.sourceUrl,
@@ -2054,7 +2054,7 @@ async function main() {
           eligibility: opp.eligibility,
           tags: opp.tags,
         },
-        create: opp,
+        create: opp as any,
       });
       if (result.createdAt.getTime() === result.updatedAt.getTime()) {
         created++;
@@ -2062,17 +2062,17 @@ async function main() {
         updated++;
       }
     } catch (err: unknown) {
-      // applyUrl is not unique in schema yet — fall back to create
+      // applyUrl is not unique in schema yet â€” fall back to create
       const error = err as { code?: string };
       if (error.code === 'P2002') {
         updated++;
       } else {
-        console.error(`❌ Failed to upsert "${opp.title}":`, err);
+        console.error(`âŒ Failed to upsert "${opp.title}":`, err);
       }
     }
   }
 
-  console.log(`✅ Seed complete: ${created} created, ${updated} updated (${opportunities.length} total)`);
+  console.log(`âœ… Seed complete: ${created} created, ${updated} updated (${opportunities.length} total)`);
 }
 
 main()
