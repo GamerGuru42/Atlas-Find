@@ -93,8 +93,14 @@ export async function POST(req: Request) {
       // DB error — continue with empty opportunities
     }
 
-    const dbContext = opportunities.length > 0
-      ? `User Profile: ${JSON.stringify(profile)}\n\nAvailable Verified Opportunities for you to recommend to the user if they fit their profile:\n${JSON.stringify(opportunities, null, 2)}`
+    const formattedOpportunities = opportunities.map(opp => ({
+      ...opp,
+      deadline: opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Rolling / No Specific Deadline',
+      opensDate: opp.opensDate ? new Date(opp.opensDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : undefined,
+    }));
+
+    const dbContext = formattedOpportunities.length > 0
+      ? `User Profile: ${JSON.stringify(profile)}\n\nAvailable Verified Opportunities for you to recommend to the user if they fit their profile:\n${JSON.stringify(formattedOpportunities, null, 2)}`
       : `User Profile: ${JSON.stringify(profile)}\nNo active opportunities loaded from database at this moment.`;
 
     const instructions = `
@@ -113,6 +119,8 @@ ${dbContext}
 - **Always use Markdown formatting** for readability (bold text for emphasis, bullet points for lists, etc.).
 - Be conversational and engaging. Do NOT output raw JSON blocks.
 - If you recommend an opportunity from the context, clearly highlight why it's a good fit.
+- **CRITICAL**: Whenever you mention an opportunity, you MUST explicitly state its application deadline EXACTLY as it appears in the database (e.g. "**Deadline:** October 15, 2026"). Treat these dates as real and verified, and highlight them.
+- Always include the **Application Link** directly, using the \`applyUrl\`. 
 - Ask follow-up questions one at a time to build the user's profile step-by-step.
     `;
     const coreMessages = await convertToModelMessages(messages);
