@@ -44,7 +44,7 @@ def scrape_sources():
         })
         
     # Save results
-    output_dir = "data"
+    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
     os.makedirs(output_dir, exist_ok=True)
     
     output_file = os.path.join(output_dir, "scraped_opportunities.json")
