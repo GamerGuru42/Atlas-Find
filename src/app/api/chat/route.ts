@@ -123,7 +123,7 @@ ${dbContext}
       temperature: 0.7,
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: any) {
     console.error('[Chat API Error]', error?.message || error);
     return new Response(

@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import { useChat } from '@ai-sdk/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { UIMessage } from 'ai';
 
 export default function ChatPage() {
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -27,9 +26,10 @@ export default function ChatPage() {
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    const trimmed = input.trim();
+    if (!trimmed || isLoading) return;
     
-    sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] } as UIMessage);
+    sendMessage({ text: trimmed });
     setInput('');
   };
 
@@ -49,10 +49,7 @@ export default function ChatPage() {
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (!isLoading && input.trim()) {
-        const fakeEvent = new Event('submit', { cancelable: true }) as unknown as React.FormEvent;
-        handleSubmit(fakeEvent);
-      }
+      handleSubmit();
     }
   };
 
@@ -71,6 +68,23 @@ export default function ChatPage() {
               <div className={styles.emptyStateIcon}>✨</div>
               <h2 className={styles.emptyTitle}>Hi, I&apos;m Atlas.</h2>
               <p className={styles.emptyText}>I can help you find verified scholarships, fellowships, and grants tailored to your profile.</p>
+              <div className={styles.suggestionChips}>
+                {[
+                  "Find me fully funded Master's scholarships in Europe",
+                  "What fellowships are available for African students?",
+                  "Show me internships with upcoming deadlines",
+                ].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    className={styles.suggestionChip}
+                    onClick={() => {
+                      sendMessage({ text: suggestion });
+                    }}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
