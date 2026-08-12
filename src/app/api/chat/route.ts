@@ -123,10 +123,17 @@ ${dbContext}
 - **CRITICAL - Deadlines & Links**: Whenever you mention an opportunity, you MUST explicitly state its application deadline EXACTLY as it appears in the database (e.g. "**Deadline:** October 15, 2026"). Always include the **Application Link** directly, using the \`applyUrl\`. Treat these dates as real and verified, and highlight them.
 - **Proactive Next Steps**: End your responses by proactively suggesting strategic next steps or asking ONE insightful, clarifying question to build the user's profile and narrow down the best opportunities.
     `;
+    const coreMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: (msg.parts && Array.isArray(msg.parts)) 
+        ? msg.parts.map((p: any) => p.text || '').join('') 
+        : (msg.content || '')
+    }));
+
     const result = streamText({
       model: google('gemini-3.5-flash'),
       system: instructions,
-      messages: messages,
+      messages: coreMessages,
       temperature: 0.7,
       maxOutputTokens: 3000,
     });
