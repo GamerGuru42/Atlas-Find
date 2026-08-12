@@ -802,6 +802,88 @@
   flex-shrink: 0;
 }
 
+/* ===== Message Actions (Copy/Edit) ===== */
+.messageActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  justify-content: flex-end;
+}
+
+.messageBubble:hover .messageActions {
+  opacity: 1;
+}
+
+.messageActionBtn {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: inherit;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
+}
+
+.bubbleAgent .messageActionBtn {
+  background: var(--bg-base);
+  color: var(--text-secondary);
+}
+
+.messageActionBtn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.2);
+}
+.bubbleAgent .messageActionBtn:hover {
+  background: var(--border-default);
+}
+
+/* ===== Input Controls (Mic + Send) ===== */
+.inputControls {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.voiceButton {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.voiceButton:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.voiceListening {
+  color: var(--status-danger);
+  animation: pulse-mic 1.5s infinite;
+}
+
+@keyframes pulse-mic {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .panelTitle {
   font-size: 0.9rem;
   font-weight: 700;
