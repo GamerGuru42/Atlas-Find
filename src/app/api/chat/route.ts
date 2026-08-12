@@ -130,7 +130,7 @@ ${dbContext}
       system: instructions,
       messages: coreMessages,
       temperature: 0.7,
-      maxTokens: 3000,
+      maxOutputTokens: 3000,
     });
 
     return result.toUIMessageStreamResponse();
