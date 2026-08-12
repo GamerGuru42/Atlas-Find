@@ -1,6 +1,5 @@
 'use client';
 
-import { useChat } from 'ai/react';
 import { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -14,30 +13,63 @@ interface AISummaryProps {
 
 export function AISummary({ searchParams, opportunitiesCount, topOpportunities }: AISummaryProps) {
   const [hasStarted, setHasStarted] = useState(false);
-  const { messages, append, isLoading, error } = useChat({
-    api: '/api/discover/summary',
-  });
+  const [content, setContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   
-  // Track changes in search parameters to trigger new summaries
   const prevParamsStr = useRef(JSON.stringify(searchParams));
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const currentParamsStr = JSON.stringify(searchParams);
     
-    // Auto-fetch summary when component mounts or when filters change
     if (!hasStarted || prevParamsStr.current !== currentParamsStr) {
       setHasStarted(true);
       prevParamsStr.current = currentParamsStr;
       
-      append({
-        role: 'user',
-        content: JSON.stringify({ searchParams, opportunitiesCount, topOpportunities }),
-      });
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
+      
+      const fetchSummary = async () => {
+        setIsLoading(true);
+        setContent('');
+        setError(false);
+        try {
+          const res = await fetch('/api/discover/summary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ searchParams, opportunitiesCount, topOpportunities }),
+            signal: abortControllerRef.current?.signal,
+          });
+          
+          if (!res.ok) throw new Error('Failed');
+          const reader = res.body?.getReader();
+          const decoder = new TextDecoder();
+          let done = false;
+          
+          while (reader && !done) {
+            const { value, done: readerDone } = await reader.read();
+            done = readerDone;
+            if (value) {
+              setContent((prev) => prev + decoder.decode(value, { stream: true }));
+            }
+          }
+        } catch (err: any) {
+          if (err.name !== 'AbortError') {
+            setError(true);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchSummary();
     }
-  }, [searchParams, opportunitiesCount, topOpportunities, append, hasStarted]);
+  }, [searchParams, opportunitiesCount, topOpportunities, hasStarted]);
 
-  const latestMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-  const isGenerating = isLoading && (!latestMessage || latestMessage.role !== 'assistant' || latestMessage.content === '');
+  const isGenerating = isLoading && content === '';
 
   if (opportunitiesCount === 0) return null;
 
@@ -58,9 +90,9 @@ export function AISummary({ searchParams, opportunitiesCount, topOpportunities }
           </div>
         ) : error ? (
           <div className={styles.errorText}>Failed to generate summary. Please try again.</div>
-        ) : latestMessage && latestMessage.role === 'assistant' ? (
+        ) : content ? (
           <div className={styles.markdownContent}>
-            <ReactMarkdown>{latestMessage.content}</ReactMarkdown>
+            <ReactMarkdown>{content}</ReactMarkdown>
           </div>
         ) : (
           <div>Analyzing opportunities...</div>

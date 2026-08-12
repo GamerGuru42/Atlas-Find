@@ -25,7 +25,7 @@ Do NOT hallucinate opportunities that aren't in the list provided.`;
       maxOutputTokens: 500,
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('AI Summary Error:', error);
     return new Response(JSON.stringify({ error: 'Failed to generate summary' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
