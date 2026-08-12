@@ -289,9 +289,10 @@ function DiscoverContent() {
                         <DollarSign size={14} className={styles.cardDetailIcon} />
                         <span style={{ textTransform: 'capitalize' }}>{opp.fundingType?.replace('_', ' ')}</span>
                       </div>
-                      <div className={styles.cardDetailItem}>
+                      <div className={styles.cardDetailItem} title="Verified Application Deadline">
                         <Calendar size={14} className={styles.cardDetailIcon} />
-                        Due: {new Date(opp.deadline).toLocaleDateString()}
+                        <span style={{ fontWeight: 600, marginRight: '4px' }}>Deadline:</span> 
+                        {new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </div>
                     </div>
 

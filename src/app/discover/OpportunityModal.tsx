@@ -95,9 +95,9 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
               <div className={styles.metricLabel}><MapPin size={14}/> Location</div>
               <div className={styles.metricValue}>{opp.hostCountry}</div>
             </div>
-            <div className={styles.metricBox}>
-              <div className={styles.metricLabel}><Calendar size={14}/> Deadline</div>
-              <div className={styles.metricValue}>{new Date(opp.deadline).toLocaleDateString()}</div>
+            <div className={styles.metricBox} title="Verified Application Deadline">
+              <div className={styles.metricLabel}><Calendar size={14}/> Application Deadline</div>
+              <div className={styles.metricValue}>{new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
             </div>
             <div className={styles.metricBox}>
               <div className={styles.metricLabel}><GraduationCap size={14}/> Degree Level</div>
