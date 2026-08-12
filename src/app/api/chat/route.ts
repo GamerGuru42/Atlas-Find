@@ -1,4 +1,4 @@
-import { streamText, convertToCoreMessages } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 const google = createGoogleGenerativeAI({
@@ -115,7 +115,7 @@ ${dbContext}
 - If you recommend an opportunity from the context, clearly highlight why it's a good fit.
 - Ask follow-up questions one at a time to build the user's profile step-by-step.
     `;
-    const coreMessages = convertToCoreMessages(messages);
+    const coreMessages = await convertToModelMessages(messages);
 
     const result = streamText({
       model: google('gemini-3.6-flash'),
