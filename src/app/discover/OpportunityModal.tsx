@@ -99,7 +99,17 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
               <div className={styles.metricLabel}><Calendar size={14}/> Application Deadline</div>
               <div className={styles.metricValue}>
                 {new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                {new Date(opp.deadline) > new Date() && (
+                {new Date(opp.deadline) < new Date() ? (
+                  <div style={{ marginTop: '4px', color: '#ef4444', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }} />
+                    Closed
+                  </div>
+                ) : opp.opensDate && new Date(opp.opensDate) > new Date() ? (
+                  <div style={{ marginTop: '4px', color: '#f59e0b', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b', display: 'inline-block' }} />
+                    Opens on {new Date(opp.opensDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </div>
+                ) : (
                   <div style={{ marginTop: '4px', color: '#10b981', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', animation: 'pulse 2s infinite' }} />
                     Applications Open (Real-time)

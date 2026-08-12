@@ -305,7 +305,17 @@ function DiscoverContent() {
                         <Calendar size={14} className={styles.cardDetailIcon} />
                         <span style={{ fontWeight: 600, marginRight: '4px' }}>Deadline:</span> 
                         {new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                        {new Date(opp.deadline) > new Date() && (
+                        {new Date(opp.deadline) < new Date() ? (
+                          <span style={{ marginLeft: '8px', color: '#ef4444', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }} />
+                            Closed
+                          </span>
+                        ) : opp.opensDate && new Date(opp.opensDate) > new Date() ? (
+                          <span style={{ marginLeft: '8px', color: '#f59e0b', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#f59e0b', display: 'inline-block' }} />
+                            Opens {new Date(opp.opensDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        ) : (
                           <span style={{ marginLeft: '8px', color: '#10b981', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', animation: 'pulse 2s infinite' }} />
                             Applications Open
