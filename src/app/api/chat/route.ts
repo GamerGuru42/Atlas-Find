@@ -124,7 +124,7 @@ ${dbContext}
 - **Proactive Next Steps**: End your responses by proactively suggesting strategic next steps or asking ONE insightful, clarifying question to build the user's profile and narrow down the best opportunities.
     `;
     const result = streamText({
-      model: google('gemini-3.6-flash'),
+      model: google('gemini-3.5-flash'),
       system: instructions,
       messages: messages,
       temperature: 0.7,
