@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, MapPin, Briefcase, GraduationCap, DollarSign, Filter, CheckCircle2, Calendar } from 'lucide-react';
 import { OpportunityModal } from './OpportunityModal';
+import { AISummary } from './AISummary';
 import styles from './page.module.css';
 
 const OPPORTUNITY_TABS = [
@@ -260,6 +261,17 @@ function DiscoverContent() {
             </div>
           ) : (
             <>
+              <AISummary 
+                searchParams={{
+                  q: searchParam || '',
+                  type: typeParam,
+                  funding: selectedFunding.join(','),
+                  hostCountry: selectedCountries.join(','),
+                  level: selectedLevels.join(',')
+                }} 
+                opportunitiesCount={totalCount} 
+                topOpportunities={opportunities.slice(0, 5)} 
+              />
               <div className={styles.resultsCount} style={{ marginBottom: '1rem' }}>
                 Showing {opportunities.length} of {totalCount} opportunities
               </div>
@@ -293,6 +305,12 @@ function DiscoverContent() {
                         <Calendar size={14} className={styles.cardDetailIcon} />
                         <span style={{ fontWeight: 600, marginRight: '4px' }}>Deadline:</span> 
                         {new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        {new Date(opp.deadline) > new Date() && (
+                          <span style={{ marginLeft: '8px', color: '#10b981', fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+                            Applications Open
+                          </span>
+                        )}
                       </div>
                     </div>
 
