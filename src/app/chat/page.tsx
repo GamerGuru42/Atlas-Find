@@ -139,7 +139,7 @@ export default function ChatPage() {
             </div>
           )}
 
-          {error && <div className={styles.errorText}>An error occurred. Please try again.</div>}
+          {error && <div className={styles.errorText}>{error.message || 'An error occurred. Please try again.'}</div>}
 
           <div ref={chatEndRef} />
         </div>
