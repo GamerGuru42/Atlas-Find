@@ -29,7 +29,7 @@ export default function ChatPage() {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
     
-    sendMessage({ text: trimmed });
+    sendMessage({ parts: [{ type: 'text', text: trimmed }], role: 'user' });
     setInput('');
   };
 
@@ -78,7 +78,7 @@ export default function ChatPage() {
                     key={suggestion}
                     className={styles.suggestionChip}
                     onClick={() => {
-                      sendMessage({ text: suggestion });
+                      sendMessage({ parts: [{ type: 'text', text: suggestion }], role: 'user' });
                     }}
                   >
                     {suggestion}
