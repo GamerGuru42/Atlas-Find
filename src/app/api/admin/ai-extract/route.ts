@@ -4,7 +4,20 @@ import { google } from '@ai-sdk/google';
 import { z } from 'zod';
 import * as cheerio from 'cheerio';
 
+function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get('authorization');
+  const adminPassword = process.env.ADMIN_PASSWORD || 'atlasadmin';
+  if (!authHeader || authHeader !== `Bearer ${adminPassword}`) {
+    return false;
+  }
+  return true;
+}
+
 export async function POST(request: Request) {
+  if (!checkAdminAuth(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { url, rawText } = await request.json();
 
@@ -49,13 +62,14 @@ export async function POST(request: Request) {
     const textSample = textToProcess.slice(0, 15000);
 
     const { object } = await generateObject({
-      model: google('gemini-1.5-flash'),
+      model: google('gemini-2.5-flash'),
       schema: z.object({
         title: z.string().optional().describe('The name of the scholarship, fellowship, or opportunity.'),
         sponsor: z.string().optional().describe('The organization, university, or government sponsoring the opportunity.'),
         description: z.string().optional().describe('A brief summary of the opportunity (max 300 characters).'),
         eligibility: z.string().optional().describe('Key eligibility requirements.'),
         hostCountry: z.string().optional().describe('The country where the opportunity takes place.'),
+        continent: z.string().optional().describe('The continent where the host country is located, e.g., Europe, Asia, North America.'),
       }),
       prompt: `Extract structured information about an academic or professional opportunity from the following text.\n\nText:\n${textSample}`,
     });

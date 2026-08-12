@@ -29,6 +29,7 @@ export default function SubmitOpportunityPage() {
   const [applyUrl, setApplyUrl] = useState('');
   const [type, setType] = useState('SCHOLARSHIP');
   const [hostCountry, setHostCountry] = useState('');
+  const [hostContinent, setHostContinent] = useState('');
   const [deadline, setDeadline] = useState('');
   const [sponsor, setSponsor] = useState('');
   const [description, setDescription] = useState(prefillDescription);
@@ -50,6 +51,7 @@ export default function SubmitOpportunityPage() {
           applyUrl: applyUrl.trim(),
           type,
           hostCountry: hostCountry.trim(),
+          hostContinent: hostContinent.trim(),
           deadline: deadline || null,
           sponsor: sponsor.trim(),
           description: description.trim(),
@@ -80,9 +82,7 @@ export default function SubmitOpportunityPage() {
           <span className={styles.successIcon}>✅</span>
           <h1 className={styles.successTitle}>Opportunity Submitted!</h1>
           <p className={styles.successMessage}>
-            Thank you for helping the community grow! Our team will review this
-            within 48 hours. Once verified, it will appear on the Discover page
-            for everyone to find.
+            Thank you! Our team will review this within 48 hours. Once verified, it will appear on the Discover page for everyone to find.
           </p>
           <div className={styles.successActions}>
             <Link href="/discover" className={styles.primaryLink}>
@@ -95,6 +95,7 @@ export default function SubmitOpportunityPage() {
                 setApplyUrl('');
                 setType('SCHOLARSHIP');
                 setHostCountry('');
+                setHostContinent('');
                 setDeadline('');
                 setSponsor('');
                 setDescription('');
@@ -191,6 +192,26 @@ export default function SubmitOpportunityPage() {
                 value={hostCountry}
                 onChange={(e) => setHostCountry(e.target.value)}
               />
+            </div>
+            <div className={styles.fieldGroup}>
+              <label className={styles.label} htmlFor="submit-continent">
+                Host Continent
+              </label>
+              <select
+                id="submit-continent"
+                className={styles.select}
+                value={hostContinent}
+                onChange={(e) => setHostContinent(e.target.value)}
+              >
+                <option value="">Select Continent...</option>
+                <option value="North America">North America</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+                <option value="Oceania">Oceania</option>
+                <option value="South America">South America</option>
+                <option value="Africa">Africa</option>
+                <option value="Global/Online">Global/Online</option>
+              </select>
             </div>
           </div>
 

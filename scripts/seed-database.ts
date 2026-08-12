@@ -1,4 +1,4 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -2022,13 +2022,31 @@ const opportunities: SeedOpportunity[] = [
 ];
 
 async function main() {
-  console.log(`ðŸŒ± Seeding ${opportunities.length} verified opportunities...`);
+  console.log(`🌱 Seeding ${opportunities.length} verified opportunities...`);
 
   let created = 0;
   let updated = 0;
+  let skipped = 0;
 
   for (const opp of opportunities) {
     try {
+      // Check for title + sponsor duplicate
+      const duplicate = await prisma.opportunity.findFirst({
+        where: {
+          title: opp.title,
+          sponsor: opp.sponsor,
+        },
+      });
+
+      if (duplicate && duplicate.applyUrl !== opp.applyUrl) {
+        console.log(`⏩ Skipped duplicate (Title+Sponsor matched): "${opp.title}"`);
+        skipped++;
+        continue;
+      }
+
+      // Force verification status to verified for seed data
+      opp.verificationStatus = 'verified';
+
       const result = await prisma.opportunity.upsert({
         where: { applyUrl: opp.applyUrl },
         update: {
@@ -2049,12 +2067,15 @@ async function main() {
           sourceDomain: opp.sourceDomain,
           trustTier: opp.trustTier,
           scamFlag: opp.scamFlag,
-          verificationStatus: opp.verificationStatus,
+          verificationStatus: 'VERIFIED',
           description: opp.description,
           eligibility: opp.eligibility,
           tags: opp.tags,
         },
-        create: opp as any,
+        create: {
+            ...opp,
+            verificationStatus: 'VERIFIED',
+        } as any,
       });
       if (result.createdAt.getTime() === result.updatedAt.getTime()) {
         created++;
@@ -2062,17 +2083,16 @@ async function main() {
         updated++;
       }
     } catch (err: unknown) {
-      // applyUrl is not unique in schema yet â€” fall back to create
       const error = err as { code?: string };
       if (error.code === 'P2002') {
         updated++;
       } else {
-        console.error(`âŒ Failed to upsert "${opp.title}":`, err);
+        console.error(`❌ Failed to upsert "${opp.title}":`, err);
       }
     }
   }
 
-  console.log(`âœ… Seed complete: ${created} created, ${updated} updated (${opportunities.length} total)`);
+  console.log(`🌱 Seed complete: ${created} created, ${updated} updated, ${skipped} skipped (${opportunities.length} total)`);
 }
 
 main()

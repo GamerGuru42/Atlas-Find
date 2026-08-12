@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, applyUrl, type, hostCountry, deadline, sponsor, description, submittedBy } = body;
+    const { title, applyUrl, type, hostCountry, hostContinent, deadline, sponsor, description, submittedBy } = body;
 
     // Validate required fields
     if (!title?.trim() || !applyUrl?.trim()) {
@@ -51,6 +51,7 @@ export async function POST(request: Request) {
         sponsor: sponsor?.trim() || 'Community Submitted',
         orgType: 'unknown',
         hostCountry: hostCountry?.trim() || 'Unknown',
+        continent: hostContinent?.trim() || null,
         eligibleCountries: [],
         disciplines: [],
         degreeLevel: [],

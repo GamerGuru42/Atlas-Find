@@ -245,7 +245,7 @@ function DiscoverContent() {
           ) : opportunities.length === 0 ? (
             <div className={styles.emptyState}>
               <Search className={styles.emptyIcon} size={48} />
-              <h3 className={styles.emptyTitle}>No opportunities match your specific filters yet</h3>
+              <h3 className={styles.emptyTitle}>🔍 No opportunities match your filters yet. Our database grows through community contributions.</h3>
               <p className={styles.emptyDesc}>
                 Know of one that fits? Help the community grow.
               </p>
@@ -254,7 +254,7 @@ function DiscoverContent() {
                   Clear Filters
                 </button>
                 <Link href={`/submit-opportunity?description=${encodeURIComponent(searchParam || '')}`} className={styles.primaryBtn}>
-                  Submit an Opportunity
+                  Submit an Opportunity You Know
                 </Link>
               </div>
             </div>
