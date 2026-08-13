@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import { createBrowserClient } from '@supabase/ssr'
 import CountrySelector from '@/components/onboarding/CountrySelector'
 import ProfileBuilder, { ProfileData } from '@/components/onboarding/ProfileBuilder'
 import { CheckCircle2 } from 'lucide-react'
@@ -44,6 +45,18 @@ export default function OnboardingPage() {
       toast('Welcome to AtlasFind! 🎓', {
         description: 'Try asking Atlas to find scholarships for you.',
         icon: <CheckCircle2 className="w-5 h-5 text-green-500" />
+      })
+
+      // Also update browser session user_metadata directly so client-side token claims refresh immediately
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+      await supabase.auth.updateUser({
+        data: {
+          onboarding_completed: true,
+          country_code: countryCode
+        }
       })
 
       // Use window.location.href to guarantee a full page load.

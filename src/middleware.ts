@@ -54,8 +54,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // User is authenticated
-  const hasCompletedOnboarding = user.user_metadata?.onboarding_completed === true || user.user_metadata?.onboarding_completed === 'true'
-  const hasCountryCode = !!user.user_metadata?.country_code
+  const hasOnboardingCookie = request.cookies.get('atlas_onboarding_completed')?.value === 'true'
+  const hasCompletedOnboarding = hasOnboardingCookie || user.user_metadata?.onboarding_completed === true || user.user_metadata?.onboarding_completed === 'true'
+  
+  const hasCountryCookie = !!request.cookies.get('atlas_country_code')?.value
+  const hasCountryCode = hasCountryCookie || !!user.user_metadata?.country_code
 
   // If user hasn't completed onboarding or is missing country_code, force them to onboarding
   if (!hasCompletedOnboarding || !hasCountryCode) {

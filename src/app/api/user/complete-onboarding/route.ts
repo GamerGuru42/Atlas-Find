@@ -106,6 +106,20 @@ export async function POST(req: Request) {
       }
     })
 
+    // 3. Set explicit fallback cookies so middleware receives them immediately on redirect
+    cookieStore.set('atlas_onboarding_completed', 'true', {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    })
+    cookieStore.set('atlas_country_code', country_code, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    })
+
     return NextResponse.json({ success: true, user: updatedUser })
 
   } catch (error: any) {
