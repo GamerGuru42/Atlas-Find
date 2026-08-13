@@ -18,7 +18,7 @@ Be encouraging and helpful. Use markdown.
 Do NOT hallucinate opportunities that aren't in the list provided.`;
 
     const result = streamText({
-      model: google('gemini-2.5-flash'),
+      model: google('gemini-1.5-flash'),
       messages: [{ role: 'user', content: "Please summarize the current opportunities." }],
       system: instructions,
       temperature: 0.7,

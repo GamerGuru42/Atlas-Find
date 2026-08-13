@@ -73,11 +73,39 @@ export function AISummary({ searchParams, opportunitiesCount, topOpportunities }
 
   if (opportunitiesCount === 0) return null;
 
+  // Pre-compute instant stats
+  const closingSoonCount = topOpportunities.filter(o => {
+    if (!o.deadline) return false;
+    const diffDays = (new Date(o.deadline).getTime() - Date.now()) / (1000 * 3600 * 24);
+    return diffDays >= 0 && diffDays <= 14;
+  }).length;
+
+  const fullyFundedCount = topOpportunities.filter(o => 
+    o.fundingType === 'fully_funded' || o.fundingType === 'FULLY_FUNDED'
+  ).length;
+
   return (
     <div className={styles.aiContainer}>
       <div className={styles.aiHeader}>
         <Sparkles size={18} className={styles.aiIcon} />
         <h3>AI Analysis</h3>
+      </div>
+
+      {/* INSTANT STATS HEADER */}
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.85rem', fontSize: '0.85rem' }}>
+        <span style={{ background: 'rgba(59, 130, 246, 0.12)', color: '#60a5fa', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>
+          📊 {opportunitiesCount} opportunities match filters
+        </span>
+        {closingSoonCount > 0 && (
+          <span style={{ background: 'rgba(245, 158, 11, 0.12)', color: '#fbbf24', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>
+            ⏰ {closingSoonCount} closing in 14 days
+          </span>
+        )}
+        {fullyFundedCount > 0 && (
+          <span style={{ background: 'rgba(16, 185, 129, 0.12)', color: '#34d399', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>
+            💎 {fullyFundedCount} fully-funded
+          </span>
+        )}
       </div>
       
       <div className={styles.aiContent}>
@@ -86,7 +114,7 @@ export function AISummary({ searchParams, opportunitiesCount, topOpportunities }
             <span className={styles.pulseDot}></span>
             <span className={styles.pulseDot}></span>
             <span className={styles.pulseDot}></span>
-            <span style={{ marginLeft: '8px' }}>Generating smart AI insights for {opportunitiesCount} opportunities...</span>
+            <span style={{ marginLeft: '8px' }}>Generating detailed insights...</span>
           </div>
         ) : content ? (
           <div className={styles.markdownContent}>
@@ -95,8 +123,7 @@ export function AISummary({ searchParams, opportunitiesCount, topOpportunities }
         ) : (
           <div className={styles.markdownContent}>
             <p>
-              <strong>Atlas AI Overview:</strong> You are exploring <strong>{opportunitiesCount} verified global opportunities</strong>. 
-              Use the top category tabs and location filters to narrow down by funding level, degree type, and target host country.
+              Use the filter bar to narrow results by host country, degree level, or discipline. Select any opportunity to view full eligibility details and application links.
             </p>
           </div>
         )}
