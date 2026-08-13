@@ -48,7 +48,7 @@ export default async function PricingPage() {
     ELITE: getPricing('ELITE', countryCode)
   };
 
-  const countryNotFound = !isLoggedIn && userPricing.PRO.currency === 'USD' && countryCode !== 'US';
+  const countryNotFound = userPricing.PRO.currency === 'USD' && countryCode !== 'US';
 
   return (
     <div className={styles.container}>
