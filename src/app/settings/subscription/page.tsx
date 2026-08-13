@@ -1,5 +1,5 @@
 import React from 'react';
-import { prisma } from '@/lib/db/prisma';
+import prisma from '@/lib/db/prisma';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { getPricing } from '@/lib/pricing/currencies';

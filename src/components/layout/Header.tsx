@@ -9,7 +9,7 @@ import { cookies } from 'next/headers';
 import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
 import { ProfileDropdown } from './ProfileDropdown';
-import { prisma } from '../../lib/db/prisma';
+import prisma from '../../lib/db/prisma';
 
 export async function Header() {
   const cookieStore = await cookies();
