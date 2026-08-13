@@ -19,6 +19,10 @@ export function Footer() {
       <p style={{ marginBottom: '0.5rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
         AtlasFind
       </p>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '1rem', marginTop: '0.5rem' }}>
+        <Link href="/pricing" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Pricing</Link>
+        <Link href="/transparency" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Transparency</Link>
+      </div>
       <p>
         Verify Pathways to Global Opportunities.
       </p>
