@@ -163,3 +163,21 @@ model UsageLimit {
 
   user                   User     @relation(fields: [userId], references: [id])
 }
+
+model OpportunityDraft {
+  id                 String   @id @default(uuid())
+  title              String
+  type               String   @default("SCHOLARSHIP")
+  sponsor            String
+  applyUrl           String   @map("apply_url")
+  hostCountry        String   @default("Global") @map("host_country")
+  deadline           DateTime?
+  description        String   @default("")
+  eligibility        String   @default("")
+  status             String   @default("pending_review") // pending_review, approved, rejected
+  submittedBy        String?  @map("submitted_by")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("opportunity_drafts")
+}
