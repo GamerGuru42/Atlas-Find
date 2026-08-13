@@ -246,16 +246,16 @@ function DiscoverContent() {
           ) : opportunities.length === 0 ? (
             <div className={styles.emptyState}>
               <Search className={styles.emptyIcon} size={48} />
-              <h3 className={styles.emptyTitle}>🔍 No opportunities match your filters yet. Our database grows through community contributions.</h3>
+              <h3 className={styles.emptyTitle}>No opportunities match your selected filters</h3>
               <p className={styles.emptyDesc}>
-                Know of one that fits? Help the community grow.
+                Try clearing your search query or adjusting your filters to see more results, or ask Atlas to search for you.
               </p>
               <div className={styles.emptyActions}>
-                <button onClick={clearAllFilters} className={styles.secondaryBtn}>
+                <button onClick={clearAllFilters} className={styles.primaryBtn}>
                   Clear Filters
                 </button>
-                <Link href={`/submit-opportunity?description=${encodeURIComponent(searchParam || '')}`} className={styles.primaryBtn}>
-                  Submit an Opportunity You Know
+                <Link href="/chat" className={styles.secondaryBtn}>
+                  Ask Atlas AI
                 </Link>
               </div>
             </div>
