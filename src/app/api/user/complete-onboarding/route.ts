@@ -85,8 +85,6 @@ export async function POST(req: Request) {
       create: {
         id: user.id,
         email: user.email!,
-        name: user.user_metadata?.full_name || user.user_metadata?.name || '',
-        avatarUrl: user.user_metadata?.avatar_url || null,
         countryCode: country_code,
         currency,
         fieldOfStudy: field_of_study || null,
