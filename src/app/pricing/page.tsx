@@ -63,6 +63,7 @@ export default async function PricingPage() {
         userPricing={userPricing} 
         isLoggedIn={isLoggedIn} 
         countryNotFound={countryNotFound} 
+        countryCode={countryCode}
       />
 
       <FeatureComparison />

@@ -26,6 +26,7 @@ model User {
   graduationYear  Int?
   onboardingCompleted Boolean @default(false)
   tier            String            @default("free") // free, pro, elite
+  stripeCustomerId String?          @unique
   
   conversationLogs ConversationLog[]
   savedOpportunities SavedOpportunity[]
@@ -147,20 +148,25 @@ model VerificationLog {
 }
 
 model Subscription {
-  id                 String   @id @default(uuid())
-  userId             String   @unique
-  tier               String   // free, pro, elite
-  status             String   // active, canceled, past_due, trialing
-  processor          String?  // paystack, stripe
-  localAmount        Float?
-  currency           String?
-  currentPeriodStart DateTime?
-  currentPeriodEnd   DateTime?
-  cancelAtPeriodEnd  Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                      String   @id @default(uuid())
+  userId                  String   @unique
+  tier                    String   // free, pro, elite
+  status                  String   // active, canceled, past_due, trialing
+  processor               String?  // paystack, stripe
+  paystackSubscriptionCode String?
+  paystackEmailToken      String?
+  stripeCustomerId        String?
+  stripeSubscriptionId    String?
+  reference               String?  @unique
+  localAmount             Float?
+  currency                String?
+  currentPeriodStart      DateTime?
+  currentPeriodEnd        DateTime?
+  cancelAtPeriodEnd       Boolean  @default(false)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
-  user               User     @relation(fields: [userId], references: [id])
+  user                    User     @relation(fields: [userId], references: [id])
 }
 
 model UsageLimit {

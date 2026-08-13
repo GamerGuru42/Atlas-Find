@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './Pricing.module.css';
 import { PartnerInquiryModal } from './PartnerInquiryModal';
+import { PaymentMethodSelector } from '../payments/PaymentMethodSelector';
 
 interface PricingTableProps {
   userPricing: {
@@ -12,12 +13,14 @@ interface PricingTableProps {
   };
   isLoggedIn: boolean;
   countryNotFound: boolean;
+  countryCode?: string;
 }
 
-export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: PricingTableProps) {
+export function PricingTable({ userPricing, isLoggedIn, countryNotFound, countryCode = 'NG' }: PricingTableProps) {
   const [isYearly, setIsYearly] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrgType, setSelectedOrgType] = useState('University');
+  const [activeCheckoutTier, setActiveCheckoutTier] = useState<'PRO' | 'ELITE' | null>(null);
 
   const proPrice = isYearly ? userPricing.PRO.yearly : userPricing.PRO.monthly;
   const elitePrice = isYearly ? userPricing.ELITE.yearly : userPricing.ELITE.monthly;
@@ -26,6 +29,14 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
   const openPartnerModal = (orgType: string) => {
     setSelectedOrgType(orgType);
     setIsModalOpen(true);
+  };
+
+  const handleUpgradeClick = (tier: 'PRO' | 'ELITE') => {
+    if (!isLoggedIn) {
+      window.location.href = '/signup';
+      return;
+    }
+    setActiveCheckoutTier(activeCheckoutTier === tier ? null : tier);
   };
 
   return (
@@ -136,9 +147,20 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
             </li>
           </ul>
           
-          <Link href={isLoggedIn ? "/settings/subscription" : "/signup"} className={`${styles.ctaButton} ${styles.btnPro}`}>
-            Upgrade
-          </Link>
+          <button 
+            className={`${styles.ctaButton} ${styles.btnPro}`}
+            onClick={() => handleUpgradeClick('PRO')}
+          >
+            {activeCheckoutTier === 'PRO' ? 'Close Checkout' : 'Upgrade to Pro'}
+          </button>
+
+          {activeCheckoutTier === 'PRO' && (
+            <PaymentMethodSelector
+              tier="PRO"
+              billing={isYearly ? 'yearly' : 'monthly'}
+              countryCode={countryCode}
+            />
+          )}
         </div>
 
         {/* ELITE CARD */}
@@ -184,9 +206,20 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
             </li>
           </ul>
           
-          <Link href={isLoggedIn ? "/settings/subscription" : "/signup"} className={`${styles.ctaButton} ${styles.btnElite}`}>
-            Upgrade
-          </Link>
+          <button 
+            className={`${styles.ctaButton} ${styles.btnElite}`}
+            onClick={() => handleUpgradeClick('ELITE')}
+          >
+            {activeCheckoutTier === 'ELITE' ? 'Close Checkout' : 'Upgrade to Elite'}
+          </button>
+
+          {activeCheckoutTier === 'ELITE' && (
+            <PaymentMethodSelector
+              tier="ELITE"
+              billing={isYearly ? 'yearly' : 'monthly'}
+              countryCode={countryCode}
+            />
+          )}
         </div>
       </div>
 
@@ -255,4 +288,3 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
     </>
   );
 }
-
