@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './Pricing.module.css';
+import { PartnerInquiryModal } from './PartnerInquiryModal';
 
 interface PricingTableProps {
   userPricing: {
@@ -15,10 +16,17 @@ interface PricingTableProps {
 
 export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: PricingTableProps) {
   const [isYearly, setIsYearly] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrgType, setSelectedOrgType] = useState('University');
 
   const proPrice = isYearly ? userPricing.PRO.yearly : userPricing.PRO.monthly;
   const elitePrice = isYearly ? userPricing.ELITE.yearly : userPricing.ELITE.monthly;
   const period = isYearly ? 'year' : 'mo';
+
+  const openPartnerModal = (orgType: string) => {
+    setSelectedOrgType(orgType);
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -51,6 +59,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
         </div>
       )}
 
+      {/* STUDENT TIERS GRID */}
       <div className={styles.cardsGrid}>
         {/* FREE CARD */}
         <div className={`${styles.card} ${styles.cardFree}`}>
@@ -65,7 +74,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
           
           <ul className={styles.featureList}>
             <li className={`${styles.featureItem} ${styles.featureFirst}`}>
-              <span className={styles.checkIcon}>✓</span> Unlimited AI Chat
+              <span className={styles.checkIcon}>✓</span> <strong>Unlimited AI Chat</strong>
             </li>
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span> Browse & Search All Opportunities
@@ -108,19 +117,16 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
               <span className={styles.checkIcon}>✓</span> <strong>Everything in Free, plus:</strong>
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Unlimited Saved Opportunities
+              <span className={styles.checkIcon}>✓</span> Application Kanban Board — track every stage visually
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Application Tracker (Kanban Board)
+              <span className={styles.checkIcon}>✓</span> Smart Deadline Alerts — SMS + Email so you never miss a date
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Smart Deadline Alerts (Email + SMS)
+              <span className={styles.checkIcon}>✓</span> AI Application Checklist — auto-generated per opportunity
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> AI Application Checklist
-            </li>
-            <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Document Vault (5 files)
+              <span className={styles.checkIcon}>✓</span> Document Vault — store 5 files securely
             </li>
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span> Export Timeline as PDF
@@ -153,28 +159,28 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
               <span className={styles.checkIcon}>✓</span> <strong>Everything in Pro, plus:</strong>
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> AI Essay Drafting & Tailoring
+              <span className={styles.checkIcon}>✓</span> AI Essay Drafting — tailored to your profile and the opportunity
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> AI Essay Review & Feedback
+              <span className={styles.checkIcon}>✓</span> AI Essay Review — instant feedback on structure and tone
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Human Essay Review (2/month)
+              <span className={styles.checkIcon}>✓</span> Human Essay Review — 2 essays reviewed by experts monthly
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Mock Interview Practice
+              <span className={styles.checkIcon}>✓</span> Mock Interview Practice — AI-powered with feedback
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Mentor Matching (1 call/month)
+              <span className={styles.checkIcon}>✓</span> Mentor Matching — 1 video call monthly with past winners
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Resume/CV AI Builder
+              <span className={styles.checkIcon}>✓</span> Resume/CV AI Builder — ATS-optimized
             </li>
             <li className={styles.featureItem}>
               <span className={styles.checkIcon}>✓</span> Unlimited Document Vault
             </li>
             <li className={styles.featureItem}>
-              <span className={styles.checkIcon}>✓</span> Quarterly Strategy Session
+              <span className={styles.checkIcon}>✓</span> Quarterly 1-on-1 Strategy Session
             </li>
           </ul>
           
@@ -183,6 +189,70 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound }: Prici
           </Link>
         </div>
       </div>
+
+      {/* ENTERPRISE TEASER SECTION */}
+      <div className={styles.enterpriseContainer}>
+        <div className={styles.enterpriseHeader}>
+          <h2 className={styles.enterpriseTitle}>AtlasFind for Institutions</h2>
+          <p className={styles.enterpriseSubtitle}>
+            Universities, foundations, and corporate sponsors — partner with us to reach high-intent students worldwide.
+          </p>
+        </div>
+
+        <div className={styles.enterpriseGrid}>
+          {/* CARD 1 */}
+          <div className={styles.enterpriseCard}>
+            <div className={styles.enterpriseBadge}>🚀 Launching Q1 2027</div>
+            <h3 className={styles.enterpriseCardTitle}>Scholarship Sponsors</h3>
+            <p className={styles.enterpriseCardDesc}>
+              List your opportunities to verified, engaged applicants. Get real-time analytics on who applies.
+            </p>
+            <button 
+              className={styles.enterpriseCta}
+              onClick={() => openPartnerModal('Corporate')}
+            >
+              Learn More
+            </button>
+          </div>
+
+          {/* CARD 2 */}
+          <div className={styles.enterpriseCard}>
+            <div className={styles.enterpriseBadge}>Coming Soon</div>
+            <h3 className={styles.enterpriseCardTitle}>Universities & Schools</h3>
+            <p className={styles.enterpriseCardDesc}>
+              Bulk Pro/Elite licenses for your graduating class. White-label AI advising for your career center.
+            </p>
+            <button 
+              className={styles.enterpriseCta}
+              onClick={() => openPartnerModal('University')}
+            >
+              Learn More
+            </button>
+          </div>
+
+          {/* CARD 3 */}
+          <div className={styles.enterpriseCard}>
+            <div className={styles.enterpriseBadge}>Coming Soon</div>
+            <h3 className={styles.enterpriseCardTitle}>Mentorship Networks</h3>
+            <p className={styles.enterpriseCardDesc}>
+              Connect your mentors with ambitious students in emerging markets. Verified, structured, impactful.
+            </p>
+            <button 
+              className={styles.enterpriseCta}
+              onClick={() => openPartnerModal('NGO')}
+            >
+              Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <PartnerInquiryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialType={selectedOrgType}
+      />
     </>
   );
 }
+

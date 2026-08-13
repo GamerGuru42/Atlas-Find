@@ -246,9 +246,9 @@ function DiscoverContent() {
           ) : opportunities.length === 0 ? (
             <div className={styles.emptyState}>
               <Search className={styles.emptyIcon} size={48} />
-              <h3 className={styles.emptyTitle}>No opportunities match your selected filters</h3>
+              <h3 className={styles.emptyTitle}>No opportunities match your filters</h3>
               <p className={styles.emptyDesc}>
-                Try clearing your search query or adjusting your filters to see more results, or ask Atlas to search for you.
+                Try clearing your search or ask Atlas to find something for you.
               </p>
               <div className={styles.emptyActions}>
                 <button onClick={clearAllFilters} className={styles.primaryBtn}>
