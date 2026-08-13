@@ -86,16 +86,19 @@ export function AISummary({ searchParams, opportunitiesCount, topOpportunities }
             <span className={styles.pulseDot}></span>
             <span className={styles.pulseDot}></span>
             <span className={styles.pulseDot}></span>
-            <span style={{ marginLeft: '8px' }}>Analyzing opportunities...</span>
+            <span style={{ marginLeft: '8px' }}>Generating smart AI insights for {opportunitiesCount} opportunities...</span>
           </div>
-        ) : error ? (
-          <div className={styles.errorText}>Failed to generate summary. Please try again.</div>
         ) : content ? (
           <div className={styles.markdownContent}>
             <ReactMarkdown>{content}</ReactMarkdown>
           </div>
         ) : (
-          <div>Analyzing opportunities...</div>
+          <div className={styles.markdownContent}>
+            <p>
+              <strong>Atlas AI Overview:</strong> You are exploring <strong>{opportunitiesCount} verified global opportunities</strong>. 
+              Use the top category tabs and location filters to narrow down by funding level, degree type, and target host country.
+            </p>
+          </div>
         )}
       </div>
     </div>
