@@ -8,7 +8,8 @@ import { cookies } from 'next/headers';
 
 import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
-import { UserMenu } from './UserMenu';
+import { ProfileDropdown } from './ProfileDropdown';
+import { prisma } from '../../lib/db/prisma';
 
 export async function Header() {
   const cookieStore = await cookies();
@@ -36,6 +37,21 @@ export async function Header() {
   );
 
   const { data: { session } } = await supabase.auth.getSession();
+  
+  let tier = 'free';
+  if (session?.user?.id) {
+    try {
+      const dbUser = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { tier: true }
+      });
+      if (dbUser?.tier) {
+        tier = dbUser.tier;
+      }
+    } catch (e) {
+      console.error("Error fetching user tier:", e);
+    }
+  }
 
   return (
     <header className={styles.header}>
@@ -61,7 +77,11 @@ export async function Header() {
               <Link href="/chat">
                 <Button variant="primary" size="sm">Talk to Agent</Button>
               </Link>
-              <UserMenu userEmail={session.user.email || 'User'} />
+              <ProfileDropdown 
+                firstName={session.user.user_metadata?.full_name?.split(' ')[0] || 'User'} 
+                avatarUrl={session.user.user_metadata?.avatar_url}
+                tier={tier as any}
+              />
             </div>
           ) : (
             <>

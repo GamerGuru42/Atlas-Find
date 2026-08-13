@@ -25,9 +25,12 @@ model User {
   institution     String?
   graduationYear  Int?
   onboardingCompleted Boolean @default(false)
+  tier            String            @default("free") // free, pro, elite
   
   conversationLogs ConversationLog[]
   savedOpportunities SavedOpportunity[]
+  subscription    Subscription?
+  usageLimit      UsageLimit?
 }
 
 // enum removed
@@ -123,4 +126,40 @@ model VerificationLog {
   details       String?
 
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+}
+
+model Subscription {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  tier               String   // free, pro, elite
+  status             String   // active, canceled, past_due, trialing
+  processor          String?  // paystack, stripe
+  localAmount        Float?
+  currency           String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user               User     @relation(fields: [userId], references: [id])
+}
+
+model UsageLimit {
+  id                     String   @id @default(uuid())
+  userId                 String   @unique
+  savedOpportunitiesCount Int     @default(0)
+  maxSaves               Int      @default(20)
+  documentsUploadedCount Int      @default(0)
+  maxDocuments           Int      @default(0)
+  essaysDraftedThisMonth Int      @default(0)
+  maxEssays              Int      @default(0)
+  mentorCallsThisMonth   Int      @default(0)
+  maxCalls               Int      @default(0)
+  essayReviewsThisMonth  Int      @default(0)
+  maxReviews             Int      @default(0)
+  resetAt                DateTime?
+  updatedAt              DateTime @updatedAt
+
+  user                   User     @relation(fields: [userId], references: [id])
 }
