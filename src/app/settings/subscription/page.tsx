@@ -2,7 +2,7 @@ import React from 'react';
 import prisma from '@/lib/db/prisma';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { getPricing } from '@/lib/pricing/currencies';
+import { getPricing, normalizeCountryCode } from '@/lib/pricing/currencies';
 import { CurrentPlanCard, UpgradeCards } from '@/components/subscription/SubscriptionCard';
 import { UsageStats, UsageStatsData } from '@/components/subscription/UsageStats';
 import { redirect } from 'next/navigation';
@@ -39,7 +39,13 @@ export default async function SubscriptionPage() {
     redirect('/onboarding');
   }
 
-  const countryCode = user.countryCode || 'US';
+  const rawCountry = user.countryCode || 
+                     cookieStore.get('atlas_country_code')?.value || 
+                     session.user.user_metadata?.country_code || 
+                     session.user.user_metadata?.country || 
+                     'US';
+
+  const countryCode = normalizeCountryCode(rawCountry);
   const tier = user.tier || 'free';
 
   // Get localized pricing

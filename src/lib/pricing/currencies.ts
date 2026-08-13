@@ -9,6 +9,7 @@ export const PRICING = {
     EUR: { monthly: 4.49, yearly: 35.99, symbol: "€", currency: "EUR" },
     INR: { monthly: 399, yearly: 2999, symbol: "₹", currency: "INR" },
     CAD: { monthly: 6.49, yearly: 51.99, symbol: "C$", currency: "CAD" },
+    AUD: { monthly: 6.99, yearly: 54.99, symbol: "A$", currency: "AUD" },
     DEFAULT: { monthly: 4.99, yearly: 39.99, symbol: "$", currency: "USD" }
   },
   ELITE: {
@@ -21,6 +22,7 @@ export const PRICING = {
     EUR: { monthly: 13.49, yearly: 107.99, symbol: "€", currency: "EUR" },
     INR: { monthly: 1199, yearly: 8999, symbol: "₹", currency: "INR" },
     CAD: { monthly: 19.49, yearly: 155.99, symbol: "C$", currency: "CAD" },
+    AUD: { monthly: 20.99, yearly: 169.99, symbol: "A$", currency: "AUD" },
     DEFAULT: { monthly: 14.99, yearly: 119.99, symbol: "$", currency: "USD" }
   }
 } as const;
@@ -28,42 +30,60 @@ export const PRICING = {
 export type Tier = 'PRO' | 'ELITE';
 
 export const COUNTRY_CURRENCY_MAP: Record<string, string> = {
-  NG: "NGN",
-  NIGERIA: "NGN",
-  NGN: "NGN",
-  GH: "GHS",
-  GHANA: "GHS",
-  GHS: "GHS",
-  KE: "KES",
-  KENYA: "KES",
-  KES: "KES",
-  ZA: "ZAR",
-  "SOUTH AFRICA": "ZAR",
-  ZAR: "ZAR",
-  US: "USD",
-  "UNITED STATES": "USD",
-  USA: "USD",
-  USD: "USD",
-  GB: "GBP",
-  UK: "GBP",
-  "UNITED KINGDOM": "GBP",
-  GBP: "GBP",
-  DE: "EUR",
-  GERMANY: "EUR",
-  FR: "EUR",
-  FRANCE: "EUR",
+  // Africa
+  NG: "NGN", NIGERIA: "NGN", NGN: "NGN",
+  GH: "GHS", GHANA: "GHS", GHS: "GHS",
+  KE: "KES", KENYA: "KES", KES: "KES",
+  ZA: "ZAR", "SOUTH AFRICA": "ZAR", ZAR: "ZAR",
+  EG: "USD", EGYPT: "USD",
+  MA: "USD", MOROCCO: "USD",
+  TZ: "USD", TANZANIA: "USD",
+  UG: "USD", UGANDA: "USD",
+  RW: "USD", RWANDA: "USD",
+
+  // Americas
+  US: "USD", "UNITED STATES": "USD", USA: "USD", USD: "USD",
+  CA: "CAD", CANADA: "CAD", CAD: "CAD",
+  MX: "USD", MEXICO: "USD",
+  BR: "USD", BRAZIL: "USD",
+
+  // Europe
+  GB: "GBP", UK: "GBP", "UNITED KINGDOM": "GBP", GBP: "GBP",
+  DE: "EUR", GERMANY: "EUR",
+  FR: "EUR", FRANCE: "EUR",
+  ES: "EUR", SPAIN: "EUR",
+  IT: "EUR", ITALY: "EUR",
+  NL: "EUR", NETHERLANDS: "EUR",
+  BE: "EUR", BELGIUM: "EUR",
+  AT: "EUR", AUSTRIA: "EUR",
+  PT: "EUR", PORTUGAL: "EUR",
+  IE: "EUR", IRELAND: "EUR",
+  FI: "EUR", FINLAND: "EUR",
+  GR: "EUR", GREECE: "EUR",
+  SE: "EUR", SWEDEN: "EUR",
+  DK: "EUR", DENMARK: "EUR",
+  NO: "EUR", NORWAY: "EUR",
+  CH: "EUR", SWITZERLAND: "EUR",
   EUR: "EUR",
-  IN: "INR",
-  INDIA: "INR",
-  INR: "INR",
-  CA: "CAD",
-  CANADA: "CAD",
-  CAD: "CAD"
+
+  // Asia-Pacific
+  IN: "INR", INDIA: "INR", INR: "INR",
+  AU: "AUD", AUSTRALIA: "AUD", AUD: "AUD",
+  NZ: "AUD", "NEW ZEALAND": "AUD",
+  SG: "USD", SINGAPORE: "USD",
+  MY: "USD", MALAYSIA: "USD",
+  PH: "USD", PHILIPPINES: "USD",
+  JP: "USD", JAPAN: "USD",
+  KR: "USD", KOREA: "USD", "SOUTH KOREA": "USD",
+  CN: "USD", CHINA: "USD",
+  HK: "USD", "HONG KONG": "USD"
 };
 
 export function normalizeCountryCode(countryInput?: string | null): string {
   if (!countryInput) return 'US';
   const clean = countryInput.trim().toUpperCase();
+
+  // Known country aliases to ISO 2-char code
   if (clean === 'NG' || clean === 'NIGERIA' || clean === 'NGN') return 'NG';
   if (clean === 'GH' || clean === 'GHANA' || clean === 'GHS') return 'GH';
   if (clean === 'KE' || clean === 'KENYA' || clean === 'KES') return 'KE';
@@ -71,7 +91,14 @@ export function normalizeCountryCode(countryInput?: string | null): string {
   if (clean === 'GB' || clean === 'UK' || clean === 'UNITED KINGDOM' || clean === 'GBP') return 'GB';
   if (clean === 'IN' || clean === 'INDIA' || clean === 'INR') return 'IN';
   if (clean === 'CA' || clean === 'CANADA' || clean === 'CAD') return 'CA';
-  if (clean === 'DE' || clean === 'GERMANY' || clean === 'FR' || clean === 'FRANCE' || clean === 'EUR') return 'DE';
+  if (clean === 'AU' || clean === 'AUSTRALIA' || clean === 'AUD') return 'AU';
+  if (clean === 'US' || clean === 'USA' || clean === 'UNITED STATES' || clean === 'USD') return 'US';
+
+  // Europe / EUR mapping
+  if (['DE', 'GERMANY', 'FR', 'FRANCE', 'ES', 'SPAIN', 'IT', 'ITALY', 'NL', 'NETHERLANDS', 'BE', 'BELGIUM', 'AT', 'AUSTRIA', 'PT', 'PORTUGAL', 'IE', 'IRELAND', 'FI', 'FINLAND', 'GR', 'GREECE', 'EUR'].includes(clean)) {
+    return 'DE';
+  }
+
   return clean;
 }
 
