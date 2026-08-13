@@ -46,8 +46,10 @@ export default function OnboardingPage() {
         icon: <CheckCircle2 className="w-5 h-5 text-green-500" />
       })
 
-      router.push('/discover')
-      router.refresh()
+      // Use window.location.href to guarantee a full page load.
+      // This ensures that the newly set Supabase auth cookies are 
+      // picked up correctly by the server and middleware.
+      window.location.href = '/discover'
     } catch (error) {
       toast.error('Something went wrong. Please try again.')
       setIsSubmitting(false)

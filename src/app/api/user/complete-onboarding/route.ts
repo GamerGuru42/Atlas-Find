@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import prisma from '@/lib/db/prisma'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-
-const prisma = new PrismaClient()
 
 const CURRENCY_MAP: Record<string, string> = {
   NG: 'NGN',
@@ -22,7 +20,7 @@ export async function POST(req: Request) {
     const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
@@ -71,11 +69,24 @@ export async function POST(req: Request) {
     }
 
     // 2. Update Prisma User table
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await prisma.user.upsert({
       where: {
         id: user.id
       },
-      data: {
+      update: {
+        countryCode: country_code,
+        currency,
+        fieldOfStudy: field_of_study || null,
+        level: level || null,
+        institution: institution || null,
+        graduationYear: graduation_year ? parseInt(graduation_year, 10) : null,
+        onboardingCompleted: true
+      },
+      create: {
+        id: user.id,
+        email: user.email!,
+        name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+        avatarUrl: user.user_metadata?.avatar_url || null,
         countryCode: country_code,
         currency,
         fieldOfStudy: field_of_study || null,
