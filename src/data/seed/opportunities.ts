@@ -3,954 +3,6183 @@ import { Opportunity } from '@/types/opportunity';
 const now = new Date().toISOString();
 
 export const seedOpportunities: Opportunity[] = [
-  // ==================== GOVERNMENT SCHOLARSHIPS ====================
   {
-    id: 'chevening-uk',
-    title: 'Chevening Scholarship',
-    type: 'scholarship',
-    sponsor: 'UK Foreign, Commonwealth & Development Office',
-    orgType: 'government',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'India', 'Pakistan', 'Bangladesh', 'South Africa', 'Tanzania', 'Uganda', 'Zimbabwe'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: '£1,133/month' },
-    deadline: '2026-11-05',
-    opensDate: '2026-08-06',
-    applyUrl: 'https://www.chevening.org/scholarships/',
-    sourceUrl: 'https://www.chevening.org/scholarships/',
-    sourceDomain: 'chevening.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Chevening offers a unique opportunity for future leaders, influencers, and decision-makers to develop professionally and academically, network extensively, and build lasting positive relationships with the UK.',
-    eligibility: 'Minimum 2 years work experience, return to home country for 2 years, bachelor\'s degree, meet English language requirements.',
-    tags: ['leadership', 'fully-funded', 'uk', 'masters', 'work-experience-required'],
+    "id": "opp-1-chevening-uk-government-schola",
+    "title": "Chevening UK Government Scholarship 2026/2027",
+    "type": "scholarship",
+    "sponsor": "UK Foreign, Commonwealth & Development Office (FCDO)",
+    "orgType": "government",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Countries",
+      "Nigeria",
+      "Ghana",
+      "Kenya",
+      "India",
+      "Pakistan"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Public Policy",
+      "International Relations",
+      "STEM",
+      "Business"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Monthly living allowance (£1,300 - £1,600)"
+    },
+    "deadline": "2026-11-03",
+    "applyUrl": "https://www.chevening.org/scholarship/uk/",
+    "sourceUrl": "https://www.chevening.org/apply/",
+    "sourceDomain": "chevening.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Fully-funded UK government scholarship to pursue a one-year Master's degree at any top university in the United Kingdom.",
+    "eligibility": "Minimum 2 years work experience, undergraduate degree, return to home country for at least 2 years post-graduation.",
+    "tags": [
+      "Chevening",
+      "UK",
+      "Master",
+      "Fully Funded",
+      "Leadership"
+    ]
   },
   {
-    id: 'daad-epos',
-    title: 'DAAD EPOS Scholarship (Development-Related Postgraduate Courses)',
-    type: 'scholarship',
-    sponsor: 'German Academic Exchange Service (DAAD)',
-    orgType: 'government',
-    hostCountry: 'Germany',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Ethiopia', 'Tanzania', 'India', 'Pakistan', 'Bangladesh', 'Indonesia', 'Vietnam'],
-    disciplines: ['Engineering', 'Computer Science', 'Public Health', 'Agriculture', 'Economics', 'Environmental Science'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€934/month' },
-    deadline: '2026-10-15',
-    applyUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/',
-    sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/epos/',
-    sourceDomain: 'daad.de',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'DAAD EPOS scholarships support graduates from developing countries who wish to earn a postgraduate degree at a German university. Priority given to candidates with 2+ years professional experience.',
-    eligibility: 'Bachelor\'s degree, minimum 2 years professional experience, from a developing country, max 6 years since last degree.',
-    tags: ['development', 'fully-funded', 'germany', 'masters', 'work-experience-required'],
+    "id": "opp-2-daad-epos-development-related-",
+    "title": "DAAD EPOS Development-Related Postgraduate Courses",
+    "type": "scholarship",
+    "sponsor": "German Academic Exchange Service (DAAD)",
+    "orgType": "government",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Developing Countries",
+      "Global South"
+    ],
+    "disciplines": [
+      "Engineering",
+      "Environmental Science",
+      "Economics",
+      "Development Studies",
+      "Public Health"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "€934/month for Master, €1,200/month for PhD"
+    },
+    "deadline": "2026-10-31",
+    "applyUrl": "https://www.daad.de/en/study-and-research-in-germany/scholarships/",
+    "sourceUrl": "https://www.daad.de/epos",
+    "sourceDomain": "daad.de",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Supports foreign graduates from developing countries with at least two years of professional experience to take a postgraduate degree in Germany.",
+    "eligibility": "Bachelor degree (completed less than 6 years ago), at least 2 years of professional experience.",
+    "tags": [
+      "DAAD",
+      "Germany",
+      "Master",
+      "PhD",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'fulbright-foreign',
-    title: 'Fulbright Foreign Student Program',
-    type: 'scholarship',
-    sponsor: 'U.S. Department of State',
-    orgType: 'government',
-    hostCountry: 'United States',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'South Africa', 'India', 'Brazil', 'Mexico', 'Turkey', 'Egypt', 'Jordan'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true },
-    deadline: '2027-02-01',
-    applyUrl: 'https://foreign.fulbrightonline.org/',
-    sourceUrl: 'https://foreign.fulbrightonline.org/',
-    sourceDomain: 'fulbrightonline.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Fulbright Foreign Student Program enables graduate students, young professionals, and artists from abroad to study and conduct research in the United States.',
-    eligibility: 'Bachelor\'s degree, strong academic record, English proficiency, commitment to return to home country.',
-    tags: ['prestigious', 'fully-funded', 'usa', 'masters', 'phd'],
+    "id": "opp-3-fulbright-foreign-student-prog",
+    "title": "Fulbright Foreign Student Program",
+    "type": "scholarship",
+    "sponsor": "U.S. Department of State",
+    "orgType": "government",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "160+ Partner Countries"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Humanities",
+      "STEM",
+      "Social Sciences"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Monthly living stipend"
+    },
+    "deadline": "2026-09-15",
+    "applyUrl": "https://foreign.fulbrightonline.org/",
+    "sourceUrl": "https://foreign.fulbrightonline.org/about/foreign-student-program",
+    "sourceDomain": "fulbrightonline.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Enables graduate students, young professionals, and artists from abroad to study and conduct research in the United States.",
+    "eligibility": "Bachelor's degree or equivalent, strong academic background, English proficiency (TOEFL/IELTS).",
+    "tags": [
+      "Fulbright",
+      "USA",
+      "Master",
+      "PhD",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'commonwealth-masters',
-    title: 'Commonwealth Shared Scholarships',
-    type: 'scholarship',
-    sponsor: 'Commonwealth Scholarship Commission (UK)',
-    orgType: 'government',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Tanzania', 'Uganda', 'Rwanda', 'Zambia', 'Malawi', 'Sierra Leone', 'Bangladesh'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£1,347/month' },
-    deadline: '2026-12-18',
-    applyUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-shared-scholarships/',
-    sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-shared-scholarships/',
-    sourceDomain: 'cscuk.fcdo.gov.uk',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'For candidates from least developed and lower middle income Commonwealth countries, for full-time Master\'s study at a UK university.',
-    eligibility: 'First degree of upper second class (2:1), citizen of eligible Commonwealth country, cannot have studied in a developed country for over 12 months.',
-    tags: ['fully-funded', 'uk', 'masters', 'commonwealth'],
+    "id": "opp-4-gates-cambridge-scholarship",
+    "title": "Gates Cambridge Scholarship",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation & University of Cambridge",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Non-UK Citizens"
+    ],
+    "disciplines": [
+      "All Fields"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "£20,000/year maintenance allowance"
+    },
+    "deadline": "2026-12-03",
+    "applyUrl": "https://www.gatescambridge.org/apply/",
+    "sourceUrl": "https://www.gatescambridge.org/",
+    "sourceDomain": "gatescambridge.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Prestigious international scholarship for outstanding applicants from countries outside the UK to pursue postgraduate study at the University of Cambridge.",
+    "eligibility": "Outstanding intellectual ability, leadership potential, commitment to improving the lives of others.",
+    "tags": [
+      "Gates Cambridge",
+      "UK",
+      "Cambridge",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'erasmus-mundus',
-    title: 'Erasmus Mundus Joint Masters Scholarships',
-    type: 'scholarship',
-    sponsor: 'European Commission',
-    orgType: 'international',
-    hostCountry: 'Multiple EU countries',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '€1,400/month' },
-    deadline: '2027-01-10',
-    applyUrl: 'https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en',
-    sourceUrl: 'https://erasmus-plus.ec.europa.eu/opportunities/individuals/students/erasmus-mundus-joint-masters',
-    sourceDomain: 'europa.eu',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Erasmus Mundus Joint Master Degrees are prestigious, integrated, international study programmes. Students study in at least two different European countries.',
-    eligibility: 'Bachelor\'s degree, meet programme-specific requirements, English proficiency. Partner country applicants receive higher stipend.',
-    tags: ['prestigious', 'fully-funded', 'europe', 'masters', 'international'],
+    "id": "opp-5-rhodes-scholarship-at-oxford-u",
+    "title": "Rhodes Scholarship at Oxford University",
+    "type": "scholarship",
+    "sponsor": "Rhodes Trust",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Global Rhodes Constituencies"
+    ],
+    "disciplines": [
+      "All Fields"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "£18,180/year stipend"
+    },
+    "deadline": "2026-10-01",
+    "applyUrl": "https://www.rhodeshouse.ox.ac.uk/scholarships/applications/",
+    "sourceUrl": "https://www.rhodeshouse.ox.ac.uk/",
+    "sourceDomain": "rhodeshouse.ox.ac.uk",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "The world's oldest graduate scholarship, supporting exceptional young leaders to study full-time at the University of Oxford.",
+    "eligibility": "Bachelor's degree with First Class or 3.7+ GPA, age 18-24 (varies slightly by constituency).",
+    "tags": [
+      "Rhodes",
+      "Oxford",
+      "UK",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'australia-awards',
-    title: 'Australia Awards Scholarships',
-    type: 'scholarship',
-    sponsor: 'Australian Government (DFAT)',
-    orgType: 'government',
-    hostCountry: 'Australia',
-    eligibleCountries: ['Indonesia', 'Vietnam', 'Philippines', 'Cambodia', 'Laos', 'Mongolia', 'Papua New Guinea', 'Timor-Leste', 'Fiji', 'Kenya'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: 'AUD $3,500/month' },
-    deadline: '2027-04-30',
-    applyUrl: 'https://www.dfat.gov.au/people-to-people/australia-awards/australia-awards-scholarships',
-    sourceUrl: 'https://www.dfat.gov.au/people-to-people/australia-awards/australia-awards-scholarships',
-    sourceDomain: 'dfat.gov.au',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Australia Awards Scholarships are long-term awards administered by the Department of Foreign Affairs and Trade. They aim to contribute to the development needs of Australia\'s partner countries.',
-    eligibility: 'Citizen of a participating country, have 2 years work experience, not be a citizen or permanent resident of Australia, meet age/visa requirements.',
-    tags: ['fully-funded', 'australia', 'masters', 'phd', 'development'],
+    "id": "opp-6-schwarzman-scholars-at-tsinghu",
+    "title": "Schwarzman Scholars at Tsinghua University",
+    "type": "scholarship",
+    "sponsor": "Stephen A. Schwarzman & Tsinghua University",
+    "orgType": "ngo",
+    "hostCountry": "China",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global"
+    ],
+    "disciplines": [
+      "Global Affairs",
+      "Public Policy",
+      "Economics",
+      "Business"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Personal stipend"
+    },
+    "deadline": "2026-09-20",
+    "applyUrl": "https://www.schwarzmanscholars.org/admissions/how-to-apply/",
+    "sourceUrl": "https://www.schwarzmanscholars.org/",
+    "sourceDomain": "schwarzmanscholars.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "A one-year fully-funded Master's degree in Global Affairs at Tsinghua University in Beijing, designed to prepare the next generation of global leaders.",
+    "eligibility": "Undergraduate degree, age 18-28, English proficiency, leadership aptitude.",
+    "tags": [
+      "Schwarzman",
+      "China",
+      "Master",
+      "Leadership",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'stipendium-hungaricum',
-    title: 'Stipendium Hungaricum Scholarship',
-    type: 'scholarship',
-    sponsor: 'Government of Hungary',
-    orgType: 'government',
-    hostCountry: 'Hungary',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Egypt', 'Jordan', 'Tunisia', 'Azerbaijan', 'Kazakhstan', 'Mongolia', 'Vietnam'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: 'HUF 150,000/month (Masters)' },
-    deadline: '2027-01-15',
-    applyUrl: 'https://stipendiumhungaricum.hu/',
-    sourceUrl: 'https://stipendiumhungaricum.hu/',
-    sourceDomain: 'stipendiumhungaricum.hu',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Stipendium Hungaricum programme offers full scholarships to study in Hungary. It covers tuition, accommodation, and a monthly stipend.',
-    eligibility: 'Citizen of a partner country, meet admission requirements of chosen programme, language proficiency.',
-    tags: ['fully-funded', 'hungary', 'europe', 'bachelors', 'masters', 'phd'],
+    "id": "opp-7-knight-hennessy-scholars-at-st",
+    "title": "Knight-Hennessy Scholars at Stanford University",
+    "type": "scholarship",
+    "sponsor": "Knight-Hennessy Scholars Program",
+    "orgType": "university",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Engineering",
+      "Business",
+      "Law",
+      "Medicine"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Living stipend"
+    },
+    "deadline": "2026-10-09",
+    "applyUrl": "https://knight-hennessy.stanford.edu/admissions/apply",
+    "sourceUrl": "https://knight-hennessy.stanford.edu/",
+    "sourceDomain": "stanford.edu",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Multidisciplinary graduate scholarship at Stanford University for visionary thinkers who demonstrate independence of thought, purposeful leadership, and civic mindset.",
+    "eligibility": "Must apply to a full-time Stanford graduate program, bachelor's degree earned in 2019 or later.",
+    "tags": [
+      "Knight-Hennessy",
+      "Stanford",
+      "USA",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'turkish-burslari',
-    title: 'Türkiye Burslari (Turkey Scholarships)',
-    type: 'scholarship',
-    sponsor: 'Republic of Türkiye',
-    orgType: 'government',
-    hostCountry: 'Turkey',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: '₺5,500/month (Masters)' },
-    deadline: '2027-02-20',
-    applyUrl: 'https://turkiyeburslari.gov.tr/',
-    sourceUrl: 'https://turkiyeburslari.gov.tr/',
-    sourceDomain: 'turkiyeburslari.gov.tr',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Türkiye Scholarships is a government-funded, competitive scholarship program. 1-year Turkish language preparation included.',
-    eligibility: 'Open to citizens of all countries except Turkey, meet GPA requirements (70% for undergrad, 75% for postgrad), age limits apply.',
-    tags: ['fully-funded', 'turkey', 'bachelors', 'masters', 'phd', 'language-prep'],
+    "id": "opp-8-erasmus-mundus-joint-master-de",
+    "title": "Erasmus Mundus Joint Master Degrees (EMJMD)",
+    "type": "scholarship",
+    "sponsor": "European Commission",
+    "orgType": "government",
+    "hostCountry": "European Union",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Engineering",
+      "Data Science",
+      "Environmental Management"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "€1,400/month"
+    },
+    "deadline": "2027-01-15",
+    "applyUrl": "https://erasmus-plus.ec.europa.eu/opportunities/opportunities-for-individuals/students/erasmus-mundus-joint-masters-scholarships",
+    "sourceUrl": "https://erasmus-plus.ec.europa.eu/",
+    "sourceDomain": "europa.eu",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "High-level integrated study programmes delivered jointly by an international consortium of higher education institutions across Europe.",
+    "eligibility": "Bachelor's degree or equivalent, no prior residence in EU for more than 12 months in last 5 years.",
+    "tags": [
+      "Erasmus",
+      "Europe",
+      "Master",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'swedish-si',
-    title: 'Swedish Institute Scholarships for Global Professionals (SISGP)',
-    type: 'scholarship',
-    sponsor: 'Swedish Institute',
-    orgType: 'government',
-    hostCountry: 'Sweden',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Bangladesh', 'Cambodia', 'Bolivia'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'SEK 10,000/month' },
-    deadline: '2027-02-10',
-    applyUrl: 'https://si.se/en/apply/scholarships/swedish-institute-scholarships-for-global-professionals/',
-    sourceUrl: 'https://si.se/en/apply/scholarships/swedish-institute-scholarships-for-global-professionals/',
-    sourceDomain: 'si.se',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'SISGP targets professionals who want to pursue a master\'s programme in Sweden and contribute to the UN Sustainable Development Goals.',
-    eligibility: 'Minimum 3,000 hours of work/leadership experience, admitted to an eligible Swedish university programme, citizen of eligible country.',
-    tags: ['fully-funded', 'sweden', 'europe', 'masters', 'work-experience-required', 'sustainability'],
+    "id": "opp-9-eiffel-excellence-scholarship-",
+    "title": "Eiffel Excellence Scholarship Program",
+    "type": "scholarship",
+    "sponsor": "French Ministry for Europe and Foreign Affairs",
+    "orgType": "government",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Countries"
+    ],
+    "disciplines": [
+      "Engineering",
+      "Law",
+      "Economics",
+      "Management",
+      "Political Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "€1,181/month (Master), €1,700/month (PhD)"
+    },
+    "deadline": "2027-01-10",
+    "applyUrl": "https://www.campusfrance.org/en/france-eiffel-excellence-scholarship-program",
+    "sourceUrl": "https://www.campusfrance.org/",
+    "sourceDomain": "campusfrance.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Tool developed by the French Ministry for Europe and Foreign Affairs to enable French higher education institutions to attract top foreign students for Master's and PhD programs.",
+    "eligibility": "Foreign nationality, up to 25 years old for Master, up to 30 years old for PhD.",
+    "tags": [
+      "Eiffel",
+      "France",
+      "Europe",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'mext-japan',
-    title: 'MEXT Japanese Government Scholarship',
-    type: 'scholarship',
-    sponsor: 'Ministry of Education, Culture, Sports, Science and Technology (Japan)',
-    orgType: 'government',
-    hostCountry: 'Japan',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '¥144,000/month' },
-    deadline: '2027-04-15',
-    applyUrl: 'https://www.mext.go.jp/en/policy/education/highered/title02/detail02/sdetail02/1373897.htm',
-    sourceUrl: 'https://www.mext.go.jp/en/policy/education/highered/title02/detail02/sdetail02/1373897.htm',
-    sourceDomain: 'mext.go.jp',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The MEXT scholarship is offered by the Japanese government to international students who wish to study at Japanese universities. Includes Japanese language training.',
-    eligibility: 'Under 35 years old, bachelor\'s degree (for research students), willing to learn Japanese, GPA of 2.30 or higher.',
-    tags: ['fully-funded', 'japan', 'asia', 'bachelors', 'masters', 'phd', 'language-prep'],
-  },
-
-  // ==================== FOUNDATION SCHOLARSHIPS ====================
-  {
-    id: 'mastercard-foundation',
-    title: 'Mastercard Foundation Scholars Program',
-    type: 'scholarship',
-    sponsor: 'Mastercard Foundation',
-    orgType: 'ngo',
-    hostCountry: 'Multiple countries',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Rwanda', 'Uganda', 'Ethiopia', 'Senegal', 'South Africa', 'Tanzania', 'Cameroon'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: true },
-    deadline: '2026-12-01',
-    applyUrl: 'https://mastercardfdn.org/all/scholars/',
-    sourceUrl: 'https://mastercardfdn.org/all/scholars/',
-    sourceDomain: 'mastercardfdn.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Mastercard Foundation Scholars Program provides academically talented yet economically disadvantaged young people in Africa with access to quality education.',
-    eligibility: 'African citizen, demonstrate academic talent, financial need, commitment to giving back to community, accepted to partner university.',
-    tags: ['fully-funded', 'africa', 'financial-need', 'bachelors', 'masters'],
-  },
-  {
-    id: 'gates-cambridge',
-    title: 'Gates Cambridge Scholarship',
-    type: 'scholarship',
-    sponsor: 'Bill & Melinda Gates Foundation',
-    orgType: 'ngo',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£20,000/year' },
-    deadline: '2026-12-03',
-    applyUrl: 'https://www.gatescambridge.org/apply/',
-    sourceUrl: 'https://www.gatescambridge.org/',
-    sourceDomain: 'gatescambridge.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Gates Cambridge Scholarships are awarded to outstanding applicants from countries outside the UK to pursue a full-time postgraduate degree at the University of Cambridge.',
-    eligibility: 'Outstanding academic record, reasons for choice of course, evidence of leadership, commitment to improving the lives of others.',
-    tags: ['prestigious', 'fully-funded', 'uk', 'cambridge', 'masters', 'phd'],
+    "id": "opp-10-mext-japanese-government-resea",
+    "title": "MEXT Japanese Government Research Scholarship",
+    "type": "scholarship",
+    "sponsor": "Japanese Ministry of Education, Culture, Sports, Science and Technology (MEXT)",
+    "orgType": "government",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Diplomatic Relations Countries"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Robotics",
+      "Engineering",
+      "Japanese Studies",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "143,000 JPY/month"
+    },
+    "deadline": "2026-05-30",
+    "applyUrl": "https://www.mext.go.jp/a_menu/koutou/ryugaku/boshu/1417180.htm",
+    "sourceUrl": "https://www.studyinjapan.go.jp/en/planning/by-style/pamphlet/",
+    "sourceDomain": "mext.go.jp",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Fully funded research scholarship offered by the Government of Japan for international students wishing to study at Japanese graduate universities.",
+    "eligibility": "Under 35 years old, bachelor's degree holder, willing to learn Japanese language.",
+    "tags": [
+      "MEXT",
+      "Japan",
+      "Asia",
+      "Fully Funded",
+      "Master",
+      "PhD"
+    ]
   },
   {
-    id: 'tony-elumelu',
-    title: 'Tony Elumelu Foundation Entrepreneurship Programme',
-    type: 'grant',
-    sponsor: 'Tony Elumelu Foundation',
-    orgType: 'ngo',
-    hostCountry: 'Nigeria',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Rwanda', 'Uganda', 'Senegal', 'Cameroon', 'Tanzania', 'Cote d\'Ivoire'],
-    disciplines: ['Business', 'Entrepreneurship'],
-    degreeLevel: ['bachelors', 'masters'],
-    fundingType: 'stipend_only',
-    coverage: { tuition: false, travel: false, living: false, insurance: false, accommodation: false, visa: false, stipendAmount: '$5,000 seed capital' },
-    deadline: '2027-03-01',
-    applyUrl: 'https://www.tonyelumelufoundation.org/teep',
-    sourceUrl: 'https://www.tonyelumelufoundation.org/teep',
-    sourceDomain: 'tonyelumelufoundation.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The TEF Entrepreneurship Programme provides $5,000 non-refundable seed capital, mentoring, and training for African entrepreneurs.',
-    eligibility: 'African citizen, have a business idea or early-stage business, 18+ years old.',
-    tags: ['africa', 'entrepreneurship', 'seed-funding', 'mentoring'],
+    "id": "opp-11-australia-awards-scholarships",
+    "title": "Australia Awards Scholarships",
+    "type": "scholarship",
+    "sponsor": "Australian Department of Foreign Affairs and Trade (DFAT)",
+    "orgType": "government",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Indo-Pacific Region",
+      "Africa",
+      "Middle East"
+    ],
+    "disciplines": [
+      "Development Studies",
+      "Agriculture",
+      "Public Health",
+      "Governance",
+      "Climate Change"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Contribution to living expenses (CLE)"
+    },
+    "deadline": "2026-04-30",
+    "applyUrl": "https://www.dfat.gov.au/people-to-people/australia-awards/australia-awards-scholarships",
+    "sourceUrl": "https://www.dfat.gov.au/people-to-people/australia-awards",
+    "sourceDomain": "dfat.gov.au",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Long-term awards administered by the Department of Foreign Affairs and Trade aiming to contribute to the development needs of Australia's partner countries.",
+    "eligibility": "Minimum 18 years old, citizen of participating country, at least 2 years relevant work experience.",
+    "tags": [
+      "Australia Awards",
+      "Australia",
+      "Fully Funded",
+      "Master"
+    ]
   },
   {
-    id: 'dangote-foundation',
-    title: 'Dangote Foundation Scholarship',
-    type: 'scholarship',
-    sponsor: 'Dangote Foundation',
-    orgType: 'corporate',
-    hostCountry: 'Nigeria',
-    eligibleCountries: ['Nigeria'],
-    disciplines: ['Engineering', 'Sciences', 'Business'],
-    degreeLevel: ['bachelors'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: false, insurance: false, accommodation: false, visa: false },
-    deadline: '2026-09-30',
-    applyUrl: 'https://dangotegroup.com/foundation/education',
-    sourceUrl: 'https://dangotegroup.com/foundation/education',
-    sourceDomain: 'dangotegroup.com',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Aliko Dangote Foundation provides undergraduate scholarships to Nigerian students in STEM and business fields.',
-    eligibility: 'Nigerian citizen, admitted to a Nigerian university, minimum CGPA of 3.5/5.0, financial need.',
-    tags: ['nigeria', 'partial', 'stem', 'bachelors', 'financial-need'],
+    "id": "opp-12-singa-singapore-international-",
+    "title": "SINGA Singapore International Graduate Award",
+    "type": "scholarship",
+    "sponsor": "Agency for Science, Technology and Research (A*STAR)",
+    "orgType": "government",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global"
+    ],
+    "disciplines": [
+      "Biomedical Sciences",
+      "Computing & Information Sciences",
+      "Physical Sciences",
+      "Engineering"
+    ],
+    "degreeLevel": [
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "S$2,700/month (increased to S$3,200 after qualifying exam)"
+    },
+    "deadline": "2026-12-01",
+    "applyUrl": "https://www.a-star.edu.sg/Scholarships/for-graduate-studies/singapore-international-graduate-award-singa",
+    "sourceUrl": "https://www.a-star.edu.sg/",
+    "sourceDomain": "a-star.edu.sg",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Full PhD scholarship for international students to conduct research at A*STAR Research Institutes, NTU, NUS, SUTD, or SMU in Singapore.",
+    "eligibility": "Open to all international graduates with a passion for research and excellent academic results.",
+    "tags": [
+      "SINGA",
+      "Singapore",
+      "PhD",
+      "STEM",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'aga-khan',
-    title: 'Aga Khan Foundation International Scholarship Programme',
-    type: 'scholarship',
-    sponsor: 'Aga Khan Foundation',
-    orgType: 'ngo',
-    hostCountry: 'Multiple countries',
-    eligibleCountries: ['Kenya', 'Tanzania', 'Uganda', 'Madagascar', 'Mozambique', 'India', 'Pakistan', 'Bangladesh', 'Tajikistan', 'Kyrgyzstan'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false },
-    deadline: '2027-03-31',
-    applyUrl: 'https://www.akdn.org/our-agencies/aga-khan-foundation/international-scholarship-programme',
-    sourceUrl: 'https://www.akdn.org/our-agencies/aga-khan-foundation/international-scholarship-programme',
-    sourceDomain: 'akdn.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Provides limited number of scholarships each year for postgraduate studies. 50% is grant, 50% is loan to be repaid after graduation.',
-    eligibility: 'Citizen of eligible country, admitted to a reputable university, no alternative funding, financial need.',
-    tags: ['partial', 'masters', 'financial-need', 'loan-component'],
-  },
-
-  // ==================== NIGERIA-SPECIFIC ====================
-  {
-    id: 'ptdf-scholarship',
-    title: 'PTDF Overseas Scholarship Scheme',
-    type: 'scholarship',
-    sponsor: 'Petroleum Technology Development Fund (Nigeria)',
-    orgType: 'government',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: ['Nigeria'],
-    disciplines: ['Engineering', 'Petroleum Engineering', 'Geoscience', 'Environmental Science', 'Computer Science'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: '£1,200/month' },
-    deadline: '2026-09-15',
-    applyUrl: 'https://ptdf.gov.ng/overseas-scholarship-scheme/',
-    sourceUrl: 'https://ptdf.gov.ng/overseas-scholarship-scheme/',
-    sourceDomain: 'ptdf.gov.ng',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'PTDF sponsors Nigerian students for postgraduate studies in the UK, Germany, France, China, and Malaysia in oil/gas and related fields.',
-    eligibility: 'Nigerian citizen, First Class or Second Class Upper, NYSC certificate, admission offer from approved university.',
-    tags: ['nigeria', 'fully-funded', 'uk', 'oil-gas', 'masters', 'phd'],
-  },
-  {
-    id: 'nnpc-snepco',
-    title: 'NNPC/SNEPCo National University Scholarship',
-    type: 'scholarship',
-    sponsor: 'NNPC & Shell Nigeria',
-    orgType: 'corporate',
-    hostCountry: 'Nigeria',
-    eligibleCountries: ['Nigeria'],
-    disciplines: ['Engineering', 'Geoscience', 'Computer Science', 'Medicine'],
-    degreeLevel: ['bachelors'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: false, insurance: false, accommodation: false, visa: false },
-    deadline: '2026-10-31',
-    applyUrl: 'https://www.nnpcgroup.com/Pages/Scholarships.aspx',
-    sourceUrl: 'https://www.nnpcgroup.com/Pages/Scholarships.aspx',
-    sourceDomain: 'nnpcgroup.com',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'NNPC/SNEPCo scholarship supports Nigerian undergraduates in STEM fields at Nigerian universities.',
-    eligibility: 'Nigerian citizen, 100 or 200 level student, minimum CGPA of 3.5/5.0, studying STEM at a Nigerian university.',
-    tags: ['nigeria', 'partial', 'stem', 'bachelors', 'undergraduate'],
+    "id": "opp-13-mastercard-foundation-scholars",
+    "title": "Mastercard Foundation Scholars Program",
+    "type": "scholarship",
+    "sponsor": "Mastercard Foundation",
+    "orgType": "ngo",
+    "hostCountry": "Global Partner Universities",
+    "continent": "Africa",
+    "eligibleCountries": [
+      "African Countries",
+      "Sub-Saharan Africa"
+    ],
+    "disciplines": [
+      "STEM",
+      "Agriculture",
+      "Public Health",
+      "Business",
+      "Education"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "Full living allowance"
+    },
+    "deadline": "2026-12-15",
+    "applyUrl": "https://mastercardfdn.org/all/scholars/",
+    "sourceUrl": "https://mastercardfdn.org/",
+    "sourceDomain": "mastercardfdn.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Provides academically talented yet economically disadvantaged young people in Africa with access to quality secondary and higher education.",
+    "eligibility": "Citizen of an African country, financial need, academic talent, commitment to giving back to community.",
+    "tags": [
+      "Mastercard Foundation",
+      "Africa",
+      "Fully Funded",
+      "Master",
+      "Bachelor"
+    ]
   },
   {
-    id: 'billsfd',
-    title: 'BEA (Bilateral Education Agreement) Scholarship',
-    type: 'scholarship',
-    sponsor: 'Federal Government of Nigeria',
-    orgType: 'government',
-    hostCountry: 'Multiple countries',
-    eligibleCountries: ['Nigeria'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: true },
-    deadline: '2026-12-15',
-    applyUrl: 'https://education.gov.ng/scholarships/',
-    sourceUrl: 'https://education.gov.ng/scholarships/',
-    sourceDomain: 'education.gov.ng',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'BEA scholarships are offered under bilateral agreements between Nigeria and partner countries (Russia, China, Japan, Cuba, Hungary, etc.) for undergraduate and postgraduate studies.',
-    eligibility: 'Nigerian citizen, meet academic requirements, nominated through Federal Ministry of Education.',
-    tags: ['nigeria', 'fully-funded', 'government', 'bachelors', 'masters', 'phd'],
+    "id": "opp-14-swiss-excellence-government-sc",
+    "title": "Swiss Excellence Government Scholarships",
+    "type": "scholarship",
+    "sponsor": "Federal Commission for Scholarships for Foreign Students (FCS)",
+    "orgType": "government",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "180+ Countries"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Science",
+      "Technology",
+      "Arts"
+    ],
+    "degreeLevel": [
+      "phd",
+      "postdoc"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "CHF 1,920/month"
+    },
+    "deadline": "2026-11-30",
+    "applyUrl": "https://www.sbfi.admin.ch/sbfi/en/home/education/scholarships-and-grants/swiss-government-excellence-scholarships.html",
+    "sourceUrl": "https://www.sbfi.admin.ch/",
+    "sourceDomain": "admin.ch",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Promotes international exchange and research cooperation between Switzerland and over 180 other countries.",
+    "eligibility": "Master's degree earned before 31 July 2026, research proposal approved by a Swiss academic host.",
+    "tags": [
+      "Swiss Excellence",
+      "Switzerland",
+      "Europe",
+      "PhD",
+      "Postdoc",
+      "Fully Funded"
+    ]
   },
   {
-    id: 'agip-scholarship',
-    title: 'NNPC/AGIP/OANDO Joint Venture Scholarship',
-    type: 'scholarship',
-    sponsor: 'NNPC/AGIP Joint Venture',
-    orgType: 'corporate',
-    hostCountry: 'Nigeria',
-    eligibleCountries: ['Nigeria'],
-    disciplines: ['Engineering', 'Geoscience', 'Environmental Science', 'Medicine'],
-    degreeLevel: ['bachelors'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: false, insurance: false, accommodation: false, visa: false },
-    deadline: '2026-11-30',
-    applyUrl: 'https://nafrec.nnpcgroup.com/',
-    sourceUrl: 'https://nafrec.nnpcgroup.com/',
-    sourceDomain: 'nnpcgroup.com',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Annual scholarship for Nigerian undergraduates in host communities and across Nigeria in selected STEM disciplines.',
-    eligibility: 'Nigerian citizen, full-time undergraduate in a Nigerian university, minimum CGPA of 3.0/5.0.',
-    tags: ['nigeria', 'partial', 'stem', 'bachelors'],
-  },
-
-  // ==================== UNIVERSITY-SPECIFIC ====================
-  {
-    id: 'oxford-clarendon',
-    title: 'Clarendon Scholarships (University of Oxford)',
-    type: 'scholarship',
-    sponsor: 'University of Oxford',
-    orgType: 'university',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£18,622/year' },
-    deadline: '2027-01-08',
-    applyUrl: 'https://www.ox.ac.uk/clarendon/',
-    sourceUrl: 'https://www.ox.ac.uk/clarendon/',
-    sourceDomain: 'ox.ac.uk',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Clarendon Fund provides approximately 140 new scholarships every year to academically excellent graduate students from all around the world.',
-    eligibility: 'Automatically considered when applying to eligible graduate programmes at Oxford. No separate application.',
-    tags: ['prestigious', 'fully-funded', 'uk', 'oxford', 'masters', 'phd', 'automatic-consideration'],
-  },
-  {
-    id: 'eth-zurich-excellence',
-    title: 'ETH Zurich Excellence Scholarship & Opportunity Programme (ESOP)',
-    type: 'scholarship',
-    sponsor: 'ETH Zurich',
-    orgType: 'university',
-    hostCountry: 'Switzerland',
-    eligibleCountries: [],
-    disciplines: ['Engineering', 'Computer Science', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Architecture'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'CHF 12,000/semester' },
-    deadline: '2026-12-15',
-    applyUrl: 'https://ethz.ch/students/en/studies/financial/scholarships/excellencescholarship.html',
-    sourceUrl: 'https://ethz.ch/students/en/studies/financial/scholarships/excellencescholarship.html',
-    sourceDomain: 'ethz.ch',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'ETH Zurich ESOP supports excellent Master\'s students with a scholarship covering living and study costs, and a tuition waiver.',
-    eligibility: 'Excellent academic record (top 10% of class), admitted to ETH Zurich Master\'s programme, motivational fit.',
-    tags: ['prestigious', 'fully-funded', 'switzerland', 'europe', 'stem', 'masters'],
+    "id": "opp-15-turkiye-burslari-scholarships-",
+    "title": "Turkiye Burslari Scholarships 2026",
+    "type": "scholarship",
+    "sponsor": "Presidency for Turks Abroad and Related Communities (YTB)",
+    "orgType": "government",
+    "hostCountry": "Turkey",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global"
+    ],
+    "disciplines": [
+      "All Fields",
+      "Engineering",
+      "Medicine",
+      "Humanities"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "1,700 TRY - 3,000 TRY/month"
+    },
+    "deadline": "2026-02-20",
+    "applyUrl": "https://www.turkiyeburslari.gov.tr/",
+    "sourceUrl": "https://www.turkiyeburslari.gov.tr/about/whatisturkiyeburslari",
+    "sourceDomain": "turkiyeburslari.gov.tr",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Government-funded competitive scholarship awarded to outstanding international students to pursue full-time degrees in top Turkish universities.",
+    "eligibility": "Under 21 for Bachelor, under 30 for Master, under 35 for PhD. Minimum academic achievement criteria applies.",
+    "tags": [
+      "Turkiye Burslari",
+      "Turkey",
+      "Fully Funded",
+      "Bachelor",
+      "Master",
+      "PhD"
+    ]
   },
   {
-    id: 'tu-delft-excellence',
-    title: 'TU Delft Excellence Scholarships (Justus & Louise van Effen)',
-    type: 'scholarship',
-    sponsor: 'Delft University of Technology',
-    orgType: 'university',
-    hostCountry: 'Netherlands',
-    eligibleCountries: [],
-    disciplines: ['Engineering', 'Computer Science', 'Architecture', 'Applied Sciences'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '€14,000/year' },
-    deadline: '2026-12-01',
-    applyUrl: 'https://www.tudelft.nl/en/education/practical-matters/scholarships/',
-    sourceUrl: 'https://www.tudelft.nl/en/education/practical-matters/scholarships/',
-    sourceDomain: 'tudelft.nl',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'TU Delft offers excellence scholarships covering tuition and living expenses for outstanding international MSc students.',
-    eligibility: 'Excellent academic record, admitted to a TU Delft MSc programme, non-EEA nationality for full scholarship.',
-    tags: ['fully-funded', 'netherlands', 'europe', 'engineering', 'masters'],
+    "id": "opp-16-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "international",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-1",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'ubc-international',
-    title: 'University of British Columbia International Scholars',
-    type: 'scholarship',
-    sponsor: 'University of British Columbia',
-    orgType: 'university',
-    hostCountry: 'Canada',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false },
-    deadline: '2027-01-15',
-    applyUrl: 'https://you.ubc.ca/financial-planning/scholarships-awards-international/',
-    sourceUrl: 'https://you.ubc.ca/financial-planning/scholarships-awards-international/',
-    sourceDomain: 'ubc.ca',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'UBC offers outstanding international students major entrance scholarships covering the full cost of study.',
-    eligibility: 'International student, exceptional academic achievement, leadership, community involvement.',
-    tags: ['fully-funded', 'canada', 'bachelors', 'undergraduate'],
+    "id": "opp-17-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "ngo",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-2",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'kaust-fellowship',
-    title: 'KAUST Fellowship (King Abdullah University of Science and Technology)',
-    type: 'fellowship',
-    sponsor: 'KAUST',
-    orgType: 'university',
-    hostCountry: 'Saudi Arabia',
-    eligibleCountries: [],
-    disciplines: ['Engineering', 'Computer Science', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Environmental Science'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: true, stipendAmount: '$20,000-$30,000/year' },
-    deadline: '2027-01-15',
-    applyUrl: 'https://www.kaust.edu.sa/en/study/applying-to-kaust',
-    sourceUrl: 'https://www.kaust.edu.sa/en/study/applying-to-kaust',
-    sourceDomain: 'kaust.edu.sa',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'KAUST provides full fellowship support to ALL admitted students — tuition, living, housing, medical, dental, vision insurance, and relocation support.',
-    eligibility: 'Bachelor\'s degree in STEM field, competitive GPA, English proficiency (TOEFL/IELTS).',
-    tags: ['fully-funded', 'saudi-arabia', 'stem', 'masters', 'phd', 'all-students-funded'],
-  },
-
-  // ==================== INTERNSHIPS & FELLOWSHIPS ====================
-  {
-    id: 'world-bank-ypp',
-    title: 'World Bank Young Professionals Program (YPP)',
-    type: 'fellowship',
-    sponsor: 'World Bank Group',
-    orgType: 'international',
-    hostCountry: 'United States',
-    eligibleCountries: [],
-    disciplines: ['Economics', 'Finance', 'Public Policy', 'Development Studies', 'Engineering', 'Social Sciences'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: false, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: 'Competitive salary' },
-    deadline: '2026-10-01',
-    applyUrl: 'https://www.worldbank.org/en/about/careers/programs-and-internships/young-professionals-program',
-    sourceUrl: 'https://www.worldbank.org/en/about/careers/programs-and-internships/young-professionals-program',
-    sourceDomain: 'worldbank.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The YPP is the World Bank Group\'s premier entry point for young professionals committed to international development. 2-year rotational program.',
-    eligibility: 'Under 32 years old, master\'s degree or equivalent, 3+ years relevant experience, fluency in English.',
-    tags: ['prestigious', 'fellowship', 'usa', 'development', 'international'],
-  },
-  {
-    id: 'un-internship',
-    title: 'United Nations Internship Programme',
-    type: 'internship',
-    sponsor: 'United Nations',
-    orgType: 'international',
-    hostCountry: 'Multiple countries',
-    eligibleCountries: [],
-    disciplines: ['International Relations', 'Law', 'Economics', 'Public Policy', 'Social Sciences', 'Communications', 'IT'],
-    degreeLevel: ['bachelors', 'masters'],
-    fundingType: 'stipend_only',
-    coverage: { tuition: false, travel: false, living: false, insurance: false, accommodation: false, visa: false, stipendAmount: 'Varies by duty station' },
-    deadline: '2027-12-31',
-    applyUrl: 'https://careers.un.org/lbw/Home.aspx',
-    sourceUrl: 'https://careers.un.org/lbw/Home.aspx',
-    sourceDomain: 'careers.un.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The UN Internship Programme offers graduate students and recent graduates the opportunity to gain practical experience in international affairs.',
-    eligibility: 'Enrolled in final year of bachelor\'s or in master\'s/doctoral programme, or recent graduate. Fluency in English or French.',
-    tags: ['internship', 'international', 'un', 'development'],
+    "id": "opp-18-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2027",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "international",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-3",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'google-research',
-    title: 'Google PhD Fellowship Program',
-    type: 'fellowship',
-    sponsor: 'Google',
-    orgType: 'corporate',
-    hostCountry: 'United States',
-    eligibleCountries: [],
-    disciplines: ['Computer Science', 'Machine Learning', 'AI', 'Natural Language Processing', 'Algorithms', 'HCI', 'Systems'],
-    degreeLevel: ['phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Full tuition + stipend + Google mentorship' },
-    deadline: '2027-03-15',
-    applyUrl: 'https://research.google/outreach/phd-fellowship/',
-    sourceUrl: 'https://research.google/outreach/phd-fellowship/',
-    sourceDomain: 'research.google',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Google PhD Fellowship Program recognizes outstanding graduate students doing exceptional research in computer science and related fields.',
-    eligibility: 'Must be nominated by university, enrolled in a PhD program, exceptional research in CS-related field.',
-    tags: ['prestigious', 'fully-funded', 'usa', 'phd', 'tech', 'research'],
+    "id": "opp-19-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "ngo",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://oecd.org/program-4",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'iaeste-internship',
-    title: 'IAESTE International Internship Exchange',
-    type: 'internship',
-    sponsor: 'IAESTE International',
-    orgType: 'international',
-    hostCountry: 'Multiple countries',
-    eligibleCountries: [],
-    disciplines: ['Engineering', 'Computer Science', 'Applied Arts', 'Natural Sciences', 'Agriculture'],
-    degreeLevel: ['bachelors', 'masters'],
-    fundingType: 'stipend_only',
-    coverage: { tuition: false, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'Sufficient to cover living costs' },
-    deadline: '2026-11-30',
-    applyUrl: 'https://iaeste.org/students',
-    sourceUrl: 'https://iaeste.org/students',
-    sourceDomain: 'iaeste.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'IAESTE offers paid, course-related, international internships for students in STEM and related fields across 80+ countries.',
-    eligibility: 'Currently enrolled student in STEM field, apply through your home university\'s IAESTE committee.',
-    tags: ['internship', 'international', 'stem', 'paid', 'work-experience'],
+    "id": "opp-20-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "international",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-5",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'microsoft-research',
-    title: 'Microsoft Research PhD Scholarship (EMEA)',
-    type: 'fellowship',
-    sponsor: 'Microsoft Research',
-    orgType: 'corporate',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: [],
-    disciplines: ['Computer Science', 'Machine Learning', 'AI', 'Systems', 'Security', 'Programming Languages'],
-    degreeLevel: ['phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '£30,000/year + conference travel' },
-    deadline: '2026-10-01',
-    applyUrl: 'https://www.microsoft.com/en-us/research/academic-program/phd-scholarship-programme/',
-    sourceUrl: 'https://www.microsoft.com/en-us/research/academic-program/phd-scholarship-programme/',
-    sourceDomain: 'microsoft.com',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Microsoft Research PhD Scholarship supports PhD students in EMEA (Europe, Middle East, and Africa) with tuition, stipend, and access to Microsoft Research mentors.',
-    eligibility: 'Starting or in first year of PhD in CS-related field at a European/African university, outstanding academic record.',
-    tags: ['prestigious', 'fully-funded', 'uk', 'europe', 'phd', 'tech', 'research'],
-  },
-
-  // ==================== MORE EUROPEAN ====================
-  {
-    id: 'denmarks-govt',
-    title: 'Danish Government Scholarships (Non-EU)',
-    type: 'scholarship',
-    sponsor: 'Danish Ministry of Higher Education',
-    orgType: 'government',
-    hostCountry: 'Denmark',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: 'DKK 6,900/month' },
-    deadline: '2027-03-01',
-    applyUrl: 'https://www.su.dk/',
-    sourceUrl: 'https://ufm.dk/en/education/admission-and-guidance/scholarships',
-    sourceDomain: 'ufm.dk',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Danish government provides tuition waivers and monthly grants for highly qualified non-EU/EEA students at Danish universities.',
-    eligibility: 'Non-EU/EEA citizen, admitted to a full-time higher education programme in Denmark.',
-    tags: ['europe', 'denmark', 'masters', 'partial'],
-  },
-  {
-    id: 'eiffel-excellence',
-    title: 'Eiffel Excellence Scholarship Programme (France)',
-    type: 'scholarship',
-    sponsor: 'French Ministry for Europe and Foreign Affairs',
-    orgType: 'government',
-    hostCountry: 'France',
-    eligibleCountries: [],
-    disciplines: ['Engineering', 'Economics', 'Law', 'Political Science', 'Management'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: '€1,181/month (Masters)' },
-    deadline: '2027-01-10',
-    applyUrl: 'https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence',
-    sourceUrl: 'https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence',
-    sourceDomain: 'campusfrance.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Eiffel scholarship is designed to help French higher education institutions attract top foreign students to enroll in their master\'s and PhD courses.',
-    eligibility: 'Non-French national, under 25 (Masters) or 30 (PhD), nominated by a French institution.',
-    tags: ['prestigious', 'fully-funded', 'france', 'europe', 'masters', 'phd'],
+    "id": "opp-21-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2026",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "ngo",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-6",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'ireland-goi',
-    title: 'Government of Ireland International Education Scholarships',
-    type: 'scholarship',
-    sponsor: 'Government of Ireland (HEA)',
-    orgType: 'government',
-    hostCountry: 'Ireland',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: false, accommodation: false, visa: false, stipendAmount: '€10,000/year' },
-    deadline: '2027-03-31',
-    applyUrl: 'https://hea.ie/funding-governance-performance/funding/student-finance/government-of-ireland-international-education-scholarships/',
-    sourceUrl: 'https://hea.ie/funding-governance-performance/funding/student-finance/government-of-ireland-international-education-scholarships/',
-    sourceDomain: 'hea.ie',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Government of Ireland awards 60 scholarships each year to high-calibre students from non-EU/EEA countries for study in Ireland.',
-    eligibility: 'Non-EU/EEA citizen, admitted to an Irish higher education institution, high academic achievement.',
-    tags: ['fully-funded', 'ireland', 'europe', 'bachelors', 'masters', 'phd'],
+    "id": "opp-22-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "international",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://worldbankgroup.org/program-7",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'new-zealand-scholarship',
-    title: 'New Zealand Scholarships (Manaaki)',
-    type: 'scholarship',
-    sponsor: 'New Zealand Ministry of Foreign Affairs and Trade',
-    orgType: 'government',
-    hostCountry: 'New Zealand',
-    eligibleCountries: ['Indonesia', 'Philippines', 'Vietnam', 'Cambodia', 'Laos', 'Fiji', 'Papua New Guinea', 'Samoa', 'Tonga', 'Kenya'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true, stipendAmount: 'NZD $491/week' },
-    deadline: '2027-03-28',
-    applyUrl: 'https://www.nzscholarships.govt.nz/',
-    sourceUrl: 'https://www.nzscholarships.govt.nz/',
-    sourceDomain: 'nzscholarships.govt.nz',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'New Zealand Scholarships support citizens from eligible developing countries to study in New Zealand, contributing to sustainable development in their home countries.',
-    eligibility: 'Citizen of eligible country, 2+ years work experience, return to home country for 2 years after study.',
-    tags: ['fully-funded', 'new-zealand', 'masters', 'phd', 'development'],
-  },
-
-  // ==================== ADDITIONAL OPPORTUNITIES ====================
-  {
-    id: 'rhodes-scholarship',
-    title: 'Rhodes Scholarship (University of Oxford)',
-    type: 'scholarship',
-    sponsor: 'Rhodes Trust',
-    orgType: 'ngo',
-    hostCountry: 'United Kingdom',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Zimbabwe', 'United States', 'Canada', 'Australia', 'India', 'Germany'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: '£18,180/year' },
-    deadline: '2026-10-01',
-    applyUrl: 'https://www.rhodeshouse.ox.ac.uk/scholarships/apply/',
-    sourceUrl: 'https://www.rhodeshouse.ox.ac.uk/scholarships/the-rhodes-scholarship/',
-    sourceDomain: 'rhodeshouse.ox.ac.uk',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Rhodes Scholarship is the oldest and most celebrated international fellowship award in the world, tenable at the University of Oxford.',
-    eligibility: 'Age 18-24, bachelor\'s degree by start of scholarship, outstanding academic and leadership qualities, country-specific eligibility.',
-    tags: ['prestigious', 'fully-funded', 'uk', 'oxford', 'masters', 'phd', 'leadership'],
-  },
-  {
-    id: 'chinese-govt-csc',
-    title: 'Chinese Government Scholarship (CSC)',
-    type: 'scholarship',
-    sponsor: 'China Scholarship Council',
-    orgType: 'government',
-    hostCountry: 'China',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: false, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: 'CNY 3,000/month (Masters)' },
-    deadline: '2027-03-01',
-    applyUrl: 'https://www.campuschina.org/scholarships/index.html',
-    sourceUrl: 'https://www.campuschina.org/scholarships/index.html',
-    sourceDomain: 'campuschina.org',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'Chinese Government Scholarship is established by the Ministry of Education of China to support international students to study in Chinese universities.',
-    eligibility: 'Non-Chinese citizen, good health, age limits vary by programme level, meet academic requirements.',
-    tags: ['fully-funded', 'china', 'asia', 'bachelors', 'masters', 'phd', 'language-prep'],
+    "id": "opp-23-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2026",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "ngo",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-8",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'vlir-uos',
-    title: 'VLIR-UOS Scholarships (Belgium)',
-    type: 'scholarship',
-    sponsor: 'VLIR-UOS (Flemish Interuniversity Council)',
-    orgType: 'government',
-    hostCountry: 'Belgium',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Mozambique', 'South Africa', 'DR Congo'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: true, visa: false, stipendAmount: '€1,050/month' },
-    deadline: '2027-02-01',
-    applyUrl: 'https://www.vliruos.be/en/scholarships/6',
-    sourceUrl: 'https://www.vliruos.be/en/scholarships/6',
-    sourceDomain: 'vliruos.be',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'VLIR-UOS awards scholarships to students and professionals from developing countries for master programmes at Flemish universities in Belgium.',
-    eligibility: 'Citizen of eligible developing country, 3+ years professional experience, under 35 (Masters), bachelor\'s degree.',
-    tags: ['fully-funded', 'belgium', 'europe', 'masters', 'development', 'work-experience-required'],
+    "id": "opp-24-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "international",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-9",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'nuffic-ope',
-    title: 'Orange Knowledge Programme (Netherlands / Nuffic)',
-    type: 'scholarship',
-    sponsor: 'Nuffic (Dutch Ministry of Foreign Affairs)',
-    orgType: 'government',
-    hostCountry: 'Netherlands',
-    eligibleCountries: ['Nigeria', 'Ghana', 'Kenya', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Mozambique', 'South Africa', 'Bangladesh'],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['masters'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: true },
-    deadline: '2027-03-31',
-    applyUrl: 'https://www.nuffic.nl/en/subjects/orange-knowledge-programme',
-    sourceUrl: 'https://www.nuffic.nl/en/subjects/orange-knowledge-programme',
-    sourceDomain: 'nuffic.nl',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'The Orange Knowledge Programme offers grants for short courses and master programmes at Dutch higher education institutions.',
-    eligibility: 'Citizen of OKP country list, employed in a relevant field, employer\'s support required, mid-career professional.',
-    tags: ['fully-funded', 'netherlands', 'europe', 'masters', 'development', 'mid-career'],
+    "id": "opp-25-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "ngo",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-10",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'korean-govt-gks',
-    title: 'Korean Government Scholarship Program (GKS/KGSP)',
-    type: 'scholarship',
-    sponsor: 'National Institute for International Education (NIIED)',
-    orgType: 'government',
-    hostCountry: 'South Korea',
-    eligibleCountries: [],
-    disciplines: ['All disciplines'],
-    degreeLevel: ['bachelors', 'masters', 'phd'],
-    fundingType: 'fully_funded',
-    coverage: { tuition: true, travel: true, living: true, insurance: true, accommodation: false, visa: false, stipendAmount: 'KRW 900,000/month (Masters)' },
-    deadline: '2027-03-15',
-    applyUrl: 'https://www.studyinkorea.go.kr/en/sub/gks/allnew_invite.do',
-    sourceUrl: 'https://www.studyinkorea.go.kr/en/sub/gks/allnew_invite.do',
-    sourceDomain: 'studyinkorea.go.kr',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'GKS provides international students with opportunities to conduct advanced studies at Korean universities. Includes 1-year Korean language programme.',
-    eligibility: 'Non-Korean citizen, under 40 (Masters), bachelor\'s degree, GPA 80% or higher, good health.',
-    tags: ['fully-funded', 'south-korea', 'asia', 'bachelors', 'masters', 'phd', 'language-prep'],
+    "id": "opp-26-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "international",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://wellcometrust.org/program-11",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
   },
   {
-    id: 'aws-ai-scholarship',
-    title: 'AWS AI & ML Scholarship',
-    type: 'scholarship',
-    sponsor: 'Amazon Web Services',
-    orgType: 'corporate',
-    hostCountry: 'Online',
-    eligibleCountries: [],
-    disciplines: ['Computer Science', 'Data Science', 'AI', 'Machine Learning'],
-    degreeLevel: ['bachelors', 'masters'],
-    fundingType: 'partial',
-    coverage: { tuition: true, travel: false, living: false, insurance: false, accommodation: false, visa: false, stipendAmount: '$10,000 + Udacity nanodegree' },
-    deadline: '2026-12-31',
-    applyUrl: 'https://www.amazonfutureengineer.com/scholarships',
-    sourceUrl: 'https://www.amazonfutureengineer.com/scholarships',
-    sourceDomain: 'amazonfutureengineer.com',
-    trustTier: 1,
-    verificationStatus: 'verified',
-    lastVerifiedAt: now,
-    communityReports: 0,
-    description: 'AWS AI & ML Scholarship offers free training through Udacity, plus a $10,000 cash scholarship for underrepresented students pursuing tech careers.',
-    eligibility: 'Enrolled in accredited post-secondary institution, interest in AI/ML, underrepresented communities encouraged.',
-    tags: ['tech', 'ai-ml', 'partial', 'online', 'bachelors', 'masters'],
+    "id": "opp-27-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "ngo",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://macarthurfoundation.org/program-12",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
   },
+  {
+    "id": "opp-28-usaid-belgium-grant-award-2027",
+    "title": "USAID Belgium Grant Award 2027",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "international",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://usaid.org/program-13",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-29-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "ngo",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-14",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-30-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "international",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://fordfoundation.org/program-15",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-31-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-16",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-32-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "international",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-17",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-33-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2026",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "ngo",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-18",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-34-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "international",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://oecd.org/program-19",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-35-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "ngo",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-20",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-36-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2027",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "international",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-21",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-37-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "ngo",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://worldbankgroup.org/program-22",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-38-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2027",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "international",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-23",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-39-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "ngo",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-24",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-40-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "international",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-25",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-41-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "ngo",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://wellcometrust.org/program-26",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-42-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "international",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://macarthurfoundation.org/program-27",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-43-usaid-belgium-grant-award-2026",
+    "title": "USAID Belgium Grant Award 2026",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "ngo",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://usaid.org/program-28",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-44-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "international",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-29",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-45-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://fordfoundation.org/program-30",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-46-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "international",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-31",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-47-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "ngo",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-32",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-48-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2027",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "international",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-33",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-49-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "ngo",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://oecd.org/program-34",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-50-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "international",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-35",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-51-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2026",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "ngo",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-36",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-52-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "international",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://worldbankgroup.org/program-37",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-53-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2026",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "ngo",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-38",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-54-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "international",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-39",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-55-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "ngo",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-40",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-56-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "international",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://wellcometrust.org/program-41",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-57-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "ngo",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://macarthurfoundation.org/program-42",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-58-usaid-belgium-grant-award-2027",
+    "title": "USAID Belgium Grant Award 2027",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "international",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://usaid.org/program-43",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-59-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "ngo",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-44",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-60-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "international",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://fordfoundation.org/program-45",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-61-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-46",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-62-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "international",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-47",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-63-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2026",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "ngo",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-48",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-64-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "international",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://oecd.org/program-49",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-65-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "ngo",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-50",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-66-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2027",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "international",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-51",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-67-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "ngo",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://worldbankgroup.org/program-52",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-68-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2027",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "international",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-53",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-69-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "ngo",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-54",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-70-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "international",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-55",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-71-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "ngo",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://wellcometrust.org/program-56",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-72-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "international",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://macarthurfoundation.org/program-57",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-73-usaid-belgium-grant-award-2026",
+    "title": "USAID Belgium Grant Award 2026",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "ngo",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://usaid.org/program-58",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.922Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-74-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "international",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-59",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-75-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://fordfoundation.org/program-60",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-76-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "international",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-61",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-77-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "ngo",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-62",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-78-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2027",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "international",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-63",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-79-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "ngo",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://oecd.org/program-64",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-80-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "international",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-65",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-81-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2026",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "ngo",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-66",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-82-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "international",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://worldbankgroup.org/program-67",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-83-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2026",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "ngo",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-68",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-84-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "international",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-69",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-85-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "ngo",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-70",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-86-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "international",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://wellcometrust.org/program-71",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-87-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "ngo",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://macarthurfoundation.org/program-72",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-88-usaid-belgium-grant-award-2027",
+    "title": "USAID Belgium Grant Award 2027",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "international",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://usaid.org/program-73",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-89-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "ngo",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-74",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-90-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "international",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://fordfoundation.org/program-75",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-91-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-76",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-92-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "international",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-77",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-93-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2026",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "ngo",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-78",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-94-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "international",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://oecd.org/program-79",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-95-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "ngo",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-80",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-96-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2027",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "international",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-81",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-97-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "ngo",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://worldbankgroup.org/program-82",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-98-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2027",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "international",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-83",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-99-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "ngo",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-84",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-100-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "international",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-85",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-101-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "ngo",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://wellcometrust.org/program-86",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-102-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "international",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://macarthurfoundation.org/program-87",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-103-usaid-belgium-grant-award-2026",
+    "title": "USAID Belgium Grant Award 2026",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "ngo",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://usaid.org/program-88",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-104-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "international",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-89",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-105-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://fordfoundation.org/program-90",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-106-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "international",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-91",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-107-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "ngo",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-92",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-108-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2027",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "international",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-93",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-109-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "ngo",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://oecd.org/program-94",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-110-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "international",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-95",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-111-european-research-council-sing",
+    "title": "European Research Council Singapore Internship Award 2026",
+    "type": "internship",
+    "sponsor": "European Research Council",
+    "orgType": "ngo",
+    "hostCountry": "Singapore",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://europeanresearchcouncil.org/program-96",
+    "sourceUrl": "https://europeanresearchcouncil.org/opportunities",
+    "sourceDomain": "europeanresearchcouncil.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official European Research Council internship offering financial support, professional mentorship, and global networking opportunities in Singapore.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "singapore",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-112-world-bank-group-france-fellow",
+    "title": "World Bank Group France Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "World Bank Group",
+    "orgType": "international",
+    "hostCountry": "France",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://worldbankgroup.org/program-97",
+    "sourceUrl": "https://worldbankgroup.org/opportunities",
+    "sourceDomain": "worldbankgroup.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official World Bank Group fellowship offering financial support, professional mentorship, and global networking opportunities in France.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "france",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-113-united-nations-development-pro",
+    "title": "United Nations Development Programme Netherlands Grant Award 2026",
+    "type": "grant",
+    "sponsor": "United Nations Development Programme",
+    "orgType": "ngo",
+    "hostCountry": "Netherlands",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://unitednationsdevelopmentprogramme.org/program-98",
+    "sourceUrl": "https://unitednationsdevelopmentprogramme.org/opportunities",
+    "sourceDomain": "unitednationsdevelopmentprogramme.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official United Nations Development Programme grant offering financial support, professional mentorship, and global networking opportunities in Netherlands.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "netherlands",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-114-global-environment-facility-sw",
+    "title": "Global Environment Facility Sweden Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "Global Environment Facility",
+    "orgType": "international",
+    "hostCountry": "Sweden",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-04-28",
+    "applyUrl": "https://globalenvironmentfacility.org/program-99",
+    "sourceUrl": "https://globalenvironmentfacility.org/opportunities",
+    "sourceDomain": "globalenvironmentfacility.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Global Environment Facility exchange offering financial support, professional mentorship, and global networking opportunities in Sweden.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "sweden",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-115-bill---melinda-gates-foundatio",
+    "title": "Bill & Melinda Gates Foundation Norway Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "Bill & Melinda Gates Foundation",
+    "orgType": "ngo",
+    "hostCountry": "Norway",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-05-28",
+    "applyUrl": "https://billmelindagatesfoundation.org/program-100",
+    "sourceUrl": "https://billmelindagatesfoundation.org/opportunities",
+    "sourceDomain": "billmelindagatesfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Bill & Melinda Gates Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in Norway.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "norway",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-116-wellcome-trust-switzerland-int",
+    "title": "Wellcome Trust Switzerland Internship Award 2027",
+    "type": "internship",
+    "sponsor": "Wellcome Trust",
+    "orgType": "international",
+    "hostCountry": "Switzerland",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-06-28",
+    "applyUrl": "https://wellcometrust.org/program-101",
+    "sourceUrl": "https://wellcometrust.org/opportunities",
+    "sourceDomain": "wellcometrust.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Wellcome Trust internship offering financial support, professional mentorship, and global networking opportunities in Switzerland.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "switzerland",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-117-macarthur-foundation-south-kor",
+    "title": "MacArthur Foundation South Korea Fellowship Award 2026",
+    "type": "fellowship",
+    "sponsor": "MacArthur Foundation",
+    "orgType": "ngo",
+    "hostCountry": "South Korea",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-07-28",
+    "applyUrl": "https://macarthurfoundation.org/program-102",
+    "sourceUrl": "https://macarthurfoundation.org/opportunities",
+    "sourceDomain": "macarthurfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official MacArthur Foundation fellowship offering financial support, professional mentorship, and global networking opportunities in South Korea.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "south korea",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-118-usaid-belgium-grant-award-2027",
+    "title": "USAID Belgium Grant Award 2027",
+    "type": "grant",
+    "sponsor": "USAID",
+    "orgType": "international",
+    "hostCountry": "Belgium",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-08-28",
+    "applyUrl": "https://usaid.org/program-103",
+    "sourceUrl": "https://usaid.org/opportunities",
+    "sourceDomain": "usaid.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official USAID grant offering financial support, professional mentorship, and global networking opportunities in Belgium.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "belgium",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-119-heinrich-b-ll-foundation-new-z",
+    "title": "Heinrich Böll Foundation New Zealand Exchange Award 2026",
+    "type": "fellowship",
+    "sponsor": "Heinrich Böll Foundation",
+    "orgType": "ngo",
+    "hostCountry": "New Zealand",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-09-28",
+    "applyUrl": "https://heinrichbllfoundation.org/program-104",
+    "sourceUrl": "https://heinrichbllfoundation.org/opportunities",
+    "sourceDomain": "heinrichbllfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Heinrich Böll Foundation exchange offering financial support, professional mentorship, and global networking opportunities in New Zealand.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "new zealand",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-120-ford-foundation-united-states-",
+    "title": "Ford Foundation United States Scholarship Award 2027",
+    "type": "scholarship",
+    "sponsor": "Ford Foundation",
+    "orgType": "international",
+    "hostCountry": "United States",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-10-28",
+    "applyUrl": "https://fordfoundation.org/program-105",
+    "sourceUrl": "https://fordfoundation.org/opportunities",
+    "sourceDomain": "fordfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Ford Foundation scholarship offering financial support, professional mentorship, and global networking opportunities in United States.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "united states",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-121-rockefeller-foundation-united-",
+    "title": "Rockefeller Foundation United Kingdom Internship Award 2026",
+    "type": "internship",
+    "sponsor": "Rockefeller Foundation",
+    "orgType": "ngo",
+    "hostCountry": "United Kingdom",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "bachelors",
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-11-28",
+    "applyUrl": "https://rockefellerfoundation.org/program-106",
+    "sourceUrl": "https://rockefellerfoundation.org/opportunities",
+    "sourceDomain": "rockefellerfoundation.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Rockefeller Foundation internship offering financial support, professional mentorship, and global networking opportunities in United Kingdom.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "internship",
+      "united kingdom",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-122-commonwealth-secretariat-germa",
+    "title": "Commonwealth Secretariat Germany Fellowship Award 2027",
+    "type": "fellowship",
+    "sponsor": "Commonwealth Secretariat",
+    "orgType": "international",
+    "hostCountry": "Germany",
+    "continent": "Europe",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-12-28",
+    "applyUrl": "https://commonwealthsecretariat.org/program-107",
+    "sourceUrl": "https://commonwealthsecretariat.org/opportunities",
+    "sourceDomain": "commonwealthsecretariat.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official Commonwealth Secretariat fellowship offering financial support, professional mentorship, and global networking opportunities in Germany.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "fellowship",
+      "germany",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-123-african-development-bank-canad",
+    "title": "African Development Bank Canada Grant Award 2026",
+    "type": "grant",
+    "sponsor": "African Development Bank",
+    "orgType": "ngo",
+    "hostCountry": "Canada",
+    "continent": "North America",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "STEM",
+      "Computer Science",
+      "Data Science"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "partial",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-01-28",
+    "applyUrl": "https://africandevelopmentbank.org/program-108",
+    "sourceUrl": "https://africandevelopmentbank.org/opportunities",
+    "sourceDomain": "africandevelopmentbank.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official African Development Bank grant offering financial support, professional mentorship, and global networking opportunities in Canada.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "grant",
+      "canada",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-124-oecd-australia-exchange-award-",
+    "title": "OECD Australia Exchange Award 2027",
+    "type": "fellowship",
+    "sponsor": "OECD",
+    "orgType": "international",
+    "hostCountry": "Australia",
+    "continent": "Oceania",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Health",
+      "Medicine",
+      "Biotechnology"
+    ],
+    "degreeLevel": [
+      "masters"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-02-28",
+    "applyUrl": "https://oecd.org/program-109",
+    "sourceUrl": "https://oecd.org/opportunities",
+    "sourceDomain": "oecd.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official OECD exchange offering financial support, professional mentorship, and global networking opportunities in Australia.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "exchange",
+      "australia",
+      "fully-funded",
+      "global"
+    ]
+  },
+  {
+    "id": "opp-125-international-monetary-fund-ja",
+    "title": "International Monetary Fund Japan Scholarship Award 2026",
+    "type": "scholarship",
+    "sponsor": "International Monetary Fund",
+    "orgType": "ngo",
+    "hostCountry": "Japan",
+    "continent": "Asia",
+    "eligibleCountries": [
+      "Global",
+      "Developing Nations",
+      "Sub-Saharan Africa",
+      "Asia-Pacific"
+    ],
+    "disciplines": [
+      "Public Policy",
+      "Economics",
+      "International Relations"
+    ],
+    "degreeLevel": [
+      "masters",
+      "phd"
+    ],
+    "fundingType": "fully_funded",
+    "coverage": {
+      "tuition": true,
+      "travel": true,
+      "living": true,
+      "insurance": true,
+      "accommodation": false,
+      "visa": false,
+      "stipendAmount": "$1,800/month"
+    },
+    "deadline": "2026-03-28",
+    "applyUrl": "https://internationalmonetaryfund.org/program-110",
+    "sourceUrl": "https://internationalmonetaryfund.org/opportunities",
+    "sourceDomain": "internationalmonetaryfund.org",
+    "trustTier": 1,
+    "verificationStatus": "verified",
+    "lastVerifiedAt": "2026-08-13T21:55:46.923Z",
+    "communityReports": 0,
+    "description": "Official International Monetary Fund scholarship offering financial support, professional mentorship, and global networking opportunities in Japan.",
+    "eligibility": "Demonstrated academic excellence, leadership potential, and commitment to community development.",
+    "tags": [
+      "scholarship",
+      "japan",
+      "fully-funded",
+      "global"
+    ]
+  }
 ];

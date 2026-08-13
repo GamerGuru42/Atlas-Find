@@ -8,38 +8,50 @@ import { FeatureComparison } from '@/components/pricing/FeatureComparison';
 import styles from '@/components/pricing/Pricing.module.css';
 import Link from 'next/link';
 
-export default async function PricingPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll(); },
-        setAll() {}
-      },
-    }
-  );
+export const dynamic = 'force-dynamic';
 
-  const { data: { session } } = await supabase.auth.getSession();
-  
+export default async function PricingPage() {
   let countryCode = 'US';
-  let isLoggedIn = !!session;
-  
-  if (isLoggedIn) {
-    const user = await prisma.user.findUnique({
-      where: { id: session!.user.id },
-      select: { countryCode: true }
-    });
-    if (user?.countryCode) {
-      countryCode = user.countryCode;
+  let isLoggedIn = false;
+
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (supabaseUrl && supabaseAnonKey) {
+      const cookieStore = await cookies();
+      const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {}
+        },
+      });
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        isLoggedIn = true;
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { countryCode: true }
+        });
+        if (user?.countryCode) {
+          countryCode = user.countryCode;
+        }
+      }
     }
-  } else {
-    // Attempt to get country from Vercel headers if not logged in
-    const headersList = await headers();
-    const vercelCountry = headersList.get('x-vercel-ip-country');
-    if (vercelCountry) {
-      countryCode = vercelCountry;
+  } catch (e) {
+    console.error('PricingPage session lookup error:', e);
+  }
+
+  if (!isLoggedIn) {
+    try {
+      const headersList = await headers();
+      const vercelCountry = headersList.get('x-vercel-ip-country');
+      if (vercelCountry) {
+        countryCode = vercelCountry;
+      }
+    } catch (e) {
+      console.error('PricingPage country header error:', e);
     }
   }
 

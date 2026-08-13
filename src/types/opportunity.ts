@@ -5,6 +5,7 @@ export interface Opportunity {
   sponsor: string;
   orgType: 'university' | 'government' | 'ngo' | 'corporate' | 'international';
   hostCountry: string;
+  continent?: string;
   eligibleCountries: string[]; // empty = open to all
   disciplines: string[];
   degreeLevel: ('bachelors' | 'masters' | 'phd' | 'postdoc')[];
