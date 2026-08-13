@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './Pricing.module.css';
 import { PartnerInquiryModal } from './PartnerInquiryModal';
 import { PaymentMethodSelector } from '../payments/PaymentMethodSelector';
+import { getPricing, normalizeCountryCode } from '@/lib/pricing/currencies';
 
 interface PricingTableProps {
   userPricing: {
@@ -16,14 +17,40 @@ interface PricingTableProps {
   countryCode?: string;
 }
 
-export function PricingTable({ userPricing, isLoggedIn, countryNotFound, countryCode = 'NG' }: PricingTableProps) {
+export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, countryNotFound: initialCountryNotFound, countryCode: initialCountryCode = 'US' }: PricingTableProps) {
   const [isYearly, setIsYearly] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrgType, setSelectedOrgType] = useState('University');
   const [activeCheckoutTier, setActiveCheckoutTier] = useState<'PRO' | 'ELITE' | null>(null);
 
-  const proPrice = isYearly ? userPricing.PRO.yearly : userPricing.PRO.monthly;
-  const elitePrice = isYearly ? userPricing.ELITE.yearly : userPricing.ELITE.monthly;
+  const [effectiveCountryCode, setEffectiveCountryCode] = useState(initialCountryCode);
+  const [effectivePricing, setEffectivePricing] = useState(initialUserPricing);
+
+  useEffect(() => {
+    let detectedCountry = initialCountryCode;
+
+    // Check cookie
+    const cookieMatch = document.cookie.match(/atlas_country_code=([^;]+)/);
+    if (cookieMatch && cookieMatch[1]) {
+      detectedCountry = cookieMatch[1];
+    } else {
+      // Check localStorage
+      const localCountry = localStorage.getItem('atlas_country_code') || localStorage.getItem('user_country');
+      if (localCountry) {
+        detectedCountry = localCountry;
+      }
+    }
+
+    const norm = normalizeCountryCode(detectedCountry);
+    setEffectiveCountryCode(norm);
+    setEffectivePricing({
+      PRO: getPricing('PRO', norm),
+      ELITE: getPricing('ELITE', norm)
+    });
+  }, [initialCountryCode]);
+
+  const proPrice = isYearly ? effectivePricing.PRO.yearly : effectivePricing.PRO.monthly;
+  const elitePrice = isYearly ? effectivePricing.ELITE.yearly : effectivePricing.ELITE.monthly;
   const period = isYearly ? 'year' : 'mo';
 
   const openPartnerModal = (orgType: string) => {
@@ -38,6 +65,9 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound, country
     }
     setActiveCheckoutTier(activeCheckoutTier === tier ? null : tier);
   };
+
+  const isUSD = effectivePricing.PRO.currency === 'USD';
+  const countryNotFound = isUSD && effectiveCountryCode !== 'US';
 
   return (
     <>
@@ -118,7 +148,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound, country
           </div>
           <div className={styles.priceContainer}>
             <span className={styles.price}>
-              {userPricing.PRO.symbol}{proPrice.toLocaleString()}
+              {effectivePricing.PRO.symbol}{proPrice.toLocaleString()}
             </span>
             <span className={styles.pricePeriod}>/{period}</span>
           </div>
@@ -158,7 +188,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound, country
             <PaymentMethodSelector
               tier="PRO"
               billing={isYearly ? 'yearly' : 'monthly'}
-              countryCode={countryCode}
+              countryCode={effectiveCountryCode}
             />
           )}
         </div>
@@ -171,7 +201,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound, country
           </div>
           <div className={styles.priceContainer}>
             <span className={styles.price}>
-              {userPricing.ELITE.symbol}{elitePrice.toLocaleString()}
+              {effectivePricing.ELITE.symbol}{elitePrice.toLocaleString()}
             </span>
             <span className={styles.pricePeriod}>/{period}</span>
           </div>
@@ -217,7 +247,7 @@ export function PricingTable({ userPricing, isLoggedIn, countryNotFound, country
             <PaymentMethodSelector
               tier="ELITE"
               billing={isYearly ? 'yearly' : 'monthly'}
-              countryCode={countryCode}
+              countryCode={effectiveCountryCode}
             />
           )}
         </div>

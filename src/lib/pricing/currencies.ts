@@ -29,19 +29,56 @@ export type Tier = 'PRO' | 'ELITE';
 
 export const COUNTRY_CURRENCY_MAP: Record<string, string> = {
   NG: "NGN",
+  NIGERIA: "NGN",
+  NGN: "NGN",
   GH: "GHS",
+  GHANA: "GHS",
+  GHS: "GHS",
   KE: "KES",
+  KENYA: "KES",
+  KES: "KES",
   ZA: "ZAR",
+  "SOUTH AFRICA": "ZAR",
+  ZAR: "ZAR",
   US: "USD",
+  "UNITED STATES": "USD",
+  USA: "USD",
+  USD: "USD",
   GB: "GBP",
+  UK: "GBP",
+  "UNITED KINGDOM": "GBP",
+  GBP: "GBP",
   DE: "EUR",
+  GERMANY: "EUR",
   FR: "EUR",
+  FRANCE: "EUR",
+  EUR: "EUR",
   IN: "INR",
-  CA: "CAD"
+  INDIA: "INR",
+  INR: "INR",
+  CA: "CAD",
+  CANADA: "CAD",
+  CAD: "CAD"
 };
 
+export function normalizeCountryCode(countryInput?: string | null): string {
+  if (!countryInput) return 'US';
+  const clean = countryInput.trim().toUpperCase();
+  if (clean === 'NG' || clean === 'NIGERIA' || clean === 'NGN') return 'NG';
+  if (clean === 'GH' || clean === 'GHANA' || clean === 'GHS') return 'GH';
+  if (clean === 'KE' || clean === 'KENYA' || clean === 'KES') return 'KE';
+  if (clean === 'ZA' || clean === 'SOUTH AFRICA' || clean === 'ZAR') return 'ZA';
+  if (clean === 'GB' || clean === 'UK' || clean === 'UNITED KINGDOM' || clean === 'GBP') return 'GB';
+  if (clean === 'IN' || clean === 'INDIA' || clean === 'INR') return 'IN';
+  if (clean === 'CA' || clean === 'CANADA' || clean === 'CAD') return 'CA';
+  if (clean === 'DE' || clean === 'GERMANY' || clean === 'FR' || clean === 'FRANCE' || clean === 'EUR') return 'DE';
+  return clean;
+}
+
 export function getPricing(tier: Tier, countryCode?: string | null) {
-  const currencyCode = countryCode ? COUNTRY_CURRENCY_MAP[countryCode.toUpperCase()] : null;
+  if (!countryCode) return PRICING[tier].DEFAULT;
+  const upper = countryCode.trim().toUpperCase();
+  const currencyCode = COUNTRY_CURRENCY_MAP[upper];
   
   const tierPricing = PRICING[tier];
   

@@ -2,7 +2,7 @@ import React from 'react';
 import { createServerClient } from '@supabase/ssr';
 import { cookies, headers } from 'next/headers';
 import prisma from '@/lib/db/prisma';
-import { getPricing } from '@/lib/pricing/currencies';
+import { getPricing, normalizeCountryCode } from '@/lib/pricing/currencies';
 import { PricingTable } from '@/components/pricing/PricingTable';
 import { FeatureComparison } from '@/components/pricing/FeatureComparison';
 import styles from '@/components/pricing/Pricing.module.css';
@@ -15,11 +15,18 @@ export default async function PricingPage() {
   let isLoggedIn = false;
 
   try {
+    const cookieStore = await cookies();
+    
+    // 1. Check saved country cookie first
+    const cookieCountry = cookieStore.get('atlas_country_code')?.value;
+    if (cookieCountry) {
+      countryCode = normalizeCountryCode(cookieCountry);
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (supabaseUrl && supabaseAnonKey) {
-      const cookieStore = await cookies();
       const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
         cookies: {
           getAll() { return cookieStore.getAll(); },
@@ -30,12 +37,20 @@ export default async function PricingPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user?.id) {
         isLoggedIn = true;
+
+        // 2. Check metadata on session user
+        const metaCountry = session.user.user_metadata?.country_code || session.user.user_metadata?.country;
+        if (metaCountry) {
+          countryCode = normalizeCountryCode(metaCountry);
+        }
+
+        // 3. Check database user record
         const user = await prisma.user.findUnique({
           where: { id: session.user.id },
           select: { countryCode: true }
         });
         if (user?.countryCode) {
-          countryCode = user.countryCode;
+          countryCode = normalizeCountryCode(user.countryCode);
         }
       }
     }
@@ -43,12 +58,15 @@ export default async function PricingPage() {
     console.error('PricingPage session lookup error:', e);
   }
 
-  if (!isLoggedIn) {
+  // 4. Geolocation header fallback if not logged in or cookie missing
+  if (countryCode === 'US') {
     try {
       const headersList = await headers();
-      const vercelCountry = headersList.get('x-vercel-ip-country');
-      if (vercelCountry) {
-        countryCode = vercelCountry;
+      const ipCountry = headersList.get('x-vercel-ip-country') || 
+                        headersList.get('cf-ipcountry') || 
+                        headersList.get('x-country-code');
+      if (ipCountry) {
+        countryCode = normalizeCountryCode(ipCountry);
       }
     } catch (e) {
       console.error('PricingPage country header error:', e);

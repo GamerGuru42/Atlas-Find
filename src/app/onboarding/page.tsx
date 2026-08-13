@@ -47,6 +47,10 @@ export default function OnboardingPage() {
         icon: <CheckCircle2 className="w-5 h-5 text-green-500" />
       })
 
+      // Store in localStorage for instant client-side pricing & region detection
+      localStorage.setItem('atlas_country_code', countryCode)
+      localStorage.setItem('user_country', countryCode)
+
       // Also update browser session user_metadata directly so client-side token claims refresh immediately
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
