@@ -54,10 +54,21 @@ export async function POST(req: Request) {
 
     const currency = CURRENCY_MAP[country_code] || 'USD'
 
-    // 1. Update Supabase Auth user_metadata
-    // We need to use supabase.auth.updateUser to update the metadata
-    const { error: updateError } = await supabase.auth.updateUser({
-      data: {
+    // 1. Update Supabase Auth user_metadata using Service Role key
+    // This is much safer for server-side updates and avoids token sync issues with the browser
+    const supabaseAdmin = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        cookies: {
+          getAll() { return [] },
+          setAll() {}
+        }
+      }
+    )
+
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+      user_metadata: {
         onboarding_completed: true,
         country_code,
       }

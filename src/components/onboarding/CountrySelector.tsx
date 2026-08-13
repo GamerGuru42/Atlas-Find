@@ -5,40 +5,13 @@ import { motion } from 'framer-motion'
 import { Check, ChevronDown, Search } from 'lucide-react'
 import styles from './Onboarding.module.css'
 
-const REGIONS = ['Popular', 'Africa', 'Europe', 'North America', 'Asia', 'Oceania', 'South America'] as const
+import COUNTRIES from '@/lib/countries.json'
 
-const COUNTRIES = [
-  // Popular
-  { code: 'NG', name: 'Nigeria', flag: '🇳🇬', region: 'Popular' },
-  { code: 'GH', name: 'Ghana', flag: '🇬🇭', region: 'Popular' },
-  { code: 'KE', name: 'Kenya', flag: '🇰🇪', region: 'Popular' },
-  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', region: 'Popular' },
-  { code: 'US', name: 'United States', flag: '🇺🇸', region: 'Popular' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦', region: 'Popular' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪', region: 'Popular' },
-  { code: 'IN', name: 'India', flag: '🇮🇳', region: 'Popular' },
-  { code: 'AU', name: 'Australia', flag: '🇦🇺', region: 'Popular' },
-  
-  // Africa
-  { code: 'ZA', name: 'South Africa', flag: '🇿🇦', region: 'Africa' },
-  { code: 'EG', name: 'Egypt', flag: '🇪🇬', region: 'Africa' },
-  { code: 'MA', name: 'Morocco', flag: '🇲🇦', region: 'Africa' },
-  // Europe
-  { code: 'FR', name: 'France', flag: '🇫🇷', region: 'Europe' },
-  { code: 'IT', name: 'Italy', flag: '🇮🇹', region: 'Europe' },
-  { code: 'ES', name: 'Spain', flag: '🇪🇸', region: 'Europe' },
-  // North America
-  { code: 'MX', name: 'Mexico', flag: '🇲🇽', region: 'North America' },
-  // Asia
-  { code: 'JP', name: 'Japan', flag: '🇯🇵', region: 'Asia' },
-  { code: 'CN', name: 'China', flag: '🇨🇳', region: 'Asia' },
-  { code: 'SG', name: 'Singapore', flag: '🇸🇬', region: 'Asia' },
-  // Oceania
-  { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', region: 'Oceania' },
-  // South America
-  { code: 'BR', name: 'Brazil', flag: '🇧🇷', region: 'South America' },
-  { code: 'AR', name: 'Argentina', flag: '🇦🇷', region: 'South America' },
-]
+const REGIONS = ['Popular', ...Array.from(new Set(COUNTRIES.map(c => c.region))).filter(r => r !== 'Popular')].sort((a, b) => {
+  if (a === 'Popular') return -1
+  if (b === 'Popular') return 1
+  return a.localeCompare(b)
+})
 
 interface CountrySelectorProps {
   onContinue: (countryCode: string) => void

@@ -270,3 +270,23 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.75rem !important;
+  }
+  .content {
+    padding: 1.5rem 1rem;
+  }
+  .stepContainer, .selectorContainer {
+    gap: 1.5rem;
+  }
+  .iconWrapper {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+  }
+  .buttonPrimary {
+    padding: 0.875rem 2rem;
+  }
+}

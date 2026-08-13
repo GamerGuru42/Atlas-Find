@@ -16,9 +16,22 @@ const jetbrainsMono = JetBrains_Mono({
 
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 
+export const viewport = {
+  themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "AtlasFind | Discover Scholarships, Internships & Global Opportunities",
   description: "Find fully funded scholarships, internships, fellowships, and study abroad opportunities worldwide.",
+  applicationName: "AtlasFind",
+  appleWebApp: {
+    capable: true,
+    title: "AtlasFind",
+    statusBarStyle: "default",
+  },
   openGraph: {
     title: "AtlasFind | Discover Scholarships, Internships & Global Opportunities",
     description: "Find fully funded scholarships, internships, fellowships, and study abroad opportunities worldwide.",
