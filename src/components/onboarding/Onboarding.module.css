@@ -1,0 +1,272 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.progressBarContainer {
+  height: 4px;
+  width: 100%;
+  background-color: var(--bg-surface-elevated);
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--accent-primary);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.stepContainer {
+  text-align: center;
+  max-width: 32rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+}
+
+.iconWrapper {
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--accent-primary-dim);
+  border-radius: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 2.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.buttonPrimary {
+  width: 100%;
+  padding: 1rem 3rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--accent-primary);
+  color: #000;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+.buttonPrimary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+.buttonPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttonSecondary {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.buttonSecondary:hover {
+  color: var(--text-primary);
+}
+
+.indicators {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.indicatorActive {
+  background-color: var(--accent-primary);
+}
+
+.indicatorInactive {
+  background-color: var(--bg-surface-elevated);
+}
+
+/* CountrySelector / ProfileBuilder specific */
+.selectorContainer {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.headerText {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.relativeContainer {
+  position: relative;
+  width: 100%;
+}
+
+.dropdownButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1rem;
+}
+.dropdownButton:hover {
+  background-color: var(--bg-card-hover);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-default);
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-surface-elevated);
+  z-index: 10;
+  margin-bottom: 0.5rem;
+}
+
+.searchIcon {
+  opacity: 0.5;
+  margin-right: 0.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.regionTitle {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.countryOption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+  font-size: 0.95rem;
+}
+.countryOption:hover {
+  background-color: var(--bg-card-hover);
+}
+.countryOptionActive {
+  background-color: var(--accent-primary-dim);
+  color: var(--accent-primary);
+}
+.countryOptionActive:hover {
+  background-color: var(--accent-primary-dim);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.input {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s;
+  appearance: none;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+.chevronIcon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  pointer-events: none;
+}

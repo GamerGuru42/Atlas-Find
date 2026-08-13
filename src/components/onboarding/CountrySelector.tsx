@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Check, ChevronDown, Search } from 'lucide-react'
+import styles from './Onboarding.module.css'
 
 const REGIONS = ['Popular', 'Africa', 'Europe', 'North America', 'Asia', 'Oceania', 'South America'] as const
 
@@ -80,45 +81,45 @@ export default function CountrySelector({ onContinue }: CountrySelectorProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-md mx-auto space-y-6"
+      className={styles.selectorContainer}
     >
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Where are you based?</h2>
-        <p className="text-muted-foreground">This helps us show you relevant opportunities and local pricing.</p>
+      <div className={styles.headerText}>
+        <h2 className={styles.title} style={{ fontSize: '1.875rem' }}>Where are you based?</h2>
+        <p className={styles.subtitle}>This helps us show you relevant opportunities and local pricing.</p>
       </div>
 
-      <div className="relative">
+      <div className={styles.relativeContainer}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-card border rounded-xl hover:bg-accent transition-colors"
+          className={styles.dropdownButton}
         >
           {selectedData ? (
-            <span className="flex items-center gap-2">
-              <span className="text-xl">{selectedData.flag}</span>
-              <span className="font-medium">{selectedData.name}</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '1.25rem' }}>{selectedData.flag}</span>
+              <span style={{ fontWeight: 500 }}>{selectedData.name}</span>
             </span>
           ) : (
-            <span className="text-muted-foreground">Select your country...</span>
+            <span style={{ color: 'var(--text-muted)' }}>Select your country...</span>
           )}
-          <ChevronDown className="w-5 h-5 opacity-50" />
+          <ChevronDown style={{ width: '1.25rem', height: '1.25rem', opacity: 0.5 }} />
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-popover border rounded-xl shadow-xl z-50 max-h-[300px] overflow-y-auto">
-            <div className="flex items-center px-3 pb-2 border-b sticky top-0 bg-popover z-10 mb-2">
-              <Search className="w-4 h-4 mr-2 opacity-50" />
+          <div className={styles.dropdownMenu}>
+            <div className={styles.searchInputWrapper}>
+              <Search className={styles.searchIcon} size={16} />
               <input 
                 type="text" 
                 placeholder="Search countries..." 
-                className="w-full bg-transparent outline-none text-sm py-2"
+                className={styles.searchInput}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             
             {grouped.map(group => (
-              <div key={group.region} className="mb-4 last:mb-0">
-                <div className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <div key={group.region} style={{ marginBottom: '1rem' }}>
+                <div className={styles.regionTitle}>
                   {group.region}
                 </div>
                 {group.countries.map(country => (
@@ -129,15 +130,13 @@ export default function CountrySelector({ onContinue }: CountrySelectorProps) {
                       setIsOpen(false)
                       setSearch('')
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                      selectedCountry === country.code ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
-                    }`}
+                    className={`${styles.countryOption} ${selectedCountry === country.code ? styles.countryOptionActive : ''}`}
                   >
-                    <span className="flex items-center gap-2">
-                      <span className="text-lg">{country.flag}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '1.125rem' }}>{country.flag}</span>
                       <span>{country.name}</span>
                     </span>
-                    {selectedCountry === country.code && <Check className="w-4 h-4" />}
+                    {selectedCountry === country.code && <Check size={16} />}
                   </button>
                 ))}
               </div>
@@ -149,7 +148,7 @@ export default function CountrySelector({ onContinue }: CountrySelectorProps) {
       <button
         disabled={!selectedCountry}
         onClick={() => selectedCountry && onContinue(selectedCountry)}
-        className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+        className={styles.buttonPrimary}
       >
         Continue
       </button>

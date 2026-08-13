@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import CountrySelector from '@/components/onboarding/CountrySelector'
 import ProfileBuilder, { ProfileData } from '@/components/onboarding/ProfileBuilder'
 import { CheckCircle2 } from 'lucide-react'
+import styles from '@/components/onboarding/Onboarding.module.css'
 
 // Steps: 1 (Welcome), 2 (Country), 3 (Profile)
 
@@ -54,18 +55,18 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
+    <div className={styles.container}>
       {/* Progress Bar */}
-      <div className="h-1 w-full bg-accent">
+      <div className={styles.progressBarContainer}>
         <motion.div 
-          className="h-full bg-primary"
+          className={styles.progressBar}
           initial={{ width: '33%' }}
           animate={{ width: `${(step / 3) * 100}%` }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         />
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className={styles.content}>
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -73,19 +74,19 @@ export default function OnboardingPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              className="text-center space-y-8 max-w-lg"
+              className={styles.stepContainer}
             >
-              <div className="space-y-4">
-                <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                  <span className="text-4xl">🌍</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className={styles.iconWrapper}>
+                  <span>🌍</span>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                <h1 className={styles.title}>
                   Welcome! Let's personalize your experience.
                 </h1>
               </div>
               <button
                 onClick={() => setStep(2)}
-                className="w-full sm:w-auto px-12 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg transition-all active:scale-[0.98] hover:opacity-90"
+                className={styles.buttonPrimary}
               >
                 Get Started
               </button>
@@ -111,12 +112,12 @@ export default function OnboardingPage() {
       </div>
 
       {/* Step Indicators */}
-      <div className="py-8 flex justify-center gap-2">
+      <div className={styles.indicators}>
         {[1, 2, 3].map(i => (
           <div 
             key={i} 
-            className={`w-2 h-2 rounded-full transition-colors ${
-              step >= i ? 'bg-primary' : 'bg-primary/20'
+            className={`${styles.indicator} ${
+              step >= i ? styles.indicatorActive : styles.indicatorInactive
             }`} 
           />
         ))}
