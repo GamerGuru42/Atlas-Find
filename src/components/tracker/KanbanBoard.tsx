@@ -1,0 +1,224 @@
+'use client';
+import React, { useState, useEffect } from 'react';
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragOverEvent,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import { Plus, Sparkles, LayoutGrid } from 'lucide-react';
+import { KanbanColumn, ColumnConfig } from './KanbanColumn';
+import { TrackerItem } from './KanbanCard';
+import { CardDetailSidebar } from './CardDetailSidebar';
+import { AddToTrackerModal } from './AddToTrackerModal';
+import styles from './Kanban.module.css';
+
+const COLUMNS: ColumnConfig[] = [
+  { id: 'saved', name: 'Saved', color: '#9ca3af' },
+  { id: 'researching', name: 'Researching', color: '#3b82f6' },
+  { id: 'applying', name: 'Applying', color: '#eab308' },
+  { id: 'submitted', name: 'Submitted', color: '#22c55e' },
+  { id: 'interview', name: 'Interview', color: '#a855f7' },
+  { id: 'result', name: 'Result', color: '#10b981', isResult: true },
+];
+
+export const KanbanBoard: React.FC = () => {
+  const [items, setItems] = useState<TrackerItem[]>([]);
+  const [userTier, setUserTier] = useState<string>('free');
+  const [selectedCard, setSelectedCard] = useState<TrackerItem | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalStatus, setAddModalStatus] = useState('saved');
+  const [activeMobileTab, setActiveMobileTab] = useState('saved');
+  const [inlineUpsellColumn, setInlineUpsellColumn] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 8 } })
+  );
+
+  useEffect(() => {
+    fetchTrackerData();
+  }, []);
+
+  const fetchTrackerData = async () => {
+    try {
+      const res = await fetch('/api/tracker');
+      const data = await res.json();
+      if (data.trackedItems) {
+        setItems(data.trackedItems);
+        setUserTier(data.userTier || 'free');
+      }
+    } catch (e) {
+      console.error('Error loading tracker items:', e);
+    }
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    // Determine target column
+    let targetColumn = overId;
+    const overItem = items.find((i) => i.id === overId);
+    if (overItem) {
+      targetColumn = overItem.status;
+    }
+
+    const currentItem = items.find((i) => i.id === activeId);
+    if (!currentItem || currentItem.status === targetColumn) return;
+
+    const originalStatus = currentItem.status;
+
+    // Optimistic UI update
+    setItems((prev) =>
+      prev.map((item) => (item.id === activeId ? { ...item, status: targetColumn } : item))
+    );
+
+    // Call API
+    try {
+      const res = await fetch('/api/tracker/move', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          savedOpportunityId: activeId,
+          fromColumn: originalStatus,
+          toColumn: targetColumn,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('API move failed');
+      }
+    } catch (err) {
+      // Revert optimistic update on failure
+      setItems((prev) =>
+        prev.map((item) => (item.id === activeId ? { ...item, status: originalStatus } : item))
+      );
+      alert('Failed to update card status. Snapping back to original column.');
+    }
+  };
+
+  const handleOpenAddModal = (status: string) => {
+    // Check Free Tier Limit (1 card max)
+    if (userTier === 'free' && items.length >= 1) {
+      setInlineUpsellColumn(status);
+      setTimeout(() => setInlineUpsellColumn(null), 10000); // auto-dismiss 10s
+      return;
+    }
+    setAddModalStatus(status);
+    setIsAddModalOpen(true);
+  };
+
+  const handleCardAdded = (newItem: any) => {
+    setItems((prev) => [newItem, ...prev]);
+  };
+
+  const handleCardDeleted = async (id: string) => {
+    setItems((prev) => prev.filter((i) => i.id !== id));
+    try {
+      await fetch('/api/tracker/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ savedOpportunityId: id }),
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <div className={styles.trackerContainer}>
+      {/* Header Bar */}
+      <div className={styles.trackerHeader}>
+        <div className={styles.titleArea}>
+          <h1>
+            <LayoutGrid size={22} style={{ color: '#2563eb' }} />
+            Application Tracker
+          </h1>
+          <p>Organize, track, and win your scholarships, internships, and opportunities.</p>
+        </div>
+
+        <div className={styles.headerActions}>
+          <span className={`${styles.tierBadge} ${userTier === 'elite' ? styles.tierElite : userTier === 'pro' ? styles.tierPro : styles.tierFree}`}>
+            {userTier === 'elite' ? '👑 Elite' : userTier === 'pro' ? '⭐ Pro' : '🎓 Free Tier (1 Tracked)'}
+          </span>
+          <button className={styles.addButton} onClick={() => handleOpenAddModal('saved')}>
+            <Plus size={16} />
+            <span>Add Opportunity</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Tab Nav */}
+      <div className={styles.mobileTabNav}>
+        {COLUMNS.map((col) => (
+          <button
+            key={col.id}
+            className={`${styles.mobileTab} ${activeMobileTab === col.id ? styles.mobileTabActive : ''}`}
+            onClick={() => setActiveMobileTab(col.id)}
+          >
+            {col.name} ({items.filter((i) => i.status === col.id || (col.isResult && ['accepted', 'rejected'].includes(i.status))).length})
+          </button>
+        ))}
+      </div>
+
+      {/* DndContext & Board */}
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <div className={styles.board}>
+          {COLUMNS.map((col) => {
+            const columnItems = items.filter((item) => {
+              if (col.isResult) {
+                return item.status === 'accepted' || item.status === 'rejected';
+              }
+              return item.status === col.id;
+            });
+
+            return (
+              <KanbanColumn
+                key={col.id}
+                column={col}
+                items={columnItems}
+                userTier={userTier}
+                showInlineUpsell={inlineUpsellColumn === col.id}
+                onOpenAddModal={handleOpenAddModal}
+                onSelectCard={(item) => setSelectedCard(item)}
+                onDeleteCard={handleCardDeleted}
+                onEditNotes={(item) => setSelectedCard(item)}
+                onUpgradeClick={() => window.location.href = '/pricing'}
+                onDismissUpsell={() => setInlineUpsellColumn(null)}
+              />
+            );
+          })}
+        </div>
+      </DndContext>
+
+      {/* Card Detail Sidebar */}
+      <CardDetailSidebar
+        item={selectedCard}
+        onClose={() => setSelectedCard(null)}
+        onUpdateDetails={(updated) => {
+          setItems((prev) => prev.map((i) => (i.id === updated.id ? updated : i)));
+        }}
+        onRemove={handleCardDeleted}
+      />
+
+      {/* Add Opportunity Modal */}
+      <AddToTrackerModal
+        isOpen={isAddModalOpen}
+        initialStatus={addModalStatus}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdded={handleCardAdded}
+        onLimitReached={() => {
+          setInlineUpsellColumn(addModalStatus);
+          setTimeout(() => setInlineUpsellColumn(null), 10000);
+        }}
+      />
+    </div>
+  );
+};

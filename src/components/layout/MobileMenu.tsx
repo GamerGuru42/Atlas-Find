@@ -42,6 +42,7 @@ export function MobileMenu({ isLoggedIn }: MobileMenuProps) {
             
             <div className={styles.drawerLinks}>
               <Link href="/discover" className={styles.drawerLink} onClick={() => setIsOpen(false)}>Discover</Link>
+              <Link href="/dashboard/tracker" className={styles.drawerLink} onClick={() => setIsOpen(false)}>Tracker</Link>
               <Link href="/transparency" className={styles.drawerLink} onClick={() => setIsOpen(false)}>Transparency</Link>
               <Link href="/pricing" className={styles.drawerLink} onClick={() => setIsOpen(false)}>Pricing</Link>
             </div>

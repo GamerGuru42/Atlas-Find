@@ -67,6 +67,7 @@ export async function Header() {
       <div className={styles.desktopNav}>
         <nav className={styles.nav}>
           <Link href="/discover" className={styles.navLink}>Discover</Link>
+          <Link href="/dashboard/tracker" className={styles.navLink}>Tracker</Link>
           <Link href="/transparency" className={styles.navLink}>Transparency</Link>
           <Link href="/pricing" className={styles.navLink}>Pricing</Link>
         </nav>

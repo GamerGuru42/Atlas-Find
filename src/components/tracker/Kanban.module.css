@@ -1,0 +1,528 @@
+.trackerContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px);
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow: hidden;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+.trackerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.titleArea h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleArea p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tierBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tierFree {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.tierPro {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.tierElite {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addButton:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Mobile View Tabs */
+.mobileTabNav {
+  display: none;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mobileTab {
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+.mobileTabActive {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* Kanban Board Container */
+.board {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem 2rem;
+  overflow-x: auto;
+  height: 100%;
+  align-items: flex-start;
+  scroll-behavior: smooth;
+}
+
+/* Column Styles */
+.column {
+  flex: 0 0 310px;
+  min-width: 290px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 170px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.columnHighlight {
+  background: #f0f9ff !important;
+  border-color: #93c5fd !important;
+}
+
+.columnHeader {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.columnTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.colorBar {
+  width: 4px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.countBadge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.columnBody {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 180px;
+}
+
+.addCardBtn {
+  margin: 0.5rem 0.85rem 0.85rem 0.85rem;
+  padding: 0.5rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.addCardBtn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* Kanban Card Styles */
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.cardDragging {
+  opacity: 0.6;
+  transform: rotate(2deg) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: #2563eb;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.orgInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  object-fit: cover;
+}
+
+.orgName {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.dragHandle {
+  color: #cbd5e1;
+  cursor: grab;
+  padding: 2px;
+}
+
+.dragHandle:hover {
+  color: #64748b;
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 0.6rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.scoreBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.scoreHigh { background: #dcfce7; color: #15803d; }
+.scoreMid { background: #fef9c3; color: #a16207; }
+.scoreLow { background: #f1f5f9; color: #64748b; }
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f8fafc;
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.deadline {
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dlGreen { color: #16a34a; }
+.dlYellow { color: #d97706; }
+.dlRed { color: #dc2626; }
+.dlGray { color: #94a3b8; }
+
+.checklist {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.miniProgressBar {
+  width: 32px;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.miniProgressFill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 2px;
+}
+
+.hoverActions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: none;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card:hover .hoverActions {
+  display: flex;
+}
+
+.actionIconBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionIconBtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Result Sub Columns */
+.resultSubColumns {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.subColumn {
+  flex: 1;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 150px;
+}
+
+.subHeader {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subAccepted { background: #dcfce7; color: #16a34a; }
+.subRejected { background: #fee2e2; color: #dc2626; }
+
+/* Inline Upsell Banner (Free Tier Limit Teaser) */
+.inlineUpsell {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #4338ca;
+  box-shadow: 0 4px 12px rgba(49, 46, 129, 0.25);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.inlineUpsellTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #fbbf24;
+}
+
+.inlineUpsellText {
+  font-size: 0.75rem;
+  color: #e0e7ff;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.inlineUpsellBtns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.upsellBtnPro {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  background: #f59e0b;
+  color: #0f172a;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.upsellBtnDismiss {
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Empty State Placeholder Cards */
+.placeholderCard {
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(248, 250, 252, 0.5);
+}
+
+@media (max-width: 768px) {
+  .mobileTabNav {
+    display: flex;
+  }
+  
+  .board {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  
+  .column {
+    flex: 0 0 100%;
+    min-width: 100%;
+    max-height: calc(100vh - 220px);
+  }
+}

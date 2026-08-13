@@ -94,18 +94,36 @@ model Intake {
 }
 
 model SavedOpportunity {
-  id            String      @id @default(uuid())
-  userId        String
-  opportunityId String
-  status        String      @default("interested") // interested, applied, won, lost
-  notes         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id                String   @id @default(uuid())
+  userId            String
+  opportunityId     String
+  status            String   @default("saved") // saved, researching, applying, submitted, interview, accepted, rejected, archived
+  notes             String?
+  checklistProgress Json?
+  documents         Json?
+  reminderDays      Int?
+  reminderSet       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  user          User        @relation(fields: [userId], references: [id])
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  user              User                @relation(fields: [userId], references: [id])
+  opportunity       Opportunity         @relation(fields: [opportunityId], references: [id])
+  activities        OpportunityActivity[]
 
   @@unique([userId, opportunityId])
+}
+
+model OpportunityActivity {
+  id                 String           @id @default(uuid())
+  savedOpportunityId String
+  userId             String
+  action             String           // added, moved, updated_notes, uploaded_document, set_reminder
+  fromStatus         String?
+  toStatus           String?
+  metadata           Json?
+  createdAt          DateTime         @default(now())
+
+  savedOpportunity   SavedOpportunity @relation(fields: [savedOpportunityId], references: [id], onDelete: Cascade)
 }
 
 model ConversationLog {
