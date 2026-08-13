@@ -18,6 +18,14 @@ model User {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   
+  countryCode     String?
+  currency        String?
+  fieldOfStudy    String?
+  level           String?
+  institution     String?
+  graduationYear  Int?
+  onboardingCompleted Boolean @default(false)
+  
   conversationLogs ConversationLog[]
   savedOpportunities SavedOpportunity[]
 }
