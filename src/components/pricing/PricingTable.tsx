@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './Pricing.module.css';
 import { PartnerInquiryModal } from './PartnerInquiryModal';
-import { PaymentMethodSelector } from '../payments/PaymentMethodSelector';
 import { getPricing, normalizeCountryCode } from '@/lib/pricing/currencies';
 
 interface PricingTableProps {
@@ -17,11 +16,13 @@ interface PricingTableProps {
   countryCode?: string;
 }
 
+const AFRICAN_COUNTRIES = ['NG', 'GH', 'KE', 'ZA', 'UG', 'TZ', 'RW', 'SN', 'CI', 'CM', 'EG', 'MA'];
+
 export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, countryNotFound: initialCountryNotFound, countryCode: initialCountryCode = 'US' }: PricingTableProps) {
   const [isYearly, setIsYearly] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrgType, setSelectedOrgType] = useState('University');
-  const [activeCheckoutTier, setActiveCheckoutTier] = useState<'PRO' | 'ELITE' | null>(null);
+  const [loadingTier, setLoadingTier] = useState<'PRO' | 'ELITE' | null>(null);
 
   const [effectiveCountryCode, setEffectiveCountryCode] = useState(initialCountryCode);
   const [effectivePricing, setEffectivePricing] = useState(initialUserPricing);
@@ -58,12 +59,42 @@ export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, coun
     setIsModalOpen(true);
   };
 
-  const handleUpgradeClick = (tier: 'PRO' | 'ELITE') => {
+  const handleUpgradeClick = async (tier: 'PRO' | 'ELITE') => {
     if (!isLoggedIn) {
       window.location.href = '/signup';
       return;
     }
-    setActiveCheckoutTier(activeCheckoutTier === tier ? null : tier);
+
+    setLoadingTier(tier);
+
+    try {
+      const isAfrican = AFRICAN_COUNTRIES.includes(effectiveCountryCode.toUpperCase());
+      const endpoint = isAfrican
+        ? '/api/payments/paystack/initialize'
+        : '/api/payments/stripe/checkout';
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier,
+          billing: isYearly ? 'yearly' : 'monthly',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || (!data.authorization_url && !data.url)) {
+        throw new Error(data.error || 'Failed to initialize payment checkout.');
+      }
+
+      const checkoutUrl = data.authorization_url || data.url;
+      window.location.href = checkoutUrl;
+    } catch (err: any) {
+      console.error('Checkout error:', err);
+      alert(err.message || 'Payment initialization failed. Please try again.');
+      setLoadingTier(null);
+    }
   };
 
   const isUSD = effectivePricing.PRO.currency === 'USD';
@@ -180,17 +211,10 @@ export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, coun
           <button 
             className={`${styles.ctaButton} ${styles.btnPro}`}
             onClick={() => handleUpgradeClick('PRO')}
+            disabled={loadingTier !== null}
           >
-            {activeCheckoutTier === 'PRO' ? 'Close Checkout' : 'Upgrade to Pro'}
+            {loadingTier === 'PRO' ? '⚡ Connecting to Checkout...' : 'Upgrade to Pro'}
           </button>
-
-          {activeCheckoutTier === 'PRO' && (
-            <PaymentMethodSelector
-              tier="PRO"
-              billing={isYearly ? 'yearly' : 'monthly'}
-              countryCode={effectiveCountryCode}
-            />
-          )}
         </div>
 
         {/* ELITE CARD */}
@@ -239,17 +263,10 @@ export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, coun
           <button 
             className={`${styles.ctaButton} ${styles.btnElite}`}
             onClick={() => handleUpgradeClick('ELITE')}
+            disabled={loadingTier !== null}
           >
-            {activeCheckoutTier === 'ELITE' ? 'Close Checkout' : 'Upgrade to Elite'}
+            {loadingTier === 'ELITE' ? '⚡ Connecting to Checkout...' : 'Upgrade to Elite'}
           </button>
-
-          {activeCheckoutTier === 'ELITE' && (
-            <PaymentMethodSelector
-              tier="ELITE"
-              billing={isYearly ? 'yearly' : 'monthly'}
-              countryCode={effectiveCountryCode}
-            />
-          )}
         </div>
       </div>
 

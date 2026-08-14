@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import styles from './Subscription.module.css';
 import { RetentionModal } from './RetentionModal';
-import { PaymentMethodSelector } from '../payments/PaymentMethodSelector';
+
+const AFRICAN_COUNTRIES = ['NG', 'GH', 'KE', 'ZA', 'UG', 'TZ', 'RW', 'SN', 'CI', 'CM', 'EG', 'MA'];
 
 export function CurrentPlanCard({ tier, renewsOn, nextPayment, symbol }: { tier: string, renewsOn?: string, nextPayment?: number, symbol?: string }) {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -55,10 +56,44 @@ export function CurrentPlanCard({ tier, renewsOn, nextPayment, symbol }: { tier:
 
 export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, currentTier: string }) {
   const [isYearly, setIsYearly] = useState(false);
-  const [activeCheckoutTier, setActiveCheckoutTier] = useState<'PRO' | 'ELITE' | null>(null);
+  const [loadingTier, setLoadingTier] = useState<'PRO' | 'ELITE' | null>(null);
 
   const proPrice = isYearly ? userPricing.PRO.yearly : userPricing.PRO.monthly;
   const elitePrice = isYearly ? userPricing.ELITE.yearly : userPricing.ELITE.monthly;
+
+  const handleUpgradeClick = async (tier: 'PRO' | 'ELITE') => {
+    setLoadingTier(tier);
+
+    try {
+      const currency = userPricing.PRO.currency;
+      const isAfricanCurrency = ['NGN', 'GHS', 'KES', 'ZAR'].includes(currency);
+      const endpoint = isAfricanCurrency
+        ? '/api/payments/paystack/initialize'
+        : '/api/payments/stripe/checkout';
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier,
+          billing: isYearly ? 'yearly' : 'monthly',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || (!data.authorization_url && !data.url)) {
+        throw new Error(data.error || 'Failed to initialize payment checkout.');
+      }
+
+      const checkoutUrl = data.authorization_url || data.url;
+      window.location.href = checkoutUrl;
+    } catch (err: any) {
+      console.error('Checkout error:', err);
+      alert(err.message || 'Payment initialization failed. Please try again.');
+      setLoadingTier(null);
+    }
+  };
 
   return (
     <div>
@@ -117,20 +152,11 @@ export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, c
             <Button 
               variant="primary" 
               style={{ width: '100%' }}
-              onClick={() => setActiveCheckoutTier(activeCheckoutTier === 'PRO' ? null : 'PRO')}
+              onClick={() => handleUpgradeClick('PRO')}
+              disabled={loadingTier !== null}
             >
-              {activeCheckoutTier === 'PRO' ? 'Close Checkout' : 'Upgrade to Pro'}
+              {loadingTier === 'PRO' ? '⚡ Connecting to Checkout...' : 'Upgrade to Pro'}
             </Button>
-
-            {activeCheckoutTier === 'PRO' && (
-              <div style={{ marginTop: '16px' }}>
-                <PaymentMethodSelector
-                  tier="PRO"
-                  billing={isYearly ? 'yearly' : 'monthly'}
-                  currency={userPricing.PRO.currency}
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -164,20 +190,11 @@ export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, c
             <Button 
               variant="primary" 
               style={{ width: '100%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', border: 'none' }}
-              onClick={() => setActiveCheckoutTier(activeCheckoutTier === 'ELITE' ? null : 'ELITE')}
+              onClick={() => handleUpgradeClick('ELITE')}
+              disabled={loadingTier !== null}
             >
-              {activeCheckoutTier === 'ELITE' ? 'Close Checkout' : 'Upgrade to Elite'}
+              {loadingTier === 'ELITE' ? '⚡ Connecting to Checkout...' : 'Upgrade to Elite'}
             </Button>
-
-            {activeCheckoutTier === 'ELITE' && (
-              <div style={{ marginTop: '16px' }}>
-                <PaymentMethodSelector
-                  tier="ELITE"
-                  billing={isYearly ? 'yearly' : 'monthly'}
-                  currency={userPricing.ELITE.currency}
-                />
-              </div>
-            )}
           </div>
         )}
       </div>
