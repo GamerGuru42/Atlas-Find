@@ -191,10 +191,19 @@
   font-size: 0.875rem;
   color: var(--text-secondary);
   cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.5rem;
+  width: 100%;
+  text-align: left;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: all 0.2s ease;
 }
 
 .filterLabel:hover {
   color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .checkbox {
