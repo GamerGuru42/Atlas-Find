@@ -122,6 +122,17 @@ ${dbContext}
 - **Match Scoring**: If you recommend an opportunity from the context, clearly highlight why it's a good fit and calculate a rough "match score" based on their profile.
 - **CRITICAL - Deadlines & Links**: Whenever you mention an opportunity, you MUST explicitly state its application deadline EXACTLY as it appears in the database (e.g. "**Deadline:** October 15, 2026"). Always include the **Application Link** directly, using the \`applyUrl\`. Treat these dates as real and verified, and highlight them.
 - **Proactive Next Steps**: End your responses by proactively suggesting strategic next steps or asking ONE insightful, clarifying question to build the user's profile and narrow down the best opportunities.
+- **Structured Recommendations**: Whenever you recommend one or more opportunities from the database context, you MUST append a structured JSON block at the very end of your response for each opportunity recommended. Each block must look EXACTLY like this:
+:::opportunity
+{
+  "id": "OPPORTUNITY_ID",
+  "title": "TITLE",
+  "sponsor": "SPONSOR/PROVIDER",
+  "score": MATCH_SCORE,
+  "deadline": "DEADLINE",
+  "applyUrl": "APPLY_URL"
+}
+:::
     `;
     const coreMessages = messages.map((msg: any) => ({
       role: msg.role,
@@ -130,12 +141,58 @@ ${dbContext}
         : (msg.content || '')
     }));
 
+    const conversationId = body.conversationId || 'default';
+
     const result = streamText({
       model: google('gemini-3.5-flash'),
       system: instructions,
       messages: coreMessages,
       temperature: 0.7,
       maxOutputTokens: 3000,
+      onFinish: async ({ text }) => {
+        if (userId && conversationId) {
+          try {
+            const lastUserMsg = messages[messages.length - 1];
+            const userContent = lastUserMsg.content || lastUserMsg.parts?.map((p: any) => p.text || '').join('') || '';
+
+            // Check if user message already saved to avoid duplicates
+            const existingUserMsg = await prisma.conversationLog.findFirst({
+              where: {
+                userId,
+                role: 'user',
+                content: {
+                  contains: `"${conversationId}"`,
+                },
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+            });
+
+            const userJson = JSON.stringify({ conversationId, text: userContent });
+            if (!existingUserMsg || existingUserMsg.content !== userJson) {
+              await prisma.conversationLog.create({
+                data: {
+                  userId,
+                  role: 'user',
+                  content: userJson,
+                },
+              });
+            }
+
+            // Save agent message
+            await prisma.conversationLog.create({
+              data: {
+                userId,
+                role: 'agent',
+                content: JSON.stringify({ conversationId, text }),
+              },
+            });
+          } catch (e) {
+            console.error('[Chat API onFinish save error]', e);
+          }
+        }
+      }
     });
 
     return result.toUIMessageStreamResponse();
