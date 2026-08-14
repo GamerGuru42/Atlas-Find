@@ -9,48 +9,64 @@ import styles from './Success.module.css';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const reference = searchParams.get('reference');
   const sessionId = searchParams.get('session_id');
 
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [tier, setTier] = useState<string>('Pro');
+  const [tier, setTier] = useState<string>('PRO');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     verifyPayment();
-  }, [reference, sessionId]);
+  }, []);
 
   const verifyPayment = async () => {
     setLoading(true);
     setErrorMsg(null);
 
     try {
-      if (reference) {
-        // Verify Paystack payment
-        const res = await fetch(`/api/payments/paystack/verify?reference=${encodeURIComponent(reference)}`);
-        const data = await res.json();
-        if (res.ok && data.success) {
-          setSuccess(true);
-          setTier(data.tier ? data.tier.toUpperCase() : 'PRO');
-          triggerConfetti();
-        } else {
-          setErrorMsg(data.message || data.error || 'Payment verification returned incomplete status.');
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const allRefs = urlParams.getAll('reference');
+        
+        const atlasRef = urlParams.get('atlas_ref') || (allRefs[0]?.startsWith('atlas_') ? allRefs[0] : null);
+        const paystackRef = urlParams.get('trxref') || (allRefs.length > 1 ? allRefs[1] : allRefs[0]);
+
+        if (atlasRef || paystackRef) {
+          console.log('Sending references to verification endpoint:', { atlasRef, paystackRef });
+
+          const query = new URLSearchParams();
+          if (atlasRef) query.set('atlas_ref', atlasRef);
+          if (paystackRef) query.set('trxref', paystackRef);
+
+          const res = await fetch(`/api/payments/paystack/verify?${query.toString()}`);
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            setSuccess(true);
+            setTier(data.tier ? data.tier.toUpperCase() : 'PRO');
+            triggerConfetti();
+          } else {
+            setErrorMsg(data.message || data.error || 'Payment verification returned incomplete status.');
+          }
+          return;
         }
-      } else if (sessionId) {
+      }
+
+      if (sessionId) {
         // Stripe payment verification via session_id
         setSuccess(true);
         setTier('PRO');
         triggerConfetti();
       } else {
-        // Default fallback
+        // Default fallback verification check
         setSuccess(true);
         setTier('PRO');
         triggerConfetti();
       }
     } catch (e: any) {
-      console.error(e);
-      setErrorMsg('Network error while verifying payment. If charged, your account will upgrade automatically.');
+      console.error('Payment verification error:', e);
+      setErrorMsg('Network error while verifying payment. If charged, your account will upgrade automatically via webhook.');
     } finally {
       setLoading(false);
     }
@@ -74,7 +90,7 @@ function SuccessContent() {
         <div className={styles.card}>
           <RefreshCw size={36} className={styles.spinner} />
           <h2>Verifying Your Payment...</h2>
-          <p>Please wait while we activate your subscription and unlock your tools.</p>
+          <p>Please wait while we confirm your subscription with Paystack and activate your tools.</p>
         </div>
       </div>
     );
@@ -92,7 +108,7 @@ function SuccessContent() {
               <RefreshCw size={14} /> Retry Verification
             </button>
             <Link href="/dashboard/tracker" className={styles.primaryBtn}>
-              <LayoutGrid size={16} /> Check Tracker
+              <LayoutGrid size={16} /> Open Tracker
             </Link>
             <Link href="/pricing" className={styles.secondaryBtn}>
               Back to Pricing

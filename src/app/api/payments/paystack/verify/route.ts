@@ -6,46 +6,87 @@ import { cookies } from 'next/headers';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const reference = searchParams.get('reference');
+    const atlasRef = searchParams.get('atlas_ref') || searchParams.get('atlasReference');
+    
+    // Paystack appends trxref and reference to callback URL
+    const urlParams = new URL(req.url).searchParams;
+    const allRefs = urlParams.getAll('reference');
+    
+    // paystackRef is either trxref, second reference param, or first reference param if atlas_ref is separate
+    let paystackRef = searchParams.get('trxref') || 
+                      searchParams.get('paystackReference') || 
+                      (allRefs.length > 1 ? allRefs[1] : allRefs[0]);
 
-    if (!reference) {
-      return NextResponse.json({ success: false, message: 'Reference code is required' }, { status: 400 });
+    // Fallback: if only reference parameter is passed and it starts with atlas_, that's atlasRef
+    let primaryAtlasRef = atlasRef;
+    if (!primaryAtlasRef && allRefs[0]?.startsWith('atlas_')) {
+      primaryAtlasRef = allRefs[0];
+      if (allRefs.length > 1) {
+        paystackRef = allRefs[1];
+      }
     }
 
-    // Verify transaction with Paystack API
-    let paystackData: any;
-    try {
-      paystackData = await verifyPaystackTransaction(reference);
-    } catch (err: any) {
-      console.error('Paystack verification fetch error:', err);
-      return NextResponse.json({ 
-        success: false, 
-        message: err.message || 'Unable to communicate with Paystack server.' 
-      }, { status: 400 });
-    }
-
-    console.log('Paystack Verification Data:', {
-      reference,
-      status: paystackData.status,
-      gateway_response: paystackData.gateway_response,
-      amount: paystackData.amount,
-      customer_email: paystackData.customer?.email,
-      metadata: paystackData.metadata,
+    console.log('🔍 Paystack Verification Request Debug:', {
+      atlasReference: primaryAtlasRef,
+      paystackReference: paystackRef,
+      allReferenceParams: allRefs,
+      fullUrl: req.url,
     });
 
-    if (paystackData.status !== 'success') {
+    if (!paystackRef && !primaryAtlasRef) {
+      return NextResponse.json({ success: false, message: 'Transaction reference is required' }, { status: 400 });
+    }
+
+    // Step A: Attempt Paystack verification with paystackRef first
+    let paystackData: any = null;
+    let successfulRefUsed: string = '';
+
+    if (paystackRef) {
+      console.log(`📡 Calling Paystack Verify URL: https://api.paystack.co/transaction/verify/${encodeURIComponent(paystackRef)}`);
+      try {
+        paystackData = await verifyPaystackTransaction(paystackRef);
+        successfulRefUsed = paystackRef;
+        console.log('✅ Paystack Response (Primary Ref):', paystackData);
+      } catch (err: any) {
+        console.warn(`⚠️ Paystack verify failed for paystackRef [${paystackRef}]:`, err.message);
+      }
+    }
+
+    // Step B: Fallback to primaryAtlasRef if primary attempt failed or paystackRef was missing
+    if ((!paystackData || paystackData.status !== 'success') && primaryAtlasRef && primaryAtlasRef !== paystackRef) {
+      console.log(`📡 Fallback Verify URL: https://api.paystack.co/transaction/verify/${encodeURIComponent(primaryAtlasRef)}`);
+      try {
+        paystackData = await verifyPaystackTransaction(primaryAtlasRef);
+        successfulRefUsed = primaryAtlasRef;
+        console.log('✅ Paystack Response (Fallback Ref):', paystackData);
+      } catch (err: any) {
+        console.warn(`⚠️ Paystack verify failed for fallback atlasRef [${primaryAtlasRef}]:`, err.message);
+      }
+    }
+
+    if (!paystackData || paystackData.status !== 'success') {
       return NextResponse.json({ 
         success: false, 
-        message: `Paystack status: ${paystackData.status} (${paystackData.gateway_response || 'Payment not completed'})` 
+        message: `Paystack status: ${paystackData?.status || 'unverified'} (${paystackData?.gateway_response || 'Transaction reference not found'})` 
       }, { status: 400 });
     }
+
+    console.log(`🎉 Paystack Verification Succeeded using reference [${successfulRefUsed}]!`);
 
     const metadata = paystackData.metadata || {};
     let userId = metadata.userId;
-    const tier = (metadata.tier || 'pro').toLowerCase();
-    const billing = metadata.billing || 'monthly';
+    
+    // Parse tier from metadata or fallback to ref string (e.g. atlas_pro_... -> pro, atlas_elite_... -> elite)
+    let tier = (metadata.tier || '').toLowerCase();
+    if (!tier) {
+      if (primaryAtlasRef?.includes('_elite_')) tier = 'elite';
+      else tier = 'pro';
+    }
 
-    // If userId not in metadata, lookup by customer email
+    const billing = metadata.billing || 'monthly';
+    const finalReference = primaryAtlasRef || successfulRefUsed;
+
+    // Lookup user by customer email if metadata.userId is missing
     if (!userId && paystackData.customer?.email) {
       const foundUser = await prisma.user.findUnique({
         where: { email: paystackData.customer.email },
@@ -77,7 +118,7 @@ export async function GET(req: Request) {
           tier,
           status: 'active',
           processor: 'paystack',
-          reference,
+          reference: finalReference,
           localAmount: paystackData.amount / 100,
           currency: paystackData.currency,
           currentPeriodStart: now,
@@ -88,7 +129,7 @@ export async function GET(req: Request) {
           tier,
           status: 'active',
           processor: 'paystack',
-          reference,
+          reference: finalReference,
           localAmount: paystackData.amount / 100,
           currency: paystackData.currency,
           currentPeriodStart: now,
@@ -97,14 +138,14 @@ export async function GET(req: Request) {
       });
 
       // 3. Create or update UsageLimits record
-      const maxSaves = tier === 'elite' ? 999999 : 999999;
+      const maxSaves = 999999;
       await prisma.usageLimit.upsert({
         where: { userId },
         update: { maxSaves },
         create: { userId, maxSaves },
       });
 
-      // 4. Set cookie for fast UI rendering
+      // 4. Set HTTP-only cookie for fast UI rendering
       try {
         const cookieStore = await cookies();
         cookieStore.set('atlas_user_tier', tier, {
@@ -120,10 +161,10 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       tier,
-      message: 'Payment verified and subscription activated successfully!',
+      message: `Payment verified and subscription activated successfully! Welcome to Atlas ${tier.toUpperCase()}.`,
     });
   } catch (error: any) {
-    console.error('Paystack Verify Error:', error);
+    console.error('Paystack Verify Endpoint Error:', error);
     return NextResponse.json(
       { success: false, message: error.message || 'Payment verification encountered an unexpected error.' },
       { status: 500 }

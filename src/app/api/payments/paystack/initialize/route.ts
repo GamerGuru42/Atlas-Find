@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
     const reference = `atlas_${formattedTier.toLowerCase()}_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://atlas-find.vercel.app';
-    const callback_url = `${baseUrl}/payments/success?reference=${reference}`;
+    const callback_url = `${baseUrl}/payments/success?atlas_ref=${reference}`;
 
     const paystackRes = await initializePaystackTransaction({
       email,
