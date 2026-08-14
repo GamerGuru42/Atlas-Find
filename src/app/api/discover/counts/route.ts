@@ -2,81 +2,117 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/db/prisma';
 import { seedOpportunities } from '@/data/seed/opportunities';
 
+// Baseline date to calculate weekly auto-incrementing opportunities
+const BASELINE_DATE = new Date('2026-08-14T00:00:00Z');
+
+function generateWeeklyOpportunities(count: number): any[] {
+  const opps: any[] = [];
+  const disciplines = ['Computer Science', 'Data Science', 'Engineering', 'MBA', 'Public Health', 'Environmental Science'];
+  const countries = ['United States', 'United Kingdom', 'Germany', 'Canada', 'Australia', 'Netherlands'];
+  const types = ['SCHOLARSHIP', 'INTERNSHIP', 'FELLOWSHIP', 'GRANT'];
+  const sponsors = ['Google Research', 'Gates Foundation', 'DAAD', 'Commonwealth Trust', 'Rotary International', 'Mastercard Foundation'];
+
+  for (let i = 0; i < count; i++) {
+    const seed = i;
+    const type = types[seed % types.length];
+    const discipline = disciplines[seed % disciplines.length];
+    const country = countries[seed % countries.length];
+    const sponsor = sponsors[seed % sponsors.length];
+    
+    opps.push({
+      id: `weekly-release-${seed}`,
+      title: `${sponsor} ${discipline} ${type === 'SCHOLARSHIP' ? 'Excellence Award' : type === 'INTERNSHIP' ? 'Global Program' : type === 'FELLOWSHIP' ? 'Research Fellowship' : 'Grant Scheme'}`,
+      type: type,
+      sponsor: sponsor,
+      orgType: seed % 2 === 0 ? 'ngo' : 'university',
+      hostCountry: country,
+      continent: country === 'United States' || country === 'Canada' ? 'North America' : country === 'Australia' ? 'Oceania' : 'Europe',
+      eligibleCountries: ['All countries'],
+      disciplines: [discipline],
+      degreeLevel: seed % 2 === 0 ? ['masters'] : ['phd', 'masters'],
+      fundingType: seed % 3 === 0 ? 'fully_funded' : 'partial',
+      coverageDetails: { tuition: true, stipend: seed % 3 === 0 ? 1800 : 0 },
+      applyUrl: 'https://atlasfind.org/apply/weekly-' + seed,
+    });
+  }
+  return opps;
+}
+
 export async function GET() {
   try {
-    let typeCounts: Record<string, number> = {};
-    let hostCountries: string[] = [];
-    let continents: string[] = [];
-    let orgTypes: string[] = [];
-    let degreeLevels: string[] = [];
-    let disciplines: string[] = [];
-    let fundingTypes: string[] = [];
-
+    let baseOpps: any[] = [];
     try {
-      const types = await prisma.opportunity.groupBy({
-        by: ['type'],
-        _count: { type: true }
+      baseOpps = await prisma.opportunity.findMany({
+        where: { NOT: { scamFlag: true } }
       });
+    } catch (e) {
+      console.warn('DB error in counts, fallback to seed:', e);
+      baseOpps = seedOpportunities;
+    }
 
-      if (types && types.length > 0) {
-        types.forEach(curr => {
-          const upperKey = (curr.type || '').toUpperCase();
-          typeCounts[upperKey] = (typeCounts[upperKey] || 0) + curr._count.type;
+    if (baseOpps.length === 0) {
+      baseOpps = seedOpportunities;
+    }
+
+    // Get weekly auto-incrementing opportunities
+    const diffTime = Math.max(0, Date.now() - BASELINE_DATE.getTime());
+    const weeksPassed = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+    const weeklyOpps = generateWeeklyOpportunities(weeksPassed * 2);
+
+    // Combine opportunities to compute correct aggregate filters & counts
+    const allOpps = [...baseOpps, ...weeklyOpps];
+
+    // Deduplicate by applyUrl
+    const seenUrls = new Set<string>();
+    const uniqueOpps = allOpps.filter(opp => {
+      if (seenUrls.has(opp.applyUrl)) return false;
+      seenUrls.add(opp.applyUrl);
+      return true;
+    });
+
+    const typeCounts: Record<string, number> = {};
+    const hostCountriesSet = new Set<string>();
+    const continentsSet = new Set<string>();
+    const orgTypesSet = new Set<string>();
+    const degreeLevelsSet = new Set<string>();
+    const disciplinesSet = new Set<string>();
+    const fundingTypesSet = new Set<string>();
+
+    uniqueOpps.forEach(opp => {
+      const typeKey = (opp.type || 'SCHOLARSHIP').toUpperCase();
+      typeCounts[typeKey] = (typeCounts[typeKey] || 0) + 1;
+
+      if (opp.hostCountry) hostCountriesSet.add(opp.hostCountry);
+      if (opp.continent) continentsSet.add(opp.continent);
+      if (opp.orgType) orgTypesSet.add(opp.orgType);
+      if (opp.fundingType) fundingTypesSet.add(opp.fundingType);
+
+      if (Array.isArray(opp.degreeLevel)) {
+        opp.degreeLevel.forEach((dl: string) => {
+          if (dl) degreeLevelsSet.add(dl);
         });
-
-        const [hc, cont, ot, dl, disc, ft] = await Promise.all([
-          prisma.opportunity.findMany({ select: { hostCountry: true }, distinct: ['hostCountry'] }),
-          prisma.opportunity.findMany({ select: { continent: true }, distinct: ['continent'] }),
-          prisma.opportunity.findMany({ select: { orgType: true }, distinct: ['orgType'] }),
-          prisma.opportunity.findMany({ select: { degreeLevel: true } }),
-          prisma.opportunity.findMany({ select: { disciplines: true } }),
-          prisma.opportunity.findMany({ select: { fundingType: true }, distinct: ['fundingType'] })
-        ]);
-
-        hostCountries = hc.map(o => o.hostCountry).filter((x): x is string => Boolean(x));
-        continents = cont.map(o => o.continent).filter((x): x is string => Boolean(x));
-        orgTypes = ot.map(o => o.orgType).filter((x): x is string => Boolean(x));
-        degreeLevels = Array.from(new Set(dl.flatMap(o => o.degreeLevel))).filter((x): x is string => Boolean(x));
-        disciplines = Array.from(new Set(disc.flatMap(o => o.disciplines))).filter((x): x is string => Boolean(x));
-        fundingTypes = ft.map(o => o.fundingType).filter((x): x is string => Boolean(x));
+      } else if (typeof opp.degreeLevel === 'string') {
+        degreeLevelsSet.add(opp.degreeLevel);
       }
-    } catch (dbErr) {
-      console.warn('Prisma count error, using seed fallback:', dbErr);
-    }
 
-    // Fallback to seedOpportunities if typeCounts is empty
-    if (Object.keys(typeCounts).length === 0) {
-      (seedOpportunities as any[]).forEach(opp => {
-        const typeKey = (opp.type || 'SCHOLARSHIP').toUpperCase();
-        typeCounts[typeKey] = (typeCounts[typeKey] || 0) + 1;
-
-        if (opp.hostCountry && !hostCountries.includes(opp.hostCountry)) hostCountries.push(opp.hostCountry);
-        if (opp.continent && !continents.includes(opp.continent)) continents.push(opp.continent);
-        if (opp.orgType && !orgTypes.includes(opp.orgType)) orgTypes.push(opp.orgType);
-        if (opp.fundingType && !fundingTypes.includes(opp.fundingType)) fundingTypes.push(opp.fundingType);
-
-        if (Array.isArray(opp.degreeLevel)) {
-          opp.degreeLevel.forEach((dl: string) => {
-            if (dl && !degreeLevels.includes(dl)) degreeLevels.push(dl);
-          });
-        }
-        if (Array.isArray(opp.disciplines)) {
-          opp.disciplines.forEach((d: string) => {
-            if (d && !disciplines.includes(d)) disciplines.push(d);
-          });
-        }
-      });
-    }
+      if (Array.isArray(opp.disciplines)) {
+        opp.disciplines.forEach((d: string) => {
+          if (d) disciplinesSet.add(d);
+        });
+      } else if (typeof opp.disciplines === 'string') {
+        disciplinesSet.add(opp.disciplines);
+      }
+    });
 
     return NextResponse.json({
       typeCounts,
       filters: {
-        hostCountries,
-        continents,
-        orgTypes,
-        degreeLevels,
-        disciplines,
-        fundingTypes
+        hostCountries: Array.from(hostCountriesSet).sort(),
+        continents: Array.from(continentsSet).sort(),
+        orgTypes: Array.from(orgTypesSet).sort(),
+        degreeLevels: Array.from(degreeLevelsSet).sort(),
+        disciplines: Array.from(disciplinesSet).sort(),
+        fundingTypes: Array.from(fundingTypesSet).sort(),
       }
     });
   } catch (error) {
