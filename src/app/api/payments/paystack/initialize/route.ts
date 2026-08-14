@@ -4,27 +4,27 @@ import { initializePaystackTransaction } from '@/lib/payments/paystack';
 
 const prisma = new PrismaClient();
 
-// Local currency pricing table (Paystack African Currencies)
+// Streamlined 2-Zone Pricing Table for Paystack (African & Emerging Currencies)
 const PRICING_TABLE: Record<string, Record<string, Record<string, number>>> = {
   NGN: {
-    PRO: { monthly: 7500, yearly: 55000 },
-    ELITE: { monthly: 22500, yearly: 165000 },
+    PRO: { monthly: 5000, yearly: 40000 },
+    ELITE: { monthly: 15000, yearly: 120000 },
   },
   GHS: {
-    PRO: { monthly: 65, yearly: 500 },
-    ELITE: { monthly: 195, yearly: 1500 },
+    PRO: { monthly: 45, yearly: 360 },
+    ELITE: { monthly: 135, yearly: 1080 },
   },
   KES: {
-    PRO: { monthly: 750, yearly: 5500 },
-    ELITE: { monthly: 2250, yearly: 16500 },
+    PRO: { monthly: 500, yearly: 4000 },
+    ELITE: { monthly: 1500, yearly: 12000 },
   },
   ZAR: {
     PRO: { monthly: 95, yearly: 750 },
     ELITE: { monthly: 285, yearly: 2250 },
   },
   USD: {
-    PRO: { monthly: 10, yearly: 80 },
-    ELITE: { monthly: 30, yearly: 240 },
+    PRO: { monthly: 9.99, yearly: 79.99 },
+    ELITE: { monthly: 29.99, yearly: 239.99 },
   },
 };
 

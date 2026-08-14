@@ -1,30 +1,13 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/db/prisma';
+import { getVerifiedUser } from '@/lib/auth/getUserSession';
 
 export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('userId') || 'default_user';
-
-    // Find user or create temporary demo user
-    let user = await prisma.user.findFirst({
-      where: { OR: [{ id: userId }, { email: 'demo@atlasfind.com' }] },
-    });
-
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          id: userId,
-          email: 'demo@atlasfind.com',
-          tier: 'free',
-        },
-      });
-    }
+    const verifiedUser = await getVerifiedUser();
 
     const savedOpportunities = await prisma.savedOpportunity.findMany({
-      where: { userId: user.id },
+      where: { userId: verifiedUser.id },
       include: {
         opportunity: true,
         activities: {
@@ -37,7 +20,10 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       success: true,
-      userTier: user.tier || 'free',
+      userTier: verifiedUser.tier,
+      isLoggedIn: verifiedUser.isLoggedIn,
+      totalSaved: savedOpportunities.length,
+      saveLimit: verifiedUser.tier === 'free' ? 20 : -1,
       trackedItems: savedOpportunities,
     });
   } catch (error) {

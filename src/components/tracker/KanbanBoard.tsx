@@ -6,7 +6,6 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  DragOverEvent,
   DragEndEvent,
 } from '@dnd-kit/core';
 import { Plus, Sparkles, LayoutGrid } from 'lucide-react';
@@ -60,10 +59,16 @@ export const KanbanBoard: React.FC = () => {
     const { active, over } = event;
     if (!over) return;
 
+    if (userTier === 'free') {
+      // Free users cannot move cards across columns — prompt upgrade
+      setInlineUpsellColumn('saved');
+      setTimeout(() => setInlineUpsellColumn(null), 10000);
+      return;
+    }
+
     const activeId = String(active.id);
     const overId = String(over.id);
 
-    // Determine target column
     let targetColumn = overId;
     const overItem = items.find((i) => i.id === overId);
     if (overItem) {
@@ -75,12 +80,10 @@ export const KanbanBoard: React.FC = () => {
 
     const originalStatus = currentItem.status;
 
-    // Optimistic UI update
     setItems((prev) =>
       prev.map((item) => (item.id === activeId ? { ...item, status: targetColumn } : item))
     );
 
-    // Call API
     try {
       const res = await fetch('/api/tracker/move', {
         method: 'POST',
@@ -96,7 +99,6 @@ export const KanbanBoard: React.FC = () => {
         throw new Error('API move failed');
       }
     } catch (err) {
-      // Revert optimistic update on failure
       setItems((prev) =>
         prev.map((item) => (item.id === activeId ? { ...item, status: originalStatus } : item))
       );
@@ -105,10 +107,9 @@ export const KanbanBoard: React.FC = () => {
   };
 
   const handleOpenAddModal = (status: string) => {
-    // Check Free Tier Limit (1 card max)
-    if (userTier === 'free' && items.length >= 1) {
+    if (userTier === 'free' && items.length >= 20) {
       setInlineUpsellColumn(status);
-      setTimeout(() => setInlineUpsellColumn(null), 10000); // auto-dismiss 10s
+      setTimeout(() => setInlineUpsellColumn(null), 10000);
       return;
     }
     setAddModalStatus(status);
@@ -146,7 +147,7 @@ export const KanbanBoard: React.FC = () => {
 
         <div className={styles.headerActions}>
           <span className={`${styles.tierBadge} ${userTier === 'elite' ? styles.tierElite : userTier === 'pro' ? styles.tierPro : styles.tierFree}`}>
-            {userTier === 'elite' ? '👑 Elite' : userTier === 'pro' ? '⭐ Pro' : '🎓 Free Tier (1 Tracked)'}
+            {userTier === 'elite' ? '👑 Elite' : userTier === 'pro' ? '⭐ Pro' : `🎓 Free Tier (${items.length}/20 Saved)`}
           </span>
           <button className={styles.addButton} onClick={() => handleOpenAddModal('saved')}>
             <Plus size={16} />

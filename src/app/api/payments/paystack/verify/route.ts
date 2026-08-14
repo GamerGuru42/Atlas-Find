@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/db/prisma';
 import { verifyPaystackTransaction } from '@/lib/payments/paystack';
-
-const prisma = new PrismaClient();
+import { cookies } from 'next/headers';
 
 export async function GET(req: Request) {
   try {
@@ -22,11 +21,11 @@ export async function GET(req: Request) {
 
     const metadata = paystackData.metadata || {};
     const userId = metadata.userId;
-    const tier = metadata.tier || 'pro';
+    const tier = (metadata.tier || 'pro').toLowerCase();
     const billing = metadata.billing || 'monthly';
 
     if (userId) {
-      // 1. Update User tier
+      // 1. Update User tier in Prisma DB (Source of Truth)
       await prisma.user.update({
         where: { id: userId },
         data: { tier },
@@ -73,6 +72,18 @@ export async function GET(req: Request) {
         update: { maxSaves },
         create: { userId, maxSaves },
       });
+
+      // 4. Set cookie for fast UI rendering
+      try {
+        const cookieStore = await cookies();
+        cookieStore.set('atlas_user_tier', tier, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30,
+          sameSite: 'lax'
+        });
+      } catch (e) {
+        console.error('Cookie set error:', e);
+      }
     }
 
     return NextResponse.json({

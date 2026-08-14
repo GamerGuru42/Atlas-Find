@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import styles from './Subscription.module.css';
 import { RetentionModal } from './RetentionModal';
+import { PaymentMethodSelector } from '../payments/PaymentMethodSelector';
 
 export function CurrentPlanCard({ tier, renewsOn, nextPayment, symbol }: { tier: string, renewsOn?: string, nextPayment?: number, symbol?: string }) {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -35,7 +36,7 @@ export function CurrentPlanCard({ tier, renewsOn, nextPayment, symbol }: { tier:
         
         {tier !== 'free' && (
           <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-            <Button variant="primary" onClick={() => alert("Manage payment clicked")}>Manage Payment</Button>
+            <Button variant="primary" onClick={() => window.location.href = '/pricing'}>Manage Payment</Button>
             <button 
               className={styles.btnSecondary} 
               onClick={() => setModalOpen(true)}
@@ -54,6 +55,7 @@ export function CurrentPlanCard({ tier, renewsOn, nextPayment, symbol }: { tier:
 
 export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, currentTier: string }) {
   const [isYearly, setIsYearly] = useState(false);
+  const [activeCheckoutTier, setActiveCheckoutTier] = useState<'PRO' | 'ELITE' | null>(null);
 
   const proPrice = isYearly ? userPricing.PRO.yearly : userPricing.PRO.monthly;
   const elitePrice = isYearly ? userPricing.ELITE.yearly : userPricing.ELITE.monthly;
@@ -112,7 +114,23 @@ export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, c
               </li>
             </ul>
             
-            <Button variant="primary" style={{ width: '100%' }}>Upgrade to Pro</Button>
+            <Button 
+              variant="primary" 
+              style={{ width: '100%' }}
+              onClick={() => setActiveCheckoutTier(activeCheckoutTier === 'PRO' ? null : 'PRO')}
+            >
+              {activeCheckoutTier === 'PRO' ? 'Close Checkout' : 'Upgrade to Pro'}
+            </Button>
+
+            {activeCheckoutTier === 'PRO' && (
+              <div style={{ marginTop: '16px' }}>
+                <PaymentMethodSelector
+                  tier="PRO"
+                  billing={isYearly ? 'yearly' : 'monthly'}
+                  currency={userPricing.PRO.currency}
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -143,9 +161,23 @@ export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, c
               </li>
             </ul>
             
-            <Button variant="primary" style={{ width: '100%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', border: 'none' }}>
-              Upgrade to Elite
+            <Button 
+              variant="primary" 
+              style={{ width: '100%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', border: 'none' }}
+              onClick={() => setActiveCheckoutTier(activeCheckoutTier === 'ELITE' ? null : 'ELITE')}
+            >
+              {activeCheckoutTier === 'ELITE' ? 'Close Checkout' : 'Upgrade to Elite'}
             </Button>
+
+            {activeCheckoutTier === 'ELITE' && (
+              <div style={{ marginTop: '16px' }}>
+                <PaymentMethodSelector
+                  tier="ELITE"
+                  billing={isYearly ? 'yearly' : 'monthly'}
+                  currency={userPricing.ELITE.currency}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
