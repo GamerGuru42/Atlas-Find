@@ -32,36 +32,39 @@ export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     let { userId, tier = 'PRO', billing = 'monthly' } = body;
+    let sessionUserEmail: string | undefined = undefined;
 
     // Retrieve active Supabase user session if userId is not explicitly passed
-    if (!userId) {
-      try {
-        const cookieStore = await cookies();
-        const supabase = createServerClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          {
-            cookies: {
-              getAll() { return cookieStore.getAll(); },
-              setAll() {}
-            }
+    try {
+      const cookieStore = await cookies();
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() { return cookieStore.getAll(); },
+            setAll() {}
           }
-        );
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user?.id) {
-          userId = session.user.id;
         }
-      } catch (e) {
-        console.error('Session lookup in Paystack init:', e);
+      );
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        if (!userId) userId = session.user.id;
+        sessionUserEmail = session.user.email;
       }
+    } catch (e) {
+      console.error('Session lookup in Paystack init:', e);
     }
 
     let user = null;
     if (userId) {
-      user = await prisma.user.findUnique({ where: { id: userId } });
+      user = await prisma.user.findUnique({ where: { id: userId } }).catch(err => {
+        console.error('Prisma user lookup error (bypassing DB crash):', err);
+        return null;
+      });
     }
 
-    const email = user?.email || 'customer@atlasfind.com';
+    const email = user?.email || sessionUserEmail || 'customer@atlasfind.com';
     const currency = (user?.currency || 'NGN').toUpperCase();
     const formattedTier = tier.toUpperCase();
     const formattedBilling = billing.toLowerCase();
@@ -99,7 +102,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('Paystack Initialize Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Payment service temporarily unavailable. Please try again in a few minutes.' },
+      { error: 'Payment service temporarily unavailable. Please try again in a few seconds.' },
       { status: 500 }
     );
   }

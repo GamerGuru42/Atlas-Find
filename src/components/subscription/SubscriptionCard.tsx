@@ -90,7 +90,10 @@ export function UpgradeCards({ userPricing, currentTier }: { userPricing: any, c
       window.location.href = checkoutUrl;
     } catch (err: any) {
       console.error('Checkout error:', err);
-      alert(err.message || 'Payment initialization failed. Please try again.');
+      const msg = err.message && !err.message.includes('prisma') && !err.message.includes('Authentication failed')
+        ? err.message
+        : 'Payment initialization temporarily unavailable. Please try again in a few moments.';
+      alert(msg);
       setLoadingTier(null);
     }
   };
