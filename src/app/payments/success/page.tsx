@@ -59,10 +59,8 @@ function SuccessContent() {
         setTier('PRO');
         triggerConfetti();
       } else {
-        // Default fallback verification check
-        setSuccess(true);
-        setTier('PRO');
-        triggerConfetti();
+        // Missing reference in URL state
+        setErrorMsg('Missing transaction info. Contact support if charged.');
       }
     } catch (e: any) {
       console.error('Payment verification error:', e);
@@ -107,7 +105,7 @@ function SuccessContent() {
             <button className={styles.retryBtn} onClick={verifyPayment}>
               <RefreshCw size={14} /> Retry Verification
             </button>
-            <Link href="/dashboard/tracker" className={styles.primaryBtn}>
+            <Link href="/dashboard/tracker?upgraded=true" className={styles.primaryBtn}>
               <LayoutGrid size={16} /> Open Tracker
             </Link>
             <Link href="/pricing" className={styles.secondaryBtn}>
@@ -146,7 +144,7 @@ function SuccessContent() {
         </div>
 
         <div className={styles.btnRow}>
-          <Link href="/dashboard/tracker" className={styles.primaryBtn}>
+          <Link href="/dashboard/tracker?upgraded=true" className={styles.primaryBtn}>
             <LayoutGrid size={16} />
             <span>Open Application Tracker</span>
           </Link>

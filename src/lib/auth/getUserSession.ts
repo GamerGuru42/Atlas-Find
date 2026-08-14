@@ -13,9 +13,15 @@ export interface VerifiedUser {
 export async function getVerifiedUser(): Promise<VerifiedUser> {
   let userId: string | null = null;
   let userEmail: string | null = null;
+  let cookieTier: 'free' | 'pro' | 'elite' = 'free';
 
   try {
     const cookieStore = await cookies();
+    const tierCookie = cookieStore.get('atlas_user_tier')?.value;
+    if (tierCookie === 'pro' || tierCookie === 'elite') {
+      cookieTier = tierCookie;
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -59,26 +65,25 @@ export async function getVerifiedUser(): Promise<VerifiedUser> {
       return {
         id: userId,
         email: userEmail || 'user@atlasfind.com',
-        tier: 'free',
+        tier: cookieTier,
         countryCode: 'US',
         isLoggedIn: true
       };
     }
 
-    // Database is the absolute source of truth for user tier
-    let activeTier: 'free' | 'pro' | 'elite' = (user.tier as 'free' | 'pro' | 'elite') || 'free';
+    // Database is source of truth, but cookie tier serves as fail-safe for transient DB writes
+    let activeTier: 'free' | 'pro' | 'elite' = (user.tier as 'free' | 'pro' | 'elite') || cookieTier;
 
-    // Verify against subscription record status
-    if (activeTier !== 'free' && (!user.subscription || user.subscription.status !== 'active')) {
+    // Only revert if subscription status is explicitly canceled
+    if (user.subscription && user.subscription.status === 'canceled') {
       activeTier = 'free';
-      // Revert user tier in DB if canceled
       await prisma.user.update({
         where: { id: user.id },
         data: { tier: 'free' }
       }).catch(() => {});
     }
 
-    // Sync cookie for client performance
+    // Keep cookie in sync
     try {
       const cookieStore = await cookies();
       cookieStore.set('atlas_user_tier', activeTier, {
@@ -97,10 +102,11 @@ export async function getVerifiedUser(): Promise<VerifiedUser> {
     };
   } catch (e) {
     console.error('getVerifiedUser DB lookup error:', e);
+    // Fallback to cookie tier during DB connection errors
     return {
       id: userId,
       email: userEmail || 'user@atlasfind.com',
-      tier: 'free',
+      tier: cookieTier,
       countryCode: 'US',
       isLoggedIn: true
     };

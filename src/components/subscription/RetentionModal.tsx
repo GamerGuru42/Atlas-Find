@@ -39,14 +39,14 @@ export function RetentionModal({ isOpen, onClose }: { isOpen: boolean, onClose: 
           <>
             <h3 className={styles.modalTitle}>Cancel Subscription</h3>
             <p className={styles.modalText}>
-              Your access will continue until the end of your billing cycle. You can resubscribe anytime.
+              Are you sure? Your Pro features and unlimited access will continue until <strong>Oct 14, 2026</strong>.
             </p>
             <div className={styles.modalActions}>
-              <Button variant="primary" onClick={onClose}>Nevermind, Keep Plan</Button>
+              <Button variant="primary" onClick={onClose}>Keep My Plan</Button>
               <button 
                 className={`${styles.btnSecondary} ${styles.btnDanger}`}
                 onClick={() => {
-                  alert("Subscription Canceled (Mock)");
+                  alert("Subscription canceled. Access continues until Oct 14, 2026.");
                   onClose();
                   setStep(1);
                 }}

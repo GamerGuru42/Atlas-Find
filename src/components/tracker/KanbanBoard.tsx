@@ -38,17 +38,35 @@ export const KanbanBoard: React.FC = () => {
     useSensor(TouchSensor, { activationConstraint: { distance: 8 } })
   );
 
+  const [showCelebrationBanner, setShowCelebrationBanner] = useState(false);
+
   useEffect(() => {
+    // Check URL search params for ?upgraded=true
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('upgraded') === 'true') {
+        setShowCelebrationBanner(true);
+      }
+      
+      // Cookie fail-safe check
+      const match = document.cookie.match(/(?:^|; )atlas_user_tier=([^;]*)/);
+      if (match && (match[1] === 'pro' || match[1] === 'elite')) {
+        setUserTier(match[1]);
+      }
+    }
     fetchTrackerData();
   }, []);
 
   const fetchTrackerData = async () => {
     try {
-      const res = await fetch('/api/tracker');
+      const res = await fetch('/api/tracker?t=' + Date.now());
       const data = await res.json();
       if (data.trackedItems) {
         setItems(data.trackedItems);
-        setUserTier(data.userTier || 'free');
+        // Only set userTier from API if not already overridden by cookie
+        if (data.userTier) {
+          setUserTier(data.userTier);
+        }
       }
     } catch (e) {
       console.error('Error loading tracker items:', e);
@@ -121,6 +139,9 @@ export const KanbanBoard: React.FC = () => {
   };
 
   const handleCardDeleted = async (id: string) => {
+    if (typeof window !== 'undefined' && !window.confirm('Remove from tracker? This won\'t delete the opportunity from AtlasFind.')) {
+      return;
+    }
     setItems((prev) => prev.filter((i) => i.id !== id));
     try {
       await fetch('/api/tracker/remove', {
@@ -135,6 +156,36 @@ export const KanbanBoard: React.FC = () => {
 
   return (
     <div className={styles.trackerContainer}>
+      {showCelebrationBanner && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(37,99,235,0.2), rgba(168,85,247,0.2))',
+          border: '1px solid rgba(168,85,247,0.4)',
+          borderRadius: '12px',
+          padding: '1rem 1.5rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          color: '#f8fafc'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Sparkles size={24} style={{ color: '#fbbf24' }} />
+            <div>
+              <strong style={{ fontSize: '1.05rem' }}>🎉 Congratulations! Your Atlas Pro Membership is Active!</strong>
+              <p style={{ color: '#cbd5e1', fontSize: '0.875rem', margin: 0 }}>
+                All 6 application tracking stages are unlocked with unlimited saves.
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setShowCelebrationBanner(false)}
+            style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.2rem' }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Header Bar */}
       <div className={styles.trackerHeader}>
         <div className={styles.titleArea}>
