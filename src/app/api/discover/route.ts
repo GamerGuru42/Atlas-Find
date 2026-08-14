@@ -160,11 +160,12 @@ export async function GET(request: NextRequest) {
     // 5. Combine sets
     let allOpps = [...normalizedDb, ...weeklyOpps];
 
-    // Remove duplicates by applyUrl just in case
-    const seenUrls = new Set<string>();
+    // Remove duplicates by title and sponsor to clean up seed duplication
+    const seenKeys = new Set<string>();
     allOpps = allOpps.filter(opp => {
-      if (seenUrls.has(opp.applyUrl)) return false;
-      seenUrls.add(opp.applyUrl);
+      const key = `${opp.title.toLowerCase().trim()}||${(opp.sponsor || '').toLowerCase().trim()}`;
+      if (seenKeys.has(key)) return false;
+      seenKeys.add(key);
       return true;
     });
 

@@ -62,11 +62,12 @@ export async function GET() {
     // Combine opportunities to compute correct aggregate filters & counts
     const allOpps = [...baseOpps, ...weeklyOpps];
 
-    // Deduplicate by applyUrl
-    const seenUrls = new Set<string>();
+    // Deduplicate by title and sponsor
+    const seenKeys = new Set<string>();
     const uniqueOpps = allOpps.filter(opp => {
-      if (seenUrls.has(opp.applyUrl)) return false;
-      seenUrls.add(opp.applyUrl);
+      const key = `${opp.title.toLowerCase().trim()}||${(opp.sponsor || '').toLowerCase().trim()}`;
+      if (seenKeys.has(key)) return false;
+      seenKeys.add(key);
       return true;
     });
 
