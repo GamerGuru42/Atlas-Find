@@ -122,7 +122,7 @@ export function PricingTable({ userPricing: initialUserPricing, isLoggedIn, coun
 
       {!isLoggedIn && !countryNotFound && (
         <div className={styles.footnote}>
-          Sign in to confirm your local pricing
+          Prices shown for {effectiveCountryCode}. Sign in to confirm.
         </div>
       )}
       {countryNotFound && (

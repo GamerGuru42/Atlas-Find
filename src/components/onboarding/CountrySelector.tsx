@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Check, ChevronDown, Search } from 'lucide-react'
+import { Check, ChevronDown, Search, MapPin } from 'lucide-react'
 import styles from './Onboarding.module.css'
 
 import COUNTRIES from '@/lib/countries.json'
@@ -15,23 +15,27 @@ const REGIONS = ['Popular', ...Array.from(new Set(COUNTRIES.map(c => c.region)))
 
 interface CountrySelectorProps {
   onContinue: (countryCode: string) => void
+  initialCountryCode?: string | null
 }
 
-export default function CountrySelector({ onContinue }: CountrySelectorProps) {
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+export default function CountrySelector({ onContinue, initialCountryCode }: CountrySelectorProps) {
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(initialCountryCode || null)
+  const [isAutoDetected, setIsAutoDetected] = useState<boolean>(false)
   const [search, setSearch] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   
   useEffect(() => {
-    // Attempt auto-detect
-    fetch('https://ipapi.co/json/')
+    if (selectedCountry) return
+
+    // Auto-detect using our internal Vercel header endpoint (no external calls/GPS)
+    fetch('/api/geo/detect')
       .then(res => res.json())
       .then(data => {
-        if (data?.country_code && !selectedCountry) {
-          // Only select if it exists in our list (could expand list in real app)
-          const exists = COUNTRIES.find(c => c.code === data.country_code)
+        if (data?.countryCode && !selectedCountry) {
+          const exists = COUNTRIES.find(c => c.code === data.countryCode)
           if (exists) {
-            setSelectedCountry(data.country_code)
+            setSelectedCountry(data.countryCode)
+            setIsAutoDetected(true)
           }
         }
       })
@@ -77,6 +81,20 @@ export default function CountrySelector({ onContinue }: CountrySelectorProps) {
           <ChevronDown style={{ width: '1.25rem', height: '1.25rem', opacity: 0.5 }} />
         </button>
 
+        {isAutoDetected && selectedData && (
+          <p style={{ 
+            marginTop: '0.5rem', 
+            fontSize: '0.8125rem', 
+            color: '#64748b', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.375rem' 
+          }}>
+            <MapPin size={13} style={{ color: '#3b82f6' }} />
+            Detected from your location. Change if incorrect.
+          </p>
+        )}
+
         {isOpen && (
           <div className={styles.dropdownMenu}>
             <div className={styles.searchInputWrapper}>
@@ -100,6 +118,7 @@ export default function CountrySelector({ onContinue }: CountrySelectorProps) {
                     key={`${group.region}-${country.code}`}
                     onClick={() => {
                       setSelectedCountry(country.code)
+                      setIsAutoDetected(false)
                       setIsOpen(false)
                       setSearch('')
                     }}

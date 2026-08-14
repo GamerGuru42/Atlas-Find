@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies, headers } from 'next/headers';
 import prisma from '@/lib/db/prisma';
 import { getPricing, normalizeCountryCode } from '@/lib/pricing/currencies';
+import { detectCountry } from '@/lib/geo/detect-country';
 import { PricingTable } from '@/components/pricing/PricingTable';
 import { FeatureComparison } from '@/components/pricing/FeatureComparison';
 import styles from '@/components/pricing/Pricing.module.css';
@@ -61,12 +62,9 @@ export default async function PricingPage() {
   // 4. Geolocation header fallback if not logged in or cookie missing
   if (countryCode === 'US') {
     try {
-      const headersList = await headers();
-      const ipCountry = headersList.get('x-vercel-ip-country') || 
-                        headersList.get('cf-ipcountry') || 
-                        headersList.get('x-country-code');
-      if (ipCountry) {
-        countryCode = normalizeCountryCode(ipCountry);
+      const geo = await detectCountry();
+      if (geo.countryCode) {
+        countryCode = normalizeCountryCode(geo.countryCode);
       }
     } catch (e) {
       console.error('PricingPage country header error:', e);

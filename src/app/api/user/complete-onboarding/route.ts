@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/db/prisma'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { detectCountry } from '@/lib/geo/detect-country'
 
 const CURRENCY_MAP: Record<string, string> = {
   NG: 'NGN',
@@ -54,8 +55,10 @@ export async function POST(req: Request) {
 
     const currency = CURRENCY_MAP[country_code] || 'USD'
 
+    // Detect location metadata from Vercel headers
+    const geo = await detectCountry()
+
     // 1. Update Supabase Auth user_metadata using Service Role key
-    // This is much safer for server-side updates and avoids token sync issues with the browser
     const supabaseAdmin = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -71,6 +74,9 @@ export async function POST(req: Request) {
       user_metadata: {
         onboarding_completed: true,
         country_code,
+        detected_country: geo.countryCode,
+        detected_region: geo.region,
+        detected_city: geo.city,
       }
     })
 
@@ -87,6 +93,10 @@ export async function POST(req: Request) {
       update: {
         countryCode: country_code,
         currency,
+        detectedCountry: geo.countryCode,
+        detectedRegion: geo.region,
+        detectedCity: geo.city,
+        lastLoginIp: geo.ip,
         fieldOfStudy: field_of_study || null,
         level: level || null,
         institution: institution || null,
@@ -98,6 +108,10 @@ export async function POST(req: Request) {
         email: user.email!,
         countryCode: country_code,
         currency,
+        detectedCountry: geo.countryCode,
+        detectedRegion: geo.region,
+        detectedCity: geo.city,
+        lastLoginIp: geo.ip,
         fieldOfStudy: field_of_study || null,
         level: level || null,
         institution: institution || null,
