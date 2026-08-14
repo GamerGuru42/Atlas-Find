@@ -27,19 +27,37 @@ export default function CountrySelector({ onContinue, initialCountryCode }: Coun
   useEffect(() => {
     if (selectedCountry) return
 
-    // Auto-detect using our internal Vercel header endpoint (no external calls/GPS)
+    // 1. Try internal Vercel IP header detection first
     fetch('/api/geo/detect')
       .then(res => res.json())
       .then(data => {
-        if (data?.countryCode && !selectedCountry) {
-          const exists = COUNTRIES.find(c => c.code === data.countryCode)
+        if (data?.countryCode) {
+          const code = data.countryCode.toUpperCase()
+          const exists = COUNTRIES.find(c => c.code === code)
           if (exists) {
-            setSelectedCountry(data.countryCode)
+            setSelectedCountry(code)
             setIsAutoDetected(true)
+            return
           }
         }
+
+        // 2. Secondary Fallback: If Vercel headers missing (e.g. dev/VPN/proxy), fallback to client-side IP lookup
+        return fetch('https://ipapi.co/json/')
+          .then(res => res.json())
+          .then(fallbackData => {
+            if (fallbackData?.country_code) {
+              const code = fallbackData.country_code.toUpperCase()
+              const exists = COUNTRIES.find(c => c.code === code)
+              if (exists) {
+                setSelectedCountry(code)
+                setIsAutoDetected(true)
+              }
+            }
+          })
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error('Geo detection error:', err)
+      })
   }, [selectedCountry])
 
   const filteredCountries = COUNTRIES.filter(c => 
