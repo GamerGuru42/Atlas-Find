@@ -17,17 +17,17 @@ export default function PaymentCancelPage() {
           Payment Canceled
         </span>
 
-        <h1 className={styles.heading}>No worries — upgrade whenever you're ready</h1>
+        <h1 className={styles.heading}>Payment canceled. No worries!</h1>
         <p className={styles.subheading}>
-          Your payment was canceled. No charges were made to your account.
+          No charges were made to your account. You can upgrade to Pro or Elite whenever you are ready.
         </p>
 
         <div className={styles.featureBox} style={{ background: '#fff7ed', borderColor: '#ffedd5' }}>
           <h3 style={{ color: '#9a3412', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Sparkles size={16} /> AtlasFind is 100% Free for core search & AI chat
+            <Sparkles size={16} /> AtlasFind works great for free!
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#7c2d12', margin: '4px 0 0 0', lineHeight: 1.5 }}>
-            You still have unlimited access to our AI Advisor, opportunity search, community reviews, and basic saved items.
+          <p style={{ fontSize: '0.875rem', color: '#7c2d12', margin: '6px 0 0 0', lineHeight: 1.5 }}>
+            The AI chat, opportunity search, and personalized advice are 100% unlimited on the free plan.
           </p>
         </div>
 

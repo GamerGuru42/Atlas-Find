@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { TestModeBanner } from "@/components/payments/TestModeBanner";
 import "./globals.css";
 
 const inter = Inter({
@@ -55,6 +56,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false}>
+          <TestModeBanner />
           <Header />
           <main>{children}</main>
           <Footer />

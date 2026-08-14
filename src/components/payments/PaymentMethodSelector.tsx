@@ -46,7 +46,7 @@ export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
+      if (!res.ok || (!data.authorization_url && !data.url)) {
         throw new Error(data.error || 'Failed to initialize payment checkout.');
       }
 

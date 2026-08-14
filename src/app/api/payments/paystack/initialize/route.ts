@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/db/prisma';
 import { initializePaystackTransaction } from '@/lib/payments/paystack';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
-const prisma = new PrismaClient();
-
-// Streamlined 2-Zone Pricing Table for Paystack (African & Emerging Currencies)
+// Paystack Pricing Table (African & Emerging Currencies)
 const PRICING_TABLE: Record<string, Record<string, Record<string, number>>> = {
   NGN: {
     PRO: { monthly: 5000, yearly: 40000 },
     ELITE: { monthly: 15000, yearly: 120000 },
   },
   GHS: {
-    PRO: { monthly: 45, yearly: 360 },
-    ELITE: { monthly: 135, yearly: 1080 },
+    PRO: { monthly: 50, yearly: 400 },
+    ELITE: { monthly: 150, yearly: 1200 },
   },
   KES: {
     PRO: { monthly: 500, yearly: 4000 },
@@ -30,7 +30,31 @@ const PRICING_TABLE: Record<string, Record<string, Record<string, number>>> = {
 
 export async function POST(req: Request) {
   try {
-    const { userId, tier = 'PRO', billing = 'monthly' } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    let { userId, tier = 'PRO', billing = 'monthly' } = body;
+
+    // Retrieve active Supabase user session if userId is not explicitly passed
+    if (!userId) {
+      try {
+        const cookieStore = await cookies();
+        const supabase = createServerClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          {
+            cookies: {
+              getAll() { return cookieStore.getAll(); },
+              setAll() {}
+            }
+          }
+        );
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.id) {
+          userId = session.user.id;
+        }
+      } catch (e) {
+        console.error('Session lookup in Paystack init:', e);
+      }
+    }
 
     let user = null;
     if (userId) {
@@ -51,7 +75,7 @@ export async function POST(req: Request) {
     const amountInKobo = amountInMainCurrency * 100;
 
     const reference = `atlas_${formattedTier.toLowerCase()}_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-    const baseUrl = process.env.APP_URL || 'https://atlas-find.vercel.app';
+    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://atlas-find.vercel.app';
     const callback_url = `${baseUrl}/payments/success?reference=${reference}`;
 
     const paystackRes = await initializePaystackTransaction({
@@ -75,7 +99,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('Paystack Initialize Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to initialize Paystack transaction' },
+      { error: error.message || 'Payment service temporarily unavailable. Please try again in a few minutes.' },
       { status: 500 }
     );
   }
