@@ -9,20 +9,51 @@ export async function GET(req: Request) {
     const reference = searchParams.get('reference');
 
     if (!reference) {
-      return NextResponse.json({ error: 'Reference code is required' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Reference code is required' }, { status: 400 });
     }
 
     // Verify transaction with Paystack API
-    const paystackData = await verifyPaystackTransaction(reference);
+    let paystackData: any;
+    try {
+      paystackData = await verifyPaystackTransaction(reference);
+    } catch (err: any) {
+      console.error('Paystack verification fetch error:', err);
+      return NextResponse.json({ 
+        success: false, 
+        message: err.message || 'Unable to communicate with Paystack server.' 
+      }, { status: 400 });
+    }
+
+    console.log('Paystack Verification Data:', {
+      reference,
+      status: paystackData.status,
+      gateway_response: paystackData.gateway_response,
+      amount: paystackData.amount,
+      customer_email: paystackData.customer?.email,
+      metadata: paystackData.metadata,
+    });
 
     if (paystackData.status !== 'success') {
-      return NextResponse.json({ success: false, message: 'Payment verification failed' }, { status: 400 });
+      return NextResponse.json({ 
+        success: false, 
+        message: `Paystack status: ${paystackData.status} (${paystackData.gateway_response || 'Payment not completed'})` 
+      }, { status: 400 });
     }
 
     const metadata = paystackData.metadata || {};
-    const userId = metadata.userId;
+    let userId = metadata.userId;
     const tier = (metadata.tier || 'pro').toLowerCase();
     const billing = metadata.billing || 'monthly';
+
+    // If userId not in metadata, lookup by customer email
+    if (!userId && paystackData.customer?.email) {
+      const foundUser = await prisma.user.findUnique({
+        where: { email: paystackData.customer.email },
+      });
+      if (foundUser) {
+        userId = foundUser.id;
+      }
+    }
 
     if (userId) {
       // 1. Update User tier in Prisma DB (Source of Truth)
@@ -66,7 +97,7 @@ export async function GET(req: Request) {
       });
 
       // 3. Create or update UsageLimits record
-      const maxSaves = tier === 'elite' ? 999999 : tier === 'pro' ? 999999 : 20;
+      const maxSaves = tier === 'elite' ? 999999 : 999999;
       await prisma.usageLimit.upsert({
         where: { userId },
         update: { maxSaves },
@@ -94,7 +125,7 @@ export async function GET(req: Request) {
   } catch (error: any) {
     console.error('Paystack Verify Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Payment verification failed' },
+      { success: false, message: error.message || 'Payment verification encountered an unexpected error.' },
       { status: 500 }
     );
   }

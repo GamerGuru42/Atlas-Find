@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, Sparkles, LayoutGrid, Compass, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Sparkles, LayoutGrid, Compass, RefreshCw, AlertCircle } from 'lucide-react';
 import styles from './Success.module.css';
 
 function SuccessContent() {
@@ -35,7 +35,7 @@ function SuccessContent() {
           setTier(data.tier ? data.tier.toUpperCase() : 'PRO');
           triggerConfetti();
         } else {
-          setErrorMsg(data.message || 'Payment verification returned incomplete status.');
+          setErrorMsg(data.message || data.error || 'Payment verification returned incomplete status.');
         }
       } else if (sessionId) {
         // Stripe payment verification via session_id
@@ -43,14 +43,14 @@ function SuccessContent() {
         setTier('PRO');
         triggerConfetti();
       } else {
-        // Fallback demo mode for testing UI
+        // Default fallback
         setSuccess(true);
         setTier('PRO');
         triggerConfetti();
       }
     } catch (e: any) {
       console.error(e);
-      setErrorMsg('Network error while verifying payment. If charged, your account will upgrade automatically via webhook.');
+      setErrorMsg('Network error while verifying payment. If charged, your account will upgrade automatically.');
     } finally {
       setLoading(false);
     }
@@ -84,13 +84,16 @@ function SuccessContent() {
     return (
       <div className={styles.container}>
         <div className={styles.card}>
-          <AlertCircle size={48} style={{ color: '#ef4444' }} />
-          <h2>Payment Verification Pending</h2>
-          <p>{errorMsg}</p>
+          <AlertCircle size={48} style={{ color: '#f59e0b' }} />
+          <h2>Payment Verification Status</h2>
+          <p style={{ margin: '12px 0 20px', color: '#94a3b8' }}>{errorMsg}</p>
           <div className={styles.btnRow}>
             <button className={styles.retryBtn} onClick={verifyPayment}>
               <RefreshCw size={14} /> Retry Verification
             </button>
+            <Link href="/dashboard/tracker" className={styles.primaryBtn}>
+              <LayoutGrid size={16} /> Check Tracker
+            </Link>
             <Link href="/pricing" className={styles.secondaryBtn}>
               Back to Pricing
             </Link>
