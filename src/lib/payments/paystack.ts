@@ -2,11 +2,11 @@
  * Paystack Payment Helper Module (Africa: NG, GH, KE, ZA, UG, TZ, RW, SN, CI, etc.)
  */
 
-const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY || 'sk_test_placeholder_paystack';
+const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY || 'sk_test_d46c5a5e10f199c8a5dff6e113215e510650fd8a';
 
 export interface PaystackInitParams {
   email: string;
-  amount: number; // in lowest currency unit (kobo/cents), e.g. NGN 7500 => 750000
+  amount: number; // in lowest currency unit (kobo/cents), e.g. NGN 5000 => 500000
   currency?: string; // NGN, GHS, KES, ZAR, etc.
   callback_url: string;
   metadata?: Record<string, any>;
