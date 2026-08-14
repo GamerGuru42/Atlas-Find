@@ -1,14 +1,33 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LoginButton } from '@/components/auth/LoginButton';
 import styles from '@/components/auth/Auth.module.css';
 
-export default function LoginPage() {
+// Friendly labels for returnUrl paths
+const RETURN_URL_LABELS: Record<string, string> = {
+  '/dashboard/tracker': 'Application Tracker',
+  '/dashboard': 'Dashboard',
+  '/settings/subscription': 'Subscription Settings',
+  '/settings/profile': 'Profile Settings',
+  '/settings': 'Settings',
+  '/chat': 'Atlas AI Chat',
+  '/discover': 'Discover Opportunities',
+  '/pricing': 'Pricing',
+};
+
+function getReturnLabel(returnUrl: string | null): string | null {
+  if (!returnUrl) return null;
+  return RETURN_URL_LABELS[returnUrl] || null;
+}
+
+function LoginContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
+  const returnUrl = searchParams.get('returnUrl');
+  const returnLabel = getReturnLabel(returnUrl);
 
   return (
     <div className={styles.authContainer}>
@@ -17,7 +36,10 @@ export default function LoginPage() {
       <div className={styles.authCard}>
         <h1 className={styles.title}>Welcome back</h1>
         <p className={styles.subtitle}>
-          Log in to continue your research journey with AtlasFind.
+          {returnLabel
+            ? `Sign in to continue to ${returnLabel}.`
+            : 'Log in to continue your research journey with AtlasFind.'
+          }
         </p>
 
         {error && (
@@ -36,16 +58,30 @@ export default function LoginPage() {
         )}
         
         <div className={styles.buttonWrapper}>
-          <LoginButton />
+          <LoginButton returnUrl={returnUrl} />
         </div>
         
         <p className={styles.footerText}>
           Don&apos;t have an account?
-          <Link href="/signup" className={styles.link}>
+          <Link href={returnUrl ? `/signup?returnUrl=${encodeURIComponent(returnUrl)}` : '/signup'} className={styles.link}>
             Sign up
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.authContainer}>
+        <div className={styles.authCard}>
+          <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

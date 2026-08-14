@@ -1,14 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LoginButton } from '@/components/auth/LoginButton';
 import styles from '@/components/auth/Auth.module.css';
 
-export default function SignupPage() {
+function SignupContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
+  const returnUrl = searchParams.get('returnUrl');
 
   return (
     <div className={styles.authContainer}>
@@ -36,16 +37,30 @@ export default function SignupPage() {
         )}
         
         <div className={styles.buttonWrapper}>
-          <LoginButton mode="signup" />
+          <LoginButton mode="signup" returnUrl={returnUrl} />
         </div>
         
         <p className={styles.footerText}>
           Already have an account?
-          <Link href="/login" className={styles.link}>
+          <Link href={returnUrl ? `/login?returnUrl=${encodeURIComponent(returnUrl)}` : '/login'} className={styles.link}>
             Log in
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.authContainer}>
+        <div className={styles.authCard}>
+          <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Loading...</p>
+        </div>
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   );
 }

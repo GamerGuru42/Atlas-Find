@@ -4,7 +4,12 @@ import React, { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { Button } from '@/components/ui/Button';
 
-export function LoginButton({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
+interface LoginButtonProps {
+  mode?: 'login' | 'signup';
+  returnUrl?: string | null;
+}
+
+export function LoginButton({ mode = 'login', returnUrl }: LoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,6 +23,12 @@ export function LoginButton({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
     setError(null);
 
     try {
+      // Set returnUrl cookie BEFORE the OAuth redirect
+      // The auth callback will read this and redirect to the right place
+      if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('/login') && !returnUrl.startsWith('/signup')) {
+        document.cookie = `atlas_return_url=${returnUrl}; path=/; max-age=300; samesite=lax`;
+      }
+
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -26,12 +37,19 @@ export function LoginButton({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
       });
 
       if (authError) {
-        setError(authError.message);
+        // Categorize the error for user-friendly messages
+        const errorMessage = categorizeAuthError(authError.message);
+        if (errorMessage) {
+          setError(errorMessage);
+        }
+        // If errorMessage is null, it means user cancelled — don't show error
         setIsLoading(false);
       }
       // If no error, the browser will redirect — keep loading state on
     } catch (err: any) {
-      setError(err?.message || 'Something went wrong. Please try again.');
+      const msg = err?.message || '';
+      const categorized = categorizeAuthError(msg);
+      setError(categorized || 'Something went wrong. Please try again.');
       setIsLoading(false);
     }
   };
@@ -68,7 +86,7 @@ export function LoginButton({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            {mode === 'signup' ? 'Signup with Google' : 'Sign in with Google'}
+            {mode === 'signup' ? 'Sign up with Google' : 'Sign in with Google'}
           </>
         )}
       </Button>
@@ -97,4 +115,35 @@ export function LoginButton({ mode = 'login' }: { mode?: 'login' | 'signup' }) {
       `}</style>
     </div>
   );
+}
+
+/**
+ * Categorize OAuth errors into user-friendly messages.
+ * Returns null for errors that should be silently ignored (e.g. user cancelled).
+ */
+function categorizeAuthError(message: string): string | null {
+  const lower = message.toLowerCase();
+
+  // User cancelled — don't show any error
+  if (lower.includes('popup_closed_by_user') || lower.includes('user_cancelled') || lower.includes('cancelled') || lower.includes('closed by user')) {
+    return null;
+  }
+
+  // Popup blocked by browser
+  if (lower.includes('popup') && (lower.includes('block') || lower.includes('denied'))) {
+    return 'Please allow popups for AtlasFind to sign in with Google. Check your browser\'s address bar for the popup blocker icon.';
+  }
+
+  // Account already exists with different provider
+  if (lower.includes('already registered') || lower.includes('already exists') || lower.includes('different provider')) {
+    return 'This email is already linked to a different sign-in method. Try signing in with the method you used originally.';
+  }
+
+  // Network / server errors
+  if (lower.includes('network') || lower.includes('fetch') || lower.includes('timeout')) {
+    return 'Network error. Please check your internet connection and try again.';
+  }
+
+  // Fallback: show the raw message
+  return message;
 }

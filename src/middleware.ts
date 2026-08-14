@@ -1,6 +1,33 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Routes that require authentication
+const PROTECTED_PREFIXES = [
+  '/dashboard',
+  '/settings',
+  '/chat',
+  '/onboarding',
+  '/discover',
+] as const;
+
+// Routes that are auth pages (login/signup) — logged-in users shouldn't see these
+const AUTH_PAGES = ['/login', '/signup'] as const;
+
+// Routes that should never be used as returnUrl (prevents redirect loops)
+const BLOCKED_RETURN_URLS = ['/login', '/signup', '/auth/callback'] as const;
+
+function isProtectedRoute(pathname: string): boolean {
+  return PROTECTED_PREFIXES.some(prefix => pathname.startsWith(prefix));
+}
+
+function isAuthPage(pathname: string): boolean {
+  return AUTH_PAGES.some(prefix => pathname.startsWith(prefix));
+}
+
+function isSafeReturnUrl(pathname: string): boolean {
+  return pathname.startsWith('/') && !BLOCKED_RETURN_URLS.some(blocked => pathname.startsWith(blocked));
+}
+
 export async function middleware(request: NextRequest) {
   // If this is the root route and there's a code parameter, Supabase OAuth fell back
   // to the Site URL because the callback URL isn't configured in the dashboard.
@@ -26,7 +53,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           response = NextResponse.next({
             request,
           })
@@ -40,20 +67,26 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup')
-  const isOnboardingPage = request.nextUrl.pathname.startsWith('/onboarding')
-  
+  const pathname = request.nextUrl.pathname;
+  const isOnboardingPage = pathname.startsWith('/onboarding');
+
+  // ─── GUEST (not authenticated) ───
   if (!user) {
-    // If trying to access protected routes, redirect to login
-    if (isOnboardingPage || request.nextUrl.pathname.startsWith('/discover') || request.nextUrl.pathname.startsWith('/chat')) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/login'
-      return NextResponse.redirect(redirectUrl)
+    if (isProtectedRoute(pathname)) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = '/login';
+
+      // Attach returnUrl so the user lands back here after login
+      if (isSafeReturnUrl(pathname)) {
+        redirectUrl.searchParams.set('returnUrl', pathname);
+      }
+
+      return NextResponse.redirect(redirectUrl);
     }
-    return response
+    return response;
   }
 
-  // User is authenticated
+  // ─── AUTHENTICATED ───
   const hasOnboardingCookie = request.cookies.get('atlas_onboarding_completed')?.value === 'true'
   const hasCompletedOnboarding = hasOnboardingCookie || user.user_metadata?.onboarding_completed === true || user.user_metadata?.onboarding_completed === 'true'
   
@@ -71,14 +104,17 @@ export async function middleware(request: NextRequest) {
     // If user HAS completed onboarding and is trying to access onboarding, redirect them away
     if (isOnboardingPage) {
       const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/discover' // or '/chat'
+      redirectUrl.pathname = '/discover'
       return NextResponse.redirect(redirectUrl)
     }
     // Also redirect authenticated users away from auth pages
-    if (isAuthPage) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/discover'
-      return NextResponse.redirect(redirectUrl)
+    if (isAuthPage(pathname)) {
+      // Honour returnUrl if present (e.g. user bookmarked /login?returnUrl=/pricing)
+      const returnUrl = request.nextUrl.searchParams.get('returnUrl');
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = (returnUrl && isSafeReturnUrl(returnUrl)) ? returnUrl : '/discover';
+      redirectUrl.search = '';
+      return NextResponse.redirect(redirectUrl);
     }
   }
 

@@ -2,6 +2,9 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+// Routes that should never be used as post-login destination
+const BLOCKED_DESTINATIONS = ['/login', '/signup', '/auth/callback'];
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
@@ -38,15 +41,29 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
     }
 
-    const forwardedHost = request.headers.get('x-forwarded-host'); // original origin before load balancer
+    // ─── Determine post-login destination ───
+    // Priority: atlas_return_url cookie > /discover (safe default)
+    let destination = '/discover';
+
+    const returnUrlCookie = cookieStore.get('atlas_return_url')?.value;
+    if (returnUrlCookie && returnUrlCookie.startsWith('/') && !BLOCKED_DESTINATIONS.some(b => returnUrlCookie.startsWith(b))) {
+      destination = returnUrlCookie;
+    }
+
+    // Clear the returnUrl cookie — it's single-use
+    try {
+      cookieStore.set('atlas_return_url', '', { path: '/', maxAge: 0 });
+    } catch {}
+
+    const forwardedHost = request.headers.get('x-forwarded-host');
     const isLocalEnv = process.env.NODE_ENV === 'development';
     
     if (isLocalEnv) {
-      return NextResponse.redirect(`${origin}/chat`);
+      return NextResponse.redirect(`${origin}${destination}`);
     } else if (forwardedHost) {
-      return NextResponse.redirect(`https://${forwardedHost}/chat`);
+      return NextResponse.redirect(`https://${forwardedHost}${destination}`);
     } else {
-      return NextResponse.redirect(`${origin}/chat`);
+      return NextResponse.redirect(`${origin}${destination}`);
     }
   }
 

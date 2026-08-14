@@ -39,6 +39,12 @@ export async function Header() {
   const { data: { session } } = await supabase.auth.getSession();
   
   let tier = 'free';
+  // Cookie fallback — read first so DB errors don't lose the tier
+  const tierCookie = cookieStore.get('atlas_user_tier')?.value;
+  if (tierCookie === 'pro' || tierCookie === 'elite') {
+    tier = tierCookie;
+  }
+
   if (session?.user?.id) {
     try {
       const dbUser = await prisma.user.findUnique({
@@ -49,6 +55,7 @@ export async function Header() {
         tier = dbUser.tier;
       }
     } catch (e) {
+      // DB lookup failed — tier stays as cookie value (already set above)
       console.error("Error fetching user tier:", e);
     }
   }
