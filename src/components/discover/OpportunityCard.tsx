@@ -100,28 +100,30 @@ export default function OpportunityCard({
         </div>
 
         {/* Atlas Score Tooltip */}
-        <div className={styles.scoreWrapper}>
-          <div className={styles.cardScoreBadge}>
-            <Sparkles size={12} className={styles.sparkleIcon} />
-            <span>{opp.matchScore}% Match</span>
-            <HelpCircle size={10} className={styles.infoIcon} />
+        {opp.matchScore !== null && opp.matchScore !== undefined && (
+          <div className={styles.scoreWrapper}>
+            <div className={styles.cardScoreBadge}>
+              <Sparkles size={12} className={styles.sparkleIcon} />
+              <span>{opp.matchScore}% Match</span>
+              <HelpCircle size={10} className={styles.infoIcon} />
+            </div>
+            <div className={styles.tooltip}>
+              <h5 className={styles.tooltipTitle}>Atlas Match Score Breakdown</h5>
+              <div className={styles.tooltipRow}>
+                <span>Field match:</span>
+                <strong>{scoreBreakdown.fieldMatch}%</strong>
+              </div>
+              <div className={styles.tooltipRow}>
+                <span>GPA requirement match:</span>
+                <strong>{scoreBreakdown.gpaMatch}%</strong>
+              </div>
+              <div className={styles.tooltipRow}>
+                <span>Degree level match:</span>
+                <strong>{scoreBreakdown.degreeMatch}%</strong>
+              </div>
+            </div>
           </div>
-          <div className={styles.tooltip}>
-            <h5 className={styles.tooltipTitle}>Atlas Match Score Breakdown</h5>
-            <div className={styles.tooltipRow}>
-              <span>Field match:</span>
-              <strong>{scoreBreakdown.fieldMatch}%</strong>
-            </div>
-            <div className={styles.tooltipRow}>
-              <span>GPA requirement match:</span>
-              <strong>{scoreBreakdown.gpaMatch}%</strong>
-            </div>
-            <div className={styles.tooltipRow}>
-              <span>Degree level match:</span>
-              <strong>{scoreBreakdown.degreeMatch}%</strong>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       <h3 className={styles.oppTitle}>{opp.title}</h3>

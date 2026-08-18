@@ -133,6 +133,17 @@ ${dbContext}
   "applyUrl": "APPLY_URL"
 }
 :::
+
+- **Profile Extraction**: You are responsible for compiling the user's matching profile details based on conversation context. If they mention their field of study, degree level (Undergraduate, Masters, PhD, or Professional), country, current institution, or graduation year, you MUST append a structured JSON block at the very end of your response. Include only the fields you have verified from their messages. It must look EXACTLY like this:
+:::profile
+{
+  "fieldOfStudy": "FIELD_OF_STUDY",
+  "level": "DEGREE_LEVEL",
+  "countryCode": "TWO_LETTER_COUNTRY_CODE",
+  "institution": "INSTITUTION",
+  "graduationYear": YEAR
+}
+:::
     `;
     const coreMessages = messages.map((msg: any) => ({
       role: msg.role,

@@ -163,12 +163,39 @@ export async function GET(request: NextRequest) {
   try {
     // 1. Get user session & profile for Atlas Match Score
     const verifiedUser = await getVerifiedUser();
-    let profile: any = {};
+    let profile: any = null;
+    let hasProfile = false;
+
     if (verifiedUser.isLoggedIn && verifiedUser.id !== 'demo_user') {
       try {
         const user = await prisma.user.findUnique({ where: { id: verifiedUser.id } });
-        profile = user?.profileJson || {};
+        if (user) {
+          const profileJson = (user.profileJson as any) || {};
+          profile = {
+            fieldOfStudy: user.fieldOfStudy || profileJson.fieldOfStudy || '',
+            level: user.level || profileJson.level || '',
+            countryCode: user.countryCode || profileJson.countryCode || '',
+            institution: user.institution || profileJson.institution || '',
+            graduationYear: user.graduationYear || profileJson.graduationYear || '',
+            ...profileJson
+          };
+          if (profile.fieldOfStudy || profile.level) {
+            hasProfile = true;
+          }
+        }
       } catch {}
+    } else {
+      // Guest: check cookie
+      const guestProfileCookie = request.cookies.get('atlas_guest_profile')?.value;
+      if (guestProfileCookie) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(guestProfileCookie));
+          if (parsed && (parsed.fieldOfStudy || parsed.level)) {
+            profile = parsed;
+            hasProfile = true;
+          }
+        } catch {}
+      }
     }
 
     // 2. Fetch base opportunities from Prisma
@@ -249,6 +276,13 @@ export async function GET(request: NextRequest) {
 
     // Calculate match scores for all opportunities
     const oppsWithScores = filtered.map(opp => {
+      if (!hasProfile) {
+        return {
+          ...opp,
+          matchScore: null,
+          scoreBreakdown: null
+        };
+      }
       const match = calculateOpportunityMatch(opp, profile);
       return {
         ...opp,
@@ -260,9 +294,10 @@ export async function GET(request: NextRequest) {
     // 7. Apply Sorting
     oppsWithScores.sort((a, b) => {
       if (sort === 'atlas_score') {
-        // Sort by Match Score descending, fallback to deadline
-        if (b.matchScore !== a.matchScore) {
-          return b.matchScore - a.matchScore;
+        const scoreA = a.matchScore ?? -1;
+        const scoreB = b.matchScore ?? -1;
+        if (scoreB !== scoreA) {
+          return scoreB - scoreA;
         }
       }
       if (sort === 'deadline') {

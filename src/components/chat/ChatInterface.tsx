@@ -7,6 +7,7 @@ import { Menu, Plus, RefreshCw, Send, Sparkles, WifiOff, X } from 'lucide-react'
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { PromptChips } from './PromptChips';
+import { SaveProgressModal } from './SaveProgressModal';
 import styles from './Chat.module.css';
 
 interface Message {
@@ -31,6 +32,8 @@ export function ChatInterface() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   
   // History loading states
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -83,6 +86,9 @@ export function ChatInterface() {
 
     // Load conversation list
     loadConversationList();
+
+    // Check login status & sync guest details if authenticated
+    checkLoginStatus();
   }, []);
 
   // Fetch messages whenever conversationId changes
@@ -91,6 +97,61 @@ export function ChatInterface() {
       loadMessagesHistory(conversationId);
     }
   }, [conversationId]);
+
+  const checkLoginStatus = async () => {
+    try {
+      const res = await fetch('/api/tracker');
+      if (res.ok) {
+        const data = await res.json();
+        setIsLoggedIn(data.isLoggedIn);
+        if (data.isLoggedIn) {
+          triggerGuestDataMigration();
+        }
+      }
+    } catch {}
+  };
+
+  const triggerGuestDataMigration = async () => {
+    try {
+      const guestProfileStr = localStorage.getItem('atlas_guest_profile');
+      if (!guestProfileStr) return;
+
+      const guestProfile = JSON.parse(guestProfileStr);
+      const savedConvs = localStorage.getItem('atlas_conversations');
+      const convList = savedConvs ? JSON.parse(savedConvs) : [];
+      const guestConversations = [];
+
+      for (const conv of convList) {
+        const key = `atlas_chat_history_${conv.id}`;
+        const historyStr = localStorage.getItem(key);
+        if (historyStr) {
+          guestConversations.push({
+            conversationId: conv.id,
+            messages: JSON.parse(historyStr)
+          });
+        }
+      }
+
+      const syncRes = await fetch('/api/user/sync-guest-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guestProfile, guestConversations })
+      });
+
+      if (syncRes.ok) {
+        localStorage.removeItem('atlas_guest_profile');
+        document.cookie = 'atlas_guest_profile=; path=/; max-age=0; SameSite=Lax';
+        toast.success("Sync complete! Your guest profile and chat history have been saved to your account. 🎉");
+      }
+    } catch (e) {
+      console.error('[Guest Migration Error]', e);
+    }
+  };
+
+  const handleContinueAsGuest = () => {
+    localStorage.setItem('atlas_guest_warned', 'true');
+    setShowSaveModal(false);
+  };
 
   const loadConversationList = () => {
     try {
@@ -247,6 +308,12 @@ export function ChatInterface() {
       handleStopStream();
     }
 
+    // Nudge guest on the 3rd user message
+    const userMsgsCount = messages.filter(m => m.role === 'user').length;
+    if (!isLoggedIn && userMsgsCount === 2 && !localStorage.getItem('atlas_guest_warned')) {
+      setShowSaveModal(true);
+    }
+
     const userMsgId = crypto.randomUUID();
     const newUserMsg: Message = {
       id: userMsgId,
@@ -392,6 +459,27 @@ export function ChatInterface() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: 'assistant', content: accumulatedText, conversationId })
       }).catch(console.error);
+
+      // Parse any :::profile blocks inside the response
+      const profileRegex = /:::profile\s*([\s\S]*?)\s*:::/;
+      const profileMatch = profileRegex.exec(accumulatedText);
+      if (profileMatch) {
+        try {
+          const profileData = JSON.parse(profileMatch[1].trim());
+          localStorage.setItem('atlas_guest_profile', JSON.stringify(profileData));
+          document.cookie = `atlas_guest_profile=${encodeURIComponent(JSON.stringify(profileData))}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+          
+          if (isLoggedIn) {
+            fetch('/api/user/sync-guest-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ guestProfile: profileData })
+            }).catch(console.error);
+          }
+        } catch (err) {
+          console.error('Error parsing profile JSON:', err);
+        }
+      }
 
       // Backup full conversation history to localstorage for guest/offline recovery
       backupMessagesLocally(conversationId, text, accumulatedText);
@@ -623,6 +711,13 @@ export function ChatInterface() {
             cursor: 'pointer'
           }}
           onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {showSaveModal && (
+        <SaveProgressModal 
+          onClose={() => setShowSaveModal(false)}
+          onContinueAsGuest={handleContinueAsGuest}
         />
       )}
     </div>

@@ -34,18 +34,19 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
 
   // Parse structured :::opportunity blocks
   const parseContent = (text: string) => {
+    const cleanText = text.replace(/:::profile\s*([\s\S]*?)\s*:::/g, '').trim();
     const regex = /:::opportunity\s*([\s\S]*?)\s*:::/g;
     const parts: ({ type: 'text'; content: string } | { type: 'opportunity'; data: OpportunityData })[] = [];
     
     let lastIndex = 0;
     let match;
     
-    while ((match = regex.exec(text)) !== null) {
+    while ((match = regex.exec(cleanText)) !== null) {
       // Add preceding text
       if (match.index > lastIndex) {
         parts.push({
           type: 'text',
-          content: text.slice(lastIndex, match.index),
+          content: cleanText.slice(lastIndex, match.index),
         });
       }
       
@@ -75,10 +76,10 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
       lastIndex = regex.lastIndex;
     }
     
-    if (lastIndex < text.length) {
+    if (lastIndex < cleanText.length) {
       parts.push({
         type: 'text',
-        content: text.slice(lastIndex),
+        content: cleanText.slice(lastIndex),
       });
     }
     

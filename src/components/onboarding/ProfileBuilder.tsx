@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import styles from './Onboarding.module.css'
@@ -28,6 +28,23 @@ interface ProfileBuilderProps {
 
 export default function ProfileBuilder({ onSave, onSkip, isSubmitting }: ProfileBuilderProps) {
   const [formData, setFormData] = useState<ProfileData>({})
+
+  useEffect(() => {
+    try {
+      const guestProfileStr = localStorage.getItem('atlas_guest_profile');
+      if (guestProfileStr) {
+        const guestProfile = JSON.parse(guestProfileStr);
+        setFormData({
+          field_of_study: guestProfile.fieldOfStudy || '',
+          level: guestProfile.level || '',
+          institution: guestProfile.institution || '',
+          graduation_year: guestProfile.graduationYear ? String(guestProfile.graduationYear) : '',
+        });
+      }
+    } catch (e) {
+      console.error('Error pre-populating onboarding profile from guest data:', e);
+    }
+  }, []);
 
   const handleChange = (field: keyof ProfileData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
