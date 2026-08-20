@@ -3,7 +3,7 @@ import prisma from '@/lib/db/prisma';
 import { seedOpportunities } from '@/data/seed/opportunities';
 
 // Baseline date to calculate weekly auto-incrementing opportunities
-const BASELINE_DATE = new Date('2026-08-14T00:00:00Z');
+const BASELINE_DATE = new Date('2026-08-01T00:00:00Z');
 
 function generateWeeklyOpportunities(count: number): any[] {
   const opps: any[] = [];

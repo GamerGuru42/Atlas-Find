@@ -100,7 +100,7 @@ function DiscoverContent() {
     loadUserTrackerData();
   }, []);
 
-  // Fetch dynamic categories and distinct filter options
+  // Fetch dynamic categories and distinct filter options once on mount
   useEffect(() => {
     async function fetchMetadata() {
       try {
@@ -128,7 +128,24 @@ function DiscoverContent() {
       }
     }
     fetchMetadata();
-  }, [searchParams]);
+  }, []);
+
+  // Sync URL parameters changes to active selected state options
+  useEffect(() => {
+    if (!filterOptions.fundingTypes) return;
+
+    const validFunding = filterOptions.fundingTypes || [];
+    const validCountries = filterOptions.hostCountries || [];
+    const validLevels = filterOptions.degreeLevels || [];
+    const validDisciplines = filterOptions.disciplines || [];
+    const validOrgTypes = filterOptions.orgTypes || [];
+
+    setSelectedFunding((searchParams.get('fundingType')?.split(',') || []).filter(v => validFunding.includes(v)));
+    setSelectedCountries((searchParams.get('hostCountry')?.split(',') || []).filter(v => validCountries.includes(v)));
+    setSelectedLevels((searchParams.get('level')?.split(',') || []).filter(v => validLevels.includes(v)));
+    setSelectedDisciplines((searchParams.get('discipline')?.split(',') || []).filter(v => validDisciplines.includes(v)));
+    setSelectedOrgTypes((searchParams.get('orgType')?.split(',') || []).filter(v => validOrgTypes.includes(v)));
+  }, [searchParams, filterOptions]);
 
   // Set default sorting based on guest vs user
   const effectiveSort = sortParam || (isLoggedIn ? 'atlas_score' : 'newest');

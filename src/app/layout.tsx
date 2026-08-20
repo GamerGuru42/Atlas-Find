@@ -46,6 +46,7 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from 'sonner';
+import { FeedbackButton } from "@/components/layout/FeedbackButton";
 
 export default function RootLayout({
   children,
@@ -61,6 +62,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
           <Toaster position="bottom-center" />
+          <FeedbackButton />
         </ThemeProvider>
       </body>
     </html>

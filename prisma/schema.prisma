@@ -209,3 +209,14 @@ model OpportunityDraft {
 
   @@map("opportunity_drafts")
 }
+
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String?
+  rating    Int
+  category  String
+  comments  String
+  createdAt DateTime @default(now())
+
+  @@map("feedbacks")
+}

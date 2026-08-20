@@ -83,15 +83,7 @@ export async function getVerifiedUser(): Promise<VerifiedUser> {
       }).catch(() => {});
     }
 
-    // Keep cookie in sync
-    try {
-      const cookieStore = await cookies();
-      cookieStore.set('atlas_user_tier', activeTier, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-        sameSite: 'lax'
-      });
-    } catch {}
+    // Keep cookie in sync (removed cookieStore.set here because it is not allowed in GET requests; cookies are set on authentication/payment callbacks instead)
 
     return {
       id: user.id,

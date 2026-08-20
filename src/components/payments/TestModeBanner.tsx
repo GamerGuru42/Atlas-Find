@@ -3,7 +3,7 @@
 import React from 'react';
 
 export function TestModeBanner() {
-  const isTestMode = true; // Active during test key verification
+  const isTestMode = false; // Active during test key verification
 
   if (!isTestMode) return null;
 
