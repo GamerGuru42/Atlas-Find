@@ -3,7 +3,7 @@ export interface Opportunity {
   title: string;
   type: 'scholarship' | 'internship' | 'fellowship' | 'grant';
   sponsor: string;
-  orgType: 'university' | 'government' | 'ngo' | 'corporate' | 'international';
+  orgType: 'university' | 'government' | 'ngo' | 'corporate' | 'international' | 'foundation';
   hostCountry: string;
   continent?: string;
   eligibleCountries: string[]; // empty = open to all

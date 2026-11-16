@@ -6,8 +6,7 @@ const PROTECTED_PREFIXES = [
   '/dashboard',
   '/settings',
   '/chat',
-  '/onboarding',
-  '/discover',
+  '/tracker',
 ] as const;
 
 // Routes that are auth pages (login/signup) — logged-in users shouldn't see these
@@ -29,9 +28,7 @@ function isSafeReturnUrl(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-  // If this is the root route and there's a code parameter, Supabase OAuth fell back
-  // to the Site URL because the callback URL isn't configured in the dashboard.
-  // We can seamlessly forward the user to the correct callback endpoint.
+  // If this is the root route and there's a code parameter, forward to callback
   if (request.nextUrl.pathname === '/' && request.nextUrl.searchParams.has('code')) {
     const url = request.nextUrl.clone();
     url.pathname = '/auth/callback';
@@ -42,30 +39,44 @@ export async function middleware(request: NextRequest) {
     request: {
       headers: request.headers,
     },
-  })
+  });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const { data: { user } } = await supabase.auth.getUser()
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // Supabase credentials not set yet on this environment
+    return response;
+  }
+
+  let user = null;
+  try {
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+            response = NextResponse.next({
+              request,
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (err) {
+    console.warn('[Middleware Supabase Auth Check]', err);
+  }
 
   const pathname = request.nextUrl.pathname;
   const isOnboardingPage = pathname.startsWith('/onboarding');
@@ -76,7 +87,6 @@ export async function middleware(request: NextRequest) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/login';
 
-      // Attach returnUrl so the user lands back here after login
       if (isSafeReturnUrl(pathname)) {
         redirectUrl.searchParams.set('returnUrl', pathname);
       }
@@ -87,42 +97,31 @@ export async function middleware(request: NextRequest) {
   }
 
   // ─── AUTHENTICATED ───
-  const hasOnboardingCookie = request.cookies.get('atlas_onboarding_completed')?.value === 'true'
-  const hasCompletedOnboarding = hasOnboardingCookie || user.user_metadata?.onboarding_completed === true || user.user_metadata?.onboarding_completed === 'true'
-  
-  const hasCountryCookie = !!request.cookies.get('atlas_country_code')?.value
-  const hasCountryCode = hasCountryCookie || !!user.user_metadata?.country_code
+  // Progressive onboarding: User is encouraged to complete onboarding, but not hard-blocked from discover
+  const hasOnboardingCookie = request.cookies.get('atlas_onboarding_completed')?.value === 'true';
+  const hasCompletedOnboarding = hasOnboardingCookie || user.user_metadata?.onboarding_completed === true || user.user_metadata?.onboarding_completed === 'true';
 
-  // If user hasn't completed onboarding or is missing country_code, force them to onboarding
-  if (!hasCompletedOnboarding || !hasCountryCode) {
-    if (!isOnboardingPage) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/onboarding'
-      return NextResponse.redirect(redirectUrl)
-    }
-  } else {
-    // If user HAS completed onboarding and is trying to access onboarding, redirect them away
-    if (isOnboardingPage) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/discover'
-      return NextResponse.redirect(redirectUrl)
-    }
-    // Also redirect authenticated users away from auth pages
-    if (isAuthPage(pathname)) {
-      // Honour returnUrl if present (e.g. user bookmarked /login?returnUrl=/pricing)
-      const returnUrl = request.nextUrl.searchParams.get('returnUrl');
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = (returnUrl && isSafeReturnUrl(returnUrl)) ? returnUrl : '/discover';
-      redirectUrl.search = '';
-      return NextResponse.redirect(redirectUrl);
-    }
+  // If user completed onboarding and is trying to access onboarding again, redirect to discover
+  if (isOnboardingPage && hasCompletedOnboarding) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/discover';
+    return NextResponse.redirect(redirectUrl);
   }
 
-  return response
+  // Redirect authenticated users away from auth pages
+  if (isAuthPage(pathname)) {
+    const returnUrl = request.nextUrl.searchParams.get('returnUrl');
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = (returnUrl && isSafeReturnUrl(returnUrl)) ? returnUrl : '/discover';
+    redirectUrl.search = '';
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  return response;
 }
 
 export const config = {
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
-}
+};

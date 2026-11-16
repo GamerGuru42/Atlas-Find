@@ -1,90 +1,133 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-// In a real app, verify admin session using Supabase auth here.
-// For now, simple GET to fetch pending.
+import prisma from '@/lib/db/prisma';
+import { verifyAdminAccess } from '@/lib/auth/adminAuth';
 
 export async function GET(request: Request) {
-  try {
-    const pendingOpps = await prisma.opportunity.findMany({
-      where: { verificationStatus: 'pending' },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return NextResponse.json({ opportunities: pendingOpps });
-  } catch (error) {
-    console.error('Error fetching admin opportunities:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch opportunities' },
-      { status: 500 }
-    );
+  const auth = verifyAdminAccess(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
   }
-}
 
-export async function PATCH(request: Request) {
-  try {
-    const body = await request.json();
-    const { id, action, data } = body;
-
-    if (!id || !action) {
-      return NextResponse.json({ error: 'Missing id or action' }, { status: 400 });
-    }
-
-    if (action === 'approve') {
-      const updated = await prisma.opportunity.update({
-        where: { id },
-        data: { verificationStatus: 'verified', trustTier: 2 }, // Upgrade trust on approval
+    try {
+      const pendingOpps = await prisma.opportunity.findMany({
+        where: {
+          OR: [
+            { verificationStatus: 'pending' },
+            { verificationStatus: 'unverified' },
+            { verificationStatus: 'flagged' },
+          ],
+        },
+        include: {
+          intakes: true,
+          verificationLogs: {
+            orderBy: { checkedAt: 'desc' },
+            take: 2,
+          },
+        },
+        orderBy: { createdAt: 'desc' },
       });
-      return NextResponse.json({ success: true, opportunity: updated });
-    }
-    
-    if (action === 'reject') {
-      const updated = await prisma.opportunity.update({
-        where: { id },
-        data: { verificationStatus: 'rejected' },
-      });
-      return NextResponse.json({ success: true, opportunity: updated });
-    }
 
-    if (action === 'edit' && data) {
-      const updated = await prisma.opportunity.update({
-        where: { id },
-        data,
-      });
-      return NextResponse.json({ success: true, opportunity: updated });
+      return NextResponse.json({ opportunities: pendingOpps });
+    } catch (error: any) {
+      console.error('Error fetching admin opportunities:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch opportunities' },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-  } catch (error) {
-    console.error('Error updating opportunity:', error);
-    return NextResponse.json(
-      { error: 'Failed to update opportunity' },
-      { status: 500 }
-    );
   }
-}
 
-export async function DELETE(request: Request) {
-  try {
-    const url = new URL(request.url);
-    const id = url.searchParams.get('id');
-
-    if (!id) {
-      return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  export async function PATCH(request: Request) {
+    const auth = verifyAdminAccess(request);
+    if (!auth.authorized) {
+      return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
     }
 
-    await prisma.opportunity.delete({
-      where: { id },
-    });
+    try {
+      const body = await request.json();
+      const { id, action, data, reason } = body;
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting opportunity:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete opportunity' },
-      { status: 500 }
-    );
-  }
-}
+      if (!id || !action) {
+        return NextResponse.json({ error: 'Missing required opportunity id or action' }, { status: 400 });
+      }
+
+      const existing = await prisma.opportunity.findUnique({ where: { id } });
+      if (!existing) {
+        return NextResponse.json({ error: 'Opportunity not found' }, { status: 404 });
+      }
+
+      let updated;
+      if (action === 'approve') {
+          updated = await prisma.opportunity.update({
+            where: { id },
+            data: { verificationStatus: 'verified', trustTier: 2, scamFlag: false },
+          });
+          } else if (action === 'reject') {
+            updated = await prisma.opportunity.update({
+              where: { id },
+              data: { verificationStatus: 'rejected', scamFlag: true },
+            });
+            } else if (action === 'edit' && data) {
+              updated = await prisma.opportunity.update({
+                where: { id },
+                data,
+              });
+            } else {
+              return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+            }
+
+            // Write audit record
+            await prisma.verificationLog.create({
+              data: {
+                opportunityId: id,
+                status: updated.verificationStatus,
+                details: JSON.stringify({
+                  action,
+                  reviewer: auth.reviewer,
+                  previousStatus: existing.verificationStatus,
+                  reason: reason || `Admin action: ${action}`,
+                }),
+              },
+            });
+
+            return NextResponse.json({ success: true, opportunity: updated });
+          } catch (error: any) {
+            console.error('Error updating opportunity:', error);
+            return NextResponse.json(
+              { error: 'Failed to update opportunity' },
+              { status: 500 }
+            );
+          }
+        }
+
+        export async function DELETE(request: Request) {
+          const auth = verifyAdminAccess(request);
+          if (!auth.authorized) {
+            return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
+          }
+
+          try {
+            const url = new URL(request.url);
+            const id = url.searchParams.get('id');
+
+            if (!id) {
+              return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+            }
+
+            await prisma.verificationLog.deleteMany({ where: { opportunityId: id } });
+            await prisma.intake.deleteMany({ where: { opportunityId: id } });
+            await prisma.savedOpportunity.deleteMany({ where: { opportunityId: id } });
+
+            await prisma.opportunity.delete({
+              where: { id },
+            });
+
+            return NextResponse.json({ success: true, message: `Opportunity ${id} deleted.` });
+          } catch (error: any) {
+            console.error('Error deleting opportunity:', error);
+            return NextResponse.json(
+              { error: 'Failed to delete opportunity' },
+              { status: 500 }
+            );
+          }
+        }

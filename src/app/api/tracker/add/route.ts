@@ -70,7 +70,7 @@ export async function POST(req: Request) {
         action: 'added',
         toStatus: status.toLowerCase(),
       },
-    }).catch(err => console.error('Activity log error:', err));
+    }).catch((err: any) => console.error('Activity log error:', err));
 
     return NextResponse.json({
       success: true,

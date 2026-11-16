@@ -1,34 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db/prisma';
-import { seedOpportunities } from '@/data/seed/opportunities';
-
-function normalizeSeedOpportunity(opp: any) {
-  return {
-    id: opp.id,
-    title: opp.title,
-    type: (opp.type || 'SCHOLARSHIP').toUpperCase(),
-    sponsor: opp.sponsor || 'Global Sponsor',
-    orgType: opp.orgType || 'organization',
-    hostCountry: opp.hostCountry || 'Global',
-    continent: opp.continent || 'Global',
-    eligibleCountries: opp.eligibleCountries || [],
-    disciplines: opp.disciplines || [],
-    degreeLevel: opp.degreeLevel || [],
-    fundingType: opp.fundingType || 'fully_funded',
-    coverageDetails: opp.coverage || opp.coverageDetails || {},
-    deadline: opp.deadline || '2027-12-31',
-    opensDate: opp.opensDate || null,
-    applyUrl: opp.applyUrl || '#',
-    sourceUrl: opp.sourceUrl || '#',
-    sourceDomain: opp.sourceDomain || 'atlasfind.org',
-    trustTier: opp.trustTier || 1,
-    verificationStatus: 'verified',
-    scamFlag: false,
-    description: opp.description || '',
-    eligibility: opp.eligibility || '',
-    createdAt: opp.lastVerifiedAt || new Date().toISOString(),
-  };
-}
+import { getVerifiedUser } from '@/lib/auth/getUserSession';
+import { evaluateEligibility, CandidateProfile, EvaluatedOpportunity } from '@/lib/matching/engine';
+import { assessOpportunityDeadlineHealth } from '@/lib/agents/monitoringAgent';
 
 export async function GET(
   request: NextRequest,
@@ -36,53 +10,122 @@ export async function GET(
 ) {
   try {
     const { id } = await context.params;
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Missing opportunity ID' }, { status: 400 });
     }
 
-    let opportunity: any = null;
-    let related: any[] = [];
-
-    try {
-      opportunity = await prisma.opportunity.findUnique({
-        where: { id },
-      });
-
-      if (opportunity) {
-        related = await prisma.opportunity.findMany({
-          where: {
-            id: { not: id },
-            type: opportunity.type,
-            NOT: { scamFlag: true }
-          },
-          take: 3,
-          orderBy: { deadline: 'asc' }
-        });
-      }
-    } catch (dbErr) {
-      console.warn('Prisma ID lookup error, using seed fallback:', dbErr);
-    }
-
-    // Fallback to seed dataset
-    if (!opportunity) {
-      const matchSeed = seedOpportunities.find(o => o.id === id);
-      if (matchSeed) {
-        opportunity = normalizeSeedOpportunity(matchSeed);
-        related = seedOpportunities
-          .filter(o => o.id !== id && (o.type || '').toLowerCase() === (matchSeed.type || '').toLowerCase())
-          .slice(0, 3)
-          .map(normalizeSeedOpportunity);
-      }
-    }
+    const opportunity = await prisma.opportunity.findUnique({
+      where: { id },
+      include: {
+        intakes: {
+          orderBy: { startDate: 'asc' },
+        },
+        verificationLogs: {
+          orderBy: { checkedAt: 'desc' },
+          take: 5,
+        },
+      },
+    });
 
     if (!opportunity) {
       return NextResponse.json({ error: 'Opportunity not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ opportunity, related });
-  } catch (error) {
-    console.error('API Error fetching opportunity:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    // Resolve user profile for personalized eligibility assessment
+    const verifiedUser = await getVerifiedUser();
+    let candidate: CandidateProfile | null = null;
+
+    if (verifiedUser.isLoggedIn && verifiedUser.id !== 'demo_user') {
+      try {
+        const user = await prisma.user.findUnique({ where: { id: verifiedUser.id } });
+        if (user) {
+          const profileJson = (user.profileJson as any) || {};
+          candidate = {
+            nationality: user.countryCode || profileJson.countryCode || null,
+            countryCode: user.countryCode || null,
+            countryOfResidence: user.detectedCountry || profileJson.countryOfResidence || null,
+            fieldOfStudy: user.fieldOfStudy || profileJson.fieldOfStudy || null,
+            level: user.level || profileJson.level || null,
+            institution: user.institution || profileJson.institution || null,
+            graduationYear: user.graduationYear || profileJson.graduationYear || null,
+            gpa: profileJson.gpa || null,
+            preferredCountries: profileJson.preferredCountries || [],
+            targetRegions: profileJson.targetRegions || [],
+          };
+        }
+      } catch {}
+    } else {
+      const guestCookie = request.cookies.get('atlas_guest_profile')?.value;
+      if (guestCookie) {
+        try {
+          candidate = JSON.parse(decodeURIComponent(guestCookie));
+        } catch {}
+      }
+    }
+
+    const evalOpp: EvaluatedOpportunity = {
+      id: opportunity.id,
+      title: opportunity.title,
+      type: opportunity.type,
+      sponsor: opportunity.sponsor,
+      hostCountry: opportunity.hostCountry,
+      continent: opportunity.continent,
+      eligibleCountries: opportunity.eligibleCountries,
+      disciplines: opportunity.disciplines,
+      degreeLevel: opportunity.degreeLevel,
+      fundingType: opportunity.fundingType,
+      deadline: opportunity.deadline,
+      opensDate: opportunity.opensDate,
+      applyUrl: opportunity.applyUrl,
+      sourceUrl: opportunity.sourceUrl,
+      sourceDomain: opportunity.sourceDomain,
+      trustTier: opportunity.trustTier,
+      verificationStatus: opportunity.verificationStatus,
+      description: opportunity.description,
+      eligibility: opportunity.eligibility,
+      tags: opportunity.tags,
+      intakes: opportunity.intakes,
+    };
+
+    const health = assessOpportunityDeadlineHealth(opportunity.id, opportunity.deadline, opportunity.opensDate);
+    const eligibilityResult = candidate ? evaluateEligibility(candidate, evalOpp) : null;
+
+    // Fetch related verified opportunities of the same category
+    const related = await prisma.opportunity.findMany({
+      where: {
+        id: { not: id },
+        type: opportunity.type,
+        scamFlag: false,
+      },
+      take: 3,
+      orderBy: { deadline: 'asc' },
+      select: {
+        id: true,
+        title: true,
+        sponsor: true,
+        hostCountry: true,
+        type: true,
+        deadline: true,
+        fundingType: true,
+        applyUrl: true,
+        trustTier: true,
+        verificationStatus: true,
+      },
+    });
+
+    return NextResponse.json({
+      opportunity: {
+        ...opportunity,
+        lifecycleStatus: health.lifecycleStatus,
+        daysUntilDeadline: health.daysUntilDeadline,
+        isUrgent: health.isUrgent,
+        eligibilityAssessment: eligibilityResult,
+      },
+      related,
+    });
+  } catch (error: any) {
+    console.error('[Opportunity Detail API Error]', error?.stack || error);
+    return NextResponse.json({ error: 'Failed to retrieve opportunity details' }, { status: 500 });
   }
 }

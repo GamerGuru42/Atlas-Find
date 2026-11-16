@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/check-deadlines",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/verify-opportunities",
+      "schedule": "0 2 * * 0"
+    }
+  ]
+}
+

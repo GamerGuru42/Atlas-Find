@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/db/prisma';
 import { getVerifiedUser } from '@/lib/auth/getUserSession';
-
-const prisma = new PrismaClient();
 
 // GET /api/chat/history
 // Retrieves paginated message history for a user conversation
@@ -43,7 +41,7 @@ export async function GET(req: Request) {
 
     // Parse records and filter by conversationId
     const messages = paginatedLogs
-      .map(log => {
+      .map((log: any) => {
         let text = log.content;
         let logConvId = 'default';
 
@@ -67,7 +65,7 @@ export async function GET(req: Request) {
           conversationId: logConvId,
         };
       })
-      .filter(msg => msg.conversationId === conversationId);
+      .filter((msg: any) => msg.conversationId === conversationId);
 
     // Since we queried desc, reverse to return chronologically (user expectations)
     messages.reverse();

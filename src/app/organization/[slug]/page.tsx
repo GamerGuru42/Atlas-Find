@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Building2, Compass, ExternalLink, ShieldCheck, ArrowLeft, Heart, Calendar, MapPin } from 'lucide-react';
 import prisma from '@/lib/db/prisma';
+import OrganizationView from './OrganizationView';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -39,9 +40,12 @@ export default async function OrganizationPage({ params }: Props) {
     console.error('Org query error:', e);
   }
 
-  // Fallback demo org data for common slugs
+  // Fallback demo org data for recognized global sponsor slugs
   if (!org && ['chevening', 'rhodes', 'fulbright', 'erasmus', 'gates-cambridge'].includes(slug.toLowerCase())) {
-    const formattedName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const formattedName = slug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
     org = {
       name: formattedName,
       description: `World-renowned scholarship program offering fully funded master's and doctoral opportunities for global leaders.`,
@@ -204,4 +208,5 @@ export default async function OrganizationPage({ params }: Props) {
       )}
     </div>
   );
+  return <OrganizationView org={org} opportunities={opportunities} slug={slug} />;
 }

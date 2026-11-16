@@ -1,21 +1,22 @@
 import { NextResponse } from 'next/server';
 import { generateObject } from 'ai';
-import { google } from '@ai-sdk/google';
+import { getAIModel, isAIConfigured } from '@/lib/ai/config';
+import { verifyAdminAccess } from '@/lib/auth/adminAuth';
+import { isSafePublicUrl } from '@/lib/verification/engine';
 import { z } from 'zod';
 import * as cheerio from 'cheerio';
 
-function checkAdminAuth(request: Request) {
-  const authHeader = request.headers.get('authorization');
-  const adminPassword = process.env.ADMIN_PASSWORD || 'atlasadmin';
-  if (!authHeader || authHeader !== `Bearer ${adminPassword}`) {
-    return false;
-  }
-  return true;
-}
-
 export async function POST(request: Request) {
-  if (!checkAdminAuth(request)) {
+  const adminCheck = verifyAdminAccess(request);
+  if (!adminCheck.authorized) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isAIConfigured()) {
+    return NextResponse.json(
+      { error: 'AI service is currently not configured on this environment.' },
+      { status: 503 }
+    );
   }
 
   try {
@@ -32,6 +33,11 @@ export async function POST(request: Request) {
 
     // If url provided and no rawText, try to fetch and extract text
     if (url && !rawText) {
+      const urlCheck = isSafePublicUrl(url);
+      if (!urlCheck.safe) {
+        return NextResponse.json({ error: urlCheck.reason || 'Forbidden URL target' }, { status: 400 });
+      }
+
       try {
         const response = await fetch(url, {
           headers: {
@@ -62,7 +68,7 @@ export async function POST(request: Request) {
     const textSample = textToProcess.slice(0, 15000);
 
     const { object } = await generateObject({
-      model: google('gemini-2.5-flash'),
+      model: getAIModel('default'),
       schema: z.object({
         title: z.string().optional().describe('The name of the scholarship, fellowship, or opportunity.'),
         sponsor: z.string().optional().describe('The organization, university, or government sponsoring the opportunity.'),

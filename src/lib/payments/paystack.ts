@@ -2,16 +2,11 @@
  * Paystack Payment Helper Module (Africa: NG, GH, KE, ZA, UG, TZ, RW, etc.)
  */
 
-export const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || process.env.PAYSTACK_PUBLIC_KEY || 'pk_test_cf9b63d9d316de054f6e37fe9f4c59a6aee8fff3';
-export const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || 'sk_test_d46c5a5e10f199c8a5dff6e113215e510650fd8a';
+export const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || process.env.PAYSTACK_PUBLIC_KEY || '';
+export const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
 
+export const IS_PAYSTACK_CONFIGURED = Boolean(PAYSTACK_SECRET_KEY);
 export const IS_PAYSTACK_TEST_MODE = PAYSTACK_SECRET_KEY.startsWith('sk_test_') || PAYSTACK_PUBLIC_KEY.startsWith('pk_test_');
-
-if (IS_PAYSTACK_TEST_MODE) {
-  if (typeof window === 'undefined') {
-    console.warn('⚠️ Using Paystack Test Mode keys. Replace with live keys in Vercel before accepting production payments.');
-  }
-}
 
 export interface PaystackInitParams {
   email: string;
@@ -22,6 +17,10 @@ export interface PaystackInitParams {
 }
 
 export async function initializePaystackTransaction(params: PaystackInitParams) {
+  if (!PAYSTACK_SECRET_KEY) {
+    throw new Error('Paystack secret key (PAYSTACK_SECRET_KEY) is not configured.');
+  }
+
   const response = await fetch('https://api.paystack.co/transaction/initialize', {
     method: 'POST',
     headers: {
@@ -50,6 +49,10 @@ export async function initializePaystackTransaction(params: PaystackInitParams) 
 }
 
 export async function verifyPaystackTransaction(reference: string) {
+  if (!PAYSTACK_SECRET_KEY) {
+    throw new Error('Paystack secret key (PAYSTACK_SECRET_KEY) is not configured.');
+  }
+
   const response = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
     method: 'GET',
     headers: {
@@ -67,6 +70,10 @@ export async function verifyPaystackTransaction(reference: string) {
 }
 
 export async function cancelPaystackSubscription(subscriptionCode: string, emailToken: string) {
+  if (!PAYSTACK_SECRET_KEY) {
+    throw new Error('Paystack secret key (PAYSTACK_SECRET_KEY) is not configured.');
+  }
+
   const response = await fetch('https://api.paystack.co/subscription/disable', {
     method: 'POST',
     headers: {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, Suspense, type FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -17,7 +17,7 @@ const OPPORTUNITY_TYPES = [
   'OTHER',
 ];
 
-export default function SubmitOpportunityPage() {
+function SubmitOpportunityForm() {
   const searchParams = useSearchParams();
   const prefillDescription = searchParams.get('description') || '';
 
@@ -292,5 +292,21 @@ export default function SubmitOpportunityPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function SubmitOpportunityPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.page}>
+          <div className={styles.container} style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+            Loading submission form...
+          </div>
+        </div>
+      }
+    >
+      <SubmitOpportunityForm />
+    </Suspense>
   );
 }

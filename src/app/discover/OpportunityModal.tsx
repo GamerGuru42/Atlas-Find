@@ -117,6 +117,14 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                 )}
               </div>
             </div>
+            {opp.startDate && (
+              <div className={styles.metricBox} title="Programme / Intake Start Date">
+                <div className={styles.metricLabel}><Calendar size={14}/> Programme Start</div>
+                <div className={styles.metricValue}>
+                  {new Date(opp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
+              </div>
+            )}
             <div className={styles.metricBox}>
               <div className={styles.metricLabel}><GraduationCap size={14}/> Degree Level</div>
               <div className={styles.metricValue}>{opp.degreeLevel.join(', ') || 'Any'}</div>
@@ -157,6 +165,32 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                     }
                     return null;
                   })}
+                </div>
+              </section>
+
+              {opp.intakes && opp.intakes.length > 0 && (
+                <section>
+                  <h3 className={styles.sectionTitle}>Intake Cycles & Start Windows</h3>
+                  <div className={styles.coverageTags}>
+                    {opp.intakes.map((intake: any, idx: number) => (
+                      <span key={idx} className={styles.coverageTag}>
+                        <Calendar size={14} /> {intake.intakeName || 'Intake'}: Starts {intake.startDate ? new Date(intake.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'TBA'}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <section>
+                <h3 className={styles.sectionTitle}>Verification & Source Authority</h3>
+                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '0.85rem 1rem', fontSize: '0.85rem', color: '#94a3b8' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <span>Domain: <strong style={{ color: '#f8fafc' }}>{opp.sourceDomain || 'Official Portal'}</strong></span>
+                    <span style={{ color: opp.trustTier === 1 ? '#10b981' : '#60a5fa', fontWeight: 600 }}>
+                      {opp.trustTier === 1 ? 'Tier 1 Accredited Authority' : 'Tier 2 Reputable Publisher'}
+                    </span>
+                  </div>
+                  <div>Audit Status: <span style={{ textTransform: 'capitalize', color: opp.verificationStatus === 'verified' ? '#10b981' : '#f59e0b', fontWeight: 600 }}>{opp.verificationStatus || 'Verified'}</span></div>
                 </div>
               </section>
 

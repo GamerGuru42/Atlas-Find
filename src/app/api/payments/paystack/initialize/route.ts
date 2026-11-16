@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
     let user = null;
     if (userId) {
-      user = await prisma.user.findUnique({ where: { id: userId } }).catch(err => {
+      user = await prisma.user.findUnique({ where: { id: userId } }).catch((err: any) => {
         console.error('Prisma user lookup error (bypassing DB crash):', err);
         return null;
       });

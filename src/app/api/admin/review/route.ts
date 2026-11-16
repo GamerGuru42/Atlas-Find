@@ -1,84 +1,115 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-// Helper to check admin password
-function checkAdminAuth(request: Request) {
-  const authHeader = request.headers.get('authorization');
-  const adminPassword = process.env.ADMIN_PASSWORD || 'atlasadmin'; // default fallback for testing
-  
-  if (!authHeader || authHeader !== `Bearer ${adminPassword}`) {
-    return false;
-  }
-  return true;
-}
+import prisma from '@/lib/db/prisma';
+import { verifyAdminAccess } from '@/lib/auth/adminAuth';
 
 export async function GET(request: Request) {
-  if (!checkAdminAuth(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = verifyAdminAccess(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
   }
 
   try {
     const opportunities = await prisma.opportunity.findMany({
       where: {
-        verificationStatus: 'pending',
+        OR: [
+          { verificationStatus: 'pending' },
+          { verificationStatus: 'unverified' },
+          { verificationStatus: 'flagged' },
+        ],
+      },
+      include: {
+        verificationLogs: {
+          orderBy: { checkedAt: 'desc' },
+          take: 3,
+        },
       },
       orderBy: {
-        submittedAt: 'desc',
+        createdAt: 'desc',
       },
     });
-    
+
     return NextResponse.json({ opportunities });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch pending opportunities:', error);
     return NextResponse.json({ error: 'Failed to fetch opportunities' }, { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
-  if (!checkAdminAuth(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = verifyAdminAccess(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
   }
 
   try {
     const body = await request.json();
-    const { id, action, data } = body;
+    const { id, action, data, reason } = body;
 
     if (!id || !action) {
-      return NextResponse.json({ error: 'Missing id or action' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required opportunity id or action' }, { status: 400 });
     }
 
-    let updated;
-    if (action === 'approve') {
-      updated = await prisma.opportunity.update({
-        where: { id },
-        data: { verificationStatus: 'VERIFIED' },
-      });
-    } else if (action === 'reject') {
-      updated = await prisma.opportunity.update({
-        where: { id },
-        data: { verificationStatus: 'REJECTED' },
-      });
-    } else if (action === 'update' && data) {
-      updated = await prisma.opportunity.update({
-        where: { id },
-        data,
-      });
-    } else {
-      return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+    const existing = await prisma.opportunity.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ error: 'Opportunity not found' }, { status: 404 });
     }
+
+    let newStatus = existing.verificationStatus;
+    let trustTier = existing.trustTier;
+    let scamFlag = existing.scamFlag;
+
+    if (action === 'approve') {
+      newStatus = 'verified';
+      trustTier = Math.min(existing.trustTier, 2);
+      scamFlag = false;
+    } else if (action === 'reject') {
+      newStatus = 'rejected';
+      scamFlag = true;
+    } else if (action === 'flag') {
+      newStatus = 'flagged';
+      scamFlag = true;
+    } else if (action === 'update' && data) {
+      if (data.verificationStatus) newStatus = data.verificationStatus;
+    } else {
+      return NextResponse.json({ error: 'Invalid admin action' }, { status: 400 });
+    }
+
+    const updated = await prisma.opportunity.update({
+      where: { id },
+      data: {
+        ...(action === 'update' && data ? data : {}),
+        verificationStatus: newStatus,
+        trustTier,
+        scamFlag,
+      },
+    });
+
+    // Record auditable verification log entry
+    await prisma.verificationLog.create({
+      data: {
+        opportunityId: id,
+        status: newStatus,
+        details: JSON.stringify({
+          action,
+          reviewer: auth.reviewer,
+          previousStatus: existing.verificationStatus,
+          reason: reason || `Admin action: ${action}`,
+          updatedAt: new Date().toISOString(),
+        }),
+      },
+    });
 
     return NextResponse.json({ success: true, opportunity: updated });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update opportunity:', error);
     return NextResponse.json({ error: 'Failed to update opportunity' }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request) {
-  if (!checkAdminAuth(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = verifyAdminAccess(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Unauthorized: Admin authentication required' }, { status: 401 });
   }
 
   try {
@@ -89,12 +120,17 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing id' }, { status: 400 });
     }
 
+    // Delete associated logs and intakes first to preserve referential integrity
+    await prisma.verificationLog.deleteMany({ where: { opportunityId: id } });
+    await prisma.intake.deleteMany({ where: { opportunityId: id } });
+    await prisma.savedOpportunity.deleteMany({ where: { opportunityId: id } });
+
     await prisma.opportunity.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
+    return NextResponse.json({ success: true, message: `Opportunity ${id} deleted.` });
+  } catch (error: any) {
     console.error('Failed to delete opportunity:', error);
     return NextResponse.json({ error: 'Failed to delete opportunity' }, { status: 500 });
   }

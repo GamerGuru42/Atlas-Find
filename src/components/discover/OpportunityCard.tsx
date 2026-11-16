@@ -138,10 +138,21 @@ export default function OpportunityCard({
           <Award size={13} />
           <span style={{ textTransform: 'capitalize' }}>{opp.fundingType.replace('_', ' ')}</span>
         </div>
-        <div className={styles.metaBadge}>
-          <Calendar size={13} />
-          <span>{new Date(opp.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-        </div>
+        {(() => {
+          const isExpired = new Date(opp.deadline).getTime() < Date.now();
+          return (
+            <div
+              className={styles.metaBadge}
+              style={isExpired ? { color: '#dc2626', backgroundColor: '#fef2f2', borderColor: '#fecaca', fontWeight: 600 } : {}}
+            >
+              <Calendar size={13} />
+              <span>
+                {isExpired ? 'Closed · ' : ''}
+                {new Date(opp.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+          );
+        })()}
       </div>
 
       {showUpsell && (

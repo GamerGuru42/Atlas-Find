@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/db/prisma';
 import { createStripeCheckoutSession, createStripeCustomer } from '@/lib/payments/stripe';
-
-const prisma = new PrismaClient();
 
 // Stripe Price IDs (Placeholders - replace with real price_xxx IDs from Stripe Dashboard)
 const STRIPE_PRICE_MAP: Record<string, Record<string, string>> = {

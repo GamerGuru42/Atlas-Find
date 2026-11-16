@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
+import { getAIModel, isAIConfigured } from '@/lib/ai/config';
+import { verifyAdminAccess } from '@/lib/auth/adminAuth';
 import { z } from 'zod';
 
 const OpportunityEnrichmentSchema = z.object({
@@ -22,6 +23,18 @@ const OpportunityEnrichmentSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const adminCheck = verifyAdminAccess(req);
+  if (!adminCheck.authorized) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isAIConfigured()) {
+    return NextResponse.json(
+      { error: 'AI service is currently not configured on this environment.' },
+      { status: 503 }
+    );
+  }
+
   try {
     const { applyUrl, title } = await req.json();
 
@@ -36,7 +49,7 @@ URL: ${applyUrl}
 Provide accurate fields for degree level, funding coverage, host country, description, and eligibility criteria.`;
 
     const { object } = await generateObject({
-      model: google('gemini-1.5-flash'),
+      model: getAIModel('default'),
       schema: OpportunityEnrichmentSchema,
       prompt,
     });

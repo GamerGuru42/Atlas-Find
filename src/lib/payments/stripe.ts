@@ -3,9 +3,11 @@
  */
 import Stripe from 'stripe';
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder_stripe';
+const stripeSecret = process.env.STRIPE_SECRET_KEY || '';
 
-export const stripe = new Stripe(stripeSecret, {
+export const IS_STRIPE_CONFIGURED = Boolean(stripeSecret);
+
+export const stripe = new Stripe(stripeSecret || 'dummy_key_unconfigured', {
   apiVersion: '2025-02-24.acacia' as any,
 });
 
@@ -19,6 +21,10 @@ export interface StripeCheckoutParams {
 }
 
 export async function createStripeCheckoutSession(params: StripeCheckoutParams) {
+  if (!IS_STRIPE_CONFIGURED) {
+    throw new Error('Stripe is not configured. STRIPE_SECRET_KEY is missing.');
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'subscription',
@@ -42,6 +48,10 @@ export async function createStripeCheckoutSession(params: StripeCheckoutParams) 
 }
 
 export async function createStripeCustomer(email: string, name?: string) {
+  if (!IS_STRIPE_CONFIGURED) {
+    throw new Error('Stripe is not configured. STRIPE_SECRET_KEY is missing.');
+  }
+
   const customer = await stripe.customers.create({
     email,
     name,
@@ -50,6 +60,10 @@ export async function createStripeCustomer(email: string, name?: string) {
 }
 
 export async function cancelStripeSubscription(subscriptionId: string) {
+  if (!IS_STRIPE_CONFIGURED) {
+    throw new Error('Stripe is not configured. STRIPE_SECRET_KEY is missing.');
+  }
+
   const subscription = await stripe.subscriptions.cancel(subscriptionId);
   return subscription;
 }

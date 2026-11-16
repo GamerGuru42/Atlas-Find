@@ -1,11 +1,14 @@
 import { GoogleGenAI } from '@google/genai';
+import { GEMINI_MODEL_ID, isAIConfigured } from '@/lib/ai/config';
 
-const apiKey = process.env.GEMINI_API_KEY;
+export { GEMINI_MODEL_ID };
+
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
 let client: GoogleGenAI | null = null;
 
 export function getGeminiClient(): GoogleGenAI | null {
-  if (!apiKey) return null;
+  if (!isAIConfigured() || !apiKey) return null;
   if (!client) {
     client = new GoogleGenAI({ apiKey });
   }

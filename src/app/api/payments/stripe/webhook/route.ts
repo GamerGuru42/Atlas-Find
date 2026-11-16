@@ -1,25 +1,26 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/payments/stripe';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_placeholder';
+import prisma from '@/lib/db/prisma';
 
 export async function POST(req: Request) {
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   try {
     const rawBody = await req.text();
     const signature = req.headers.get('stripe-signature');
 
+    // 1. Mandatory signature and secret verification
+    if (!signature || !endpointSecret) {
+      console.error('[Stripe Webhook] Rejected: Missing signature or STRIPE_WEBHOOK_SECRET');
+      return NextResponse.json({ error: 'Unauthorized: Missing webhook signature or secret' }, { status: 401 });
+    }
+
     let event;
-    if (signature && endpointSecret && !endpointSecret.includes('placeholder')) {
-      try {
-        event = stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
-      } catch (err: any) {
-        console.error('Webhook signature verification failed:', err.message);
-        return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
-      }
-    } else {
-      event = JSON.parse(rawBody);
+    try {
+      event = stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
+    } catch (err: any) {
+      console.error('[Stripe Webhook] Signature verification failed:', err.message);
+      return NextResponse.json({ error: `Webhook Signature Error: ${err.message}` }, { status: 400 });
     }
 
     switch (event.type) {
@@ -29,60 +30,72 @@ export async function POST(req: Request) {
         const userId = metadata.userId;
         const tier = metadata.tier || 'pro';
         const billing = metadata.billing || 'monthly';
+        const sessionId = session.id;
 
         if (userId) {
-          await prisma.user.update({
-            where: { id: userId },
-            data: {
-              tier,
-              stripeCustomerId: session.customer as string,
-            },
-          }).catch(err => console.error(err));
+          await prisma.$transaction(async (tx: any) => {
+            const existingSub = await tx.subscription.findUnique({
+              where: { reference: sessionId },
+            });
 
-          const now = new Date();
-          const periodEnd = new Date(now);
-          if (billing === 'yearly') {
-            periodEnd.setFullYear(periodEnd.getFullYear() + 1);
-          } else {
-            periodEnd.setMonth(periodEnd.getMonth() + 1);
-          }
+            if (existingSub) {
+              console.log(`[Stripe Webhook] Session ${sessionId} already processed.`);
+              return;
+            }
 
-          await prisma.subscription.upsert({
-            where: { userId },
-            update: {
-              tier,
-              status: 'active',
-              processor: 'stripe',
-              stripeCustomerId: session.customer as string,
-              stripeSubscriptionId: session.subscription as string,
-              reference: session.id,
-              localAmount: (session.amount_total || 0) / 100,
-              currency: (session.currency || 'usd').toUpperCase(),
-              currentPeriodStart: now,
-              currentPeriodEnd: periodEnd,
-            },
-            create: {
-              userId,
-              tier,
-              status: 'active',
-              processor: 'stripe',
-              stripeCustomerId: session.customer as string,
-              stripeSubscriptionId: session.subscription as string,
-              reference: session.id,
-              localAmount: (session.amount_total || 0) / 100,
-              currency: (session.currency || 'usd').toUpperCase(),
-              currentPeriodStart: now,
-              currentPeriodEnd: periodEnd,
-            },
+            await tx.user.update({
+              where: { id: userId },
+              data: {
+                tier,
+                stripeCustomerId: session.customer as string,
+              },
+            });
+
+            const now = new Date();
+            const periodEnd = new Date(now);
+            if (billing === 'yearly') {
+              periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+            } else {
+              periodEnd.setMonth(periodEnd.getMonth() + 1);
+            }
+
+            await tx.subscription.upsert({
+              where: { userId },
+              update: {
+                tier,
+                status: 'active',
+                processor: 'stripe',
+                stripeCustomerId: session.customer as string,
+                stripeSubscriptionId: session.subscription as string,
+                reference: sessionId,
+                localAmount: (session.amount_total || 0) / 100,
+                currency: (session.currency || 'usd').toUpperCase(),
+                currentPeriodStart: now,
+                currentPeriodEnd: periodEnd,
+              },
+              create: {
+                userId,
+                tier,
+                status: 'active',
+                processor: 'stripe',
+                stripeCustomerId: session.customer as string,
+                stripeSubscriptionId: session.subscription as string,
+                reference: sessionId,
+                localAmount: (session.amount_total || 0) / 100,
+                currency: (session.currency || 'usd').toUpperCase(),
+                currentPeriodStart: now,
+                currentPeriodEnd: periodEnd,
+              },
+            });
+
+            await tx.usageLimit.upsert({
+              where: { userId },
+              update: { maxSaves: 999999 },
+              create: { userId, maxSaves: 999999 },
+            });
           });
 
-          await prisma.usageLimit.upsert({
-            where: { userId },
-            update: { maxSaves: 999999 },
-            create: { userId, maxSaves: 999999 },
-          });
-
-          console.log(`[STIPE WEBHOOK] Activated ${tier} subscription for user ${userId}`);
+          console.log(`[Stripe Webhook] Successfully activated ${tier} for user ${userId}`);
         }
         break;
       }
@@ -91,51 +104,32 @@ export async function POST(req: Request) {
         const invoice = event.data.object as any;
         const subId = invoice.subscription;
         if (subId) {
-          const sub = await prisma.subscription.findFirst({
+          await prisma.subscription.updateMany({
             where: { stripeSubscriptionId: subId },
+            data: { status: 'past_due' },
           });
-          if (sub) {
-            await prisma.subscription.update({
-              where: { id: sub.id },
-              data: { status: 'past_due' },
-            });
-          }
         }
         break;
       }
 
       case 'customer.subscription.deleted': {
-        const subObject = event.data.object as any;
-        const subId = subObject.id;
-        if (subId) {
-          const sub = await prisma.subscription.findFirst({
-            where: { stripeSubscriptionId: subId },
+        const sub = event.data.object as any;
+        if (sub.id) {
+          await prisma.subscription.updateMany({
+            where: { stripeSubscriptionId: sub.id },
+            data: { status: 'canceled' },
           });
-          if (sub) {
-            await prisma.subscription.update({
-              where: { id: sub.id },
-              data: { status: 'canceled' },
-            });
-            await prisma.user.update({
-              where: { id: sub.userId },
-              data: { tier: 'free' },
-            });
-            await prisma.usageLimit.update({
-              where: { userId: sub.userId },
-              data: { maxSaves: 20 },
-            });
-          }
         }
         break;
       }
 
       default:
-        console.log(`Unhandled Stripe Event: ${event.type}`);
+        break;
     }
 
-    return NextResponse.json({ received: true }, { status: 200 });
-  } catch (error) {
-    console.error('Stripe Webhook Error:', error);
+    return NextResponse.json({ received: true });
+  } catch (error: any) {
+    console.error('[Stripe Webhook Handler Error]', error);
     return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }

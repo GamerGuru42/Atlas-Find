@@ -1,7 +1,14 @@
-import { google } from '@ai-sdk/google';
+import { getAIModel, isAIConfigured, AI_CONFIG } from '@/lib/ai/config';
 import { streamText } from 'ai';
 
 export async function POST(req: Request) {
+  if (!isAIConfigured()) {
+    return new Response(
+      JSON.stringify({ error: 'AI summary service is currently not configured.' }),
+      { status: 503, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const { searchParams, opportunitiesCount, topOpportunities } = await req.json();
 
@@ -18,11 +25,11 @@ Be encouraging and helpful. Use markdown.
 Do NOT hallucinate opportunities that aren't in the list provided.`;
 
     const result = streamText({
-      model: google('gemini-1.5-flash'),
+      model: getAIModel('default'),
       messages: [{ role: 'user', content: "Please summarize the current opportunities." }],
       system: instructions,
-      temperature: 0.7,
-      maxOutputTokens: 500,
+      temperature: AI_CONFIG.temperature.creative,
+      maxOutputTokens: AI_CONFIG.maxTokens.summary,
     });
 
     return result.toTextStreamResponse();

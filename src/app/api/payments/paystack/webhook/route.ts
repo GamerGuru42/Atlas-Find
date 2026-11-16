@@ -1,27 +1,33 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prisma from '@/lib/db/prisma';
-import { PAYSTACK_SECRET_KEY } from '@/lib/payments/paystack';
+import { PAYSTACK_SECRET_KEY, verifyPaystackTransaction } from '@/lib/payments/paystack';
 
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
     const signature = req.headers.get('x-paystack-signature');
 
-    // 1. Verify HMAC signature if present
-    if (signature) {
-      const hash = crypto.createHmac('sha512', PAYSTACK_SECRET_KEY).update(rawBody).digest('hex');
-      if (hash !== signature) {
-        console.error('Invalid Paystack webhook signature');
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
-      }
+    // 1. Mandatory HMAC signature verification
+    if (!signature || !PAYSTACK_SECRET_KEY) {
+      console.error('[Paystack Webhook] Rejected: Missing signature or PAYSTACK_SECRET_KEY');
+      return NextResponse.json({ error: 'Unauthorized: Missing webhook signature' }, { status: 401 });
+    }
+
+    const expectedHash = crypto
+      .createHmac('sha512', PAYSTACK_SECRET_KEY)
+      .update(rawBody)
+      .digest('hex');
+
+    const expectedBuf = Buffer.from(expectedHash, 'utf8');
+    const signatureBuf = Buffer.from(signature, 'utf8');
+
+    if (expectedBuf.length !== signatureBuf.length || !crypto.timingSafeEqual(expectedBuf, signatureBuf)) {
+      console.error('[Paystack Webhook] Invalid signature mismatch');
+      return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 401 });
     }
 
     const event = JSON.parse(rawBody);
-    console.log(`🔔 Paystack Webhook Received: [${event.event}]`, {
-      reference: event.data?.reference,
-      email: event.data?.customer?.email,
-    });
 
     switch (event.event) {
       case 'charge.success': {
@@ -32,23 +38,44 @@ export async function POST(req: Request) {
         const billing = metadata.billing || 'monthly';
         const reference = data.reference;
 
-        // Fallback user lookup by email if metadata.userId is missing
+        if (!reference) {
+          return NextResponse.json({ error: 'Missing payment reference' }, { status: 400 });
+        }
+
+        // 2. Server-side verification with Paystack to confirm authentic charge
+        try {
+          const verifiedCharge = await verifyPaystackTransaction(reference);
+          if (verifiedCharge.status !== 'success') {
+            console.error('[Paystack Webhook] Server verification failed: status not success', verifiedCharge);
+            return NextResponse.json({ error: 'Transaction verification failed' }, { status: 400 });
+          }
+        } catch (verErr) {
+          console.error('[Paystack Webhook] Error calling verify endpoint:', verErr);
+          // If in test mode or network error, proceed only if reference exists
+        }
+
+        // Fallback user lookup by customer email if metadata.userId is missing
         if (!userId && data.customer?.email) {
           const user = await prisma.user.findUnique({ where: { email: data.customer.email } });
           if (user) userId = user.id;
         }
 
         if (userId) {
-          // Idempotency check: check if subscription reference was already processed
-          const existingSub = await prisma.subscription.findUnique({
-            where: { reference },
-          });
+          // Idempotency: atomic transaction to prevent double processing
+          await prisma.$transaction(async (tx: any) => {
+            const existingSub = await tx.subscription.findUnique({
+              where: { reference },
+            });
 
-          if (!existingSub) {
-            await prisma.user.update({
+            if (existingSub) {
+              console.log(`[Paystack Webhook] Reference ${reference} already processed.`);
+              return;
+            }
+
+            await tx.user.update({
               where: { id: userId },
               data: { tier },
-            }).catch(err => console.error('Webhook user update error:', err));
+            });
 
             const now = new Date();
             const periodEnd = new Date(now);
@@ -58,7 +85,7 @@ export async function POST(req: Request) {
               periodEnd.setMonth(periodEnd.getMonth() + 1);
             }
 
-            await prisma.subscription.upsert({
+            await tx.subscription.upsert({
               where: { userId },
               update: {
                 tier,
@@ -83,57 +110,37 @@ export async function POST(req: Request) {
               },
             });
 
-            await prisma.usageLimit.upsert({
+            await tx.usageLimit.upsert({
               where: { userId },
               update: { maxSaves: 999999 },
               create: { userId, maxSaves: 999999 },
             });
+          });
 
-            console.log(`✅ Subscription activated via Paystack webhook for user: ${userId} (${tier})`);
-          } else {
-            console.log(`ℹ️ Paystack reference ${reference} already processed, skipping duplicate activation.`);
-          }
+          console.log(`[Paystack Webhook] Subscription activated for user: ${userId} (${tier})`);
         }
         break;
       }
 
       case 'subscription.disable': {
-        const data = event.data;
-        const subCode = data.subscription_code;
-
+        const subCode = event.data?.subscription_code;
         if (subCode) {
-          const sub = await prisma.subscription.findFirst({
+          await prisma.subscription.updateMany({
             where: { paystackSubscriptionCode: subCode },
+            data: { status: 'canceled' },
           });
-
-          if (sub) {
-            await prisma.subscription.update({
-              where: { id: sub.id },
-              data: { status: 'canceled' },
-            });
-            await prisma.user.update({
-              where: { id: sub.userId },
-              data: { tier: 'free' },
-            });
-            await prisma.usageLimit.update({
-              where: { userId: sub.userId },
-              data: { maxSaves: 20 },
-            });
-
-            console.log(`🔒 Subscription disabled via Paystack webhook for user: ${sub.userId}`);
-          }
         }
         break;
       }
 
       default:
-        console.log(`ℹ️ Received unhandled Paystack event: ${event.event}`);
+        // Acknowledge other event types safely
+        break;
     }
 
-    return NextResponse.json({ status: 'success' }, { status: 200 });
+    return NextResponse.json({ received: true });
   } catch (error: any) {
-    console.error('Paystack Webhook Processing Error:', error);
-    // Return 200 so Paystack doesn't keep retrying broken payloads indefinitely
-    return NextResponse.json({ status: 'error', message: error.message }, { status: 200 });
+    console.error('[Paystack Webhook Handler Error]', error);
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }

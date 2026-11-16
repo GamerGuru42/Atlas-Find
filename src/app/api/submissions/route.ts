@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/db/prisma';
+import { isSafePublicUrl, evaluateDomainTrust } from '@/lib/verification/engine';
 
 export async function POST(request: Request) {
   try {
@@ -11,7 +10,7 @@ export async function POST(request: Request) {
 
     // Basic sanitization: strip HTML tags
     const stripHtml = (str: string | undefined) => str ? str.replace(/<[^>]*>?/gm, '').trim() : str;
-    
+
     title = stripHtml(title);
     hostCountry = stripHtml(hostCountry);
     hostContinent = stripHtml(hostContinent);
@@ -22,17 +21,16 @@ export async function POST(request: Request) {
     // Validate required fields
     if (!title || !applyUrl?.trim()) {
       return NextResponse.json(
-        { error: 'Title and Application URL are required.' },
+        { error: 'Opportunity title and Official Application URL are required.' },
         { status: 400 }
       );
     }
 
-    // Validate URL format
-    try {
-      new URL(applyUrl);
-    } catch {
+    // SSRF & URL Safety Validation
+    const urlCheck = isSafePublicUrl(applyUrl.trim());
+    if (!urlCheck.safe) {
       return NextResponse.json(
-        { error: 'Please provide a valid URL.' },
+        { error: `Invalid application URL: ${urlCheck.reason}` },
         { status: 400 }
       );
     }
@@ -44,36 +42,41 @@ export async function POST(request: Request) {
 
     if (existing) {
       return NextResponse.json(
-        { error: 'This opportunity has already been submitted.' },
+        { error: 'An opportunity with this application URL has already been submitted.' },
         { status: 409 }
       );
     }
 
     // Extract domain from URL
-    const parsedUrl = new URL(applyUrl);
-    const sourceDomain = parsedUrl.hostname.replace('www.', '');
+    const parsedUrl = new URL(applyUrl.trim());
+    const sourceDomain = parsedUrl.hostname.replace(/^www\./, '');
+    const domainTrust = evaluateDomainTrust(sourceDomain);
 
-    // Create the opportunity with PENDING status
+    // Initial risk assessment
+    const initialStatus = domainTrust.isUntrusted ? 'flagged' : 'pending';
+    const trustTier = domainTrust.tier;
+
+    // Create the opportunity with auditable status
     const opportunity = await prisma.opportunity.create({
       data: {
         title: title.trim(),
         applyUrl: applyUrl.trim(),
-        type: type || 'SCHOLARSHIP',
+        type: (type || 'SCHOLARSHIP').toUpperCase(),
         sponsor: sponsor?.trim() || 'Community Submitted',
         orgType: 'unknown',
-        hostCountry: hostCountry?.trim() || 'Unknown',
+        hostCountry: hostCountry?.trim() || 'Global',
         continent: hostContinent?.trim() || null,
         eligibleCountries: [],
         disciplines: [],
         degreeLevel: [],
         fundingType: 'unknown',
         coverageDetails: {},
-        deadline: deadline ? new Date(deadline) : new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // default 6 months from now
+        deadline: deadline ? new Date(deadline) : new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
         sourceUrl: applyUrl.trim(),
         sourceDomain,
-        trustTier: 3, // untrusted by default
-        scamFlag: false,
-        verificationStatus: 'pending',
+        trustTier,
+        scamFlag: domainTrust.isUntrusted,
+        verificationStatus: initialStatus,
         description: description?.trim() || '',
         eligibility: '',
         tags: ['community-submitted'],
@@ -82,12 +85,26 @@ export async function POST(request: Request) {
       },
     });
 
+    // Record initial submission log
+    await prisma.verificationLog.create({
+      data: {
+        opportunityId: opportunity.id,
+        status: initialStatus,
+        details: JSON.stringify({
+          event: 'community_submission',
+          sourceDomain,
+          trustTier,
+          submittedBy: submittedBy || 'anonymous',
+        }),
+      },
+    });
+
     return NextResponse.json(
-      { success: true, id: opportunity.id },
+      { success: true, id: opportunity.id, status: initialStatus },
       { status: 201 }
     );
-  } catch (error) {
-    console.error('Submission error:', error);
+  } catch (error: any) {
+    console.error('[Submission Error]', error?.stack || error);
     return NextResponse.json(
       { error: 'Failed to submit opportunity. Please try again.' },
       { status: 500 }

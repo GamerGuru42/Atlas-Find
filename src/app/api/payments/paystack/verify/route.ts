@@ -89,7 +89,7 @@ export async function GET(req: Request) {
       if (!userId && paystackData.customer?.email) {
         const foundUser = await prisma.user.findUnique({
           where: { email: paystackData.customer.email },
-        }).catch(err => {
+        }).catch((err: any) => {
           console.error('Email lookup error in verify route:', err);
           return null;
         });
@@ -103,7 +103,7 @@ export async function GET(req: Request) {
         await prisma.user.update({
           where: { id: userId },
           data: { tier },
-        }).catch(err => console.error('Prisma User update warning:', err));
+        }).catch((err: any) => console.error('Prisma User update warning:', err));
 
         // 2. Create/update Subscription
         const now = new Date();
@@ -137,14 +137,14 @@ export async function GET(req: Request) {
             currentPeriodStart: now,
             currentPeriodEnd: periodEnd,
           },
-        }).catch(err => console.error('Prisma Subscription upsert warning:', err));
+        }).catch((err: any) => console.error('Prisma Subscription upsert warning:', err));
 
         // 3. Update UsageLimits
         await prisma.usageLimit.upsert({
           where: { userId },
           update: { maxSaves: 999999 },
           create: { userId, maxSaves: 999999 },
-        }).catch(err => console.error('Prisma UsageLimit upsert warning:', err));
+        }).catch((err: any) => console.error('Prisma UsageLimit upsert warning:', err));
       }
     } catch (dbError) {
       console.error('Bypassing Prisma DB error during payment verification:', dbError);
