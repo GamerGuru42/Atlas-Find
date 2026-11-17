@@ -18,16 +18,16 @@ import { verifyCronAuthorization } from '../src/lib/auth/cronAuth.ts';
 
 // 1. Centralized AI Model Configuration Tests
 test('AI Configuration: Centralizes supported production Gemini model', () => {
-  assert.strictEqual(GEMINI_MODEL_ID, 'gemini-2.5-flash', 'Default model must be gemini-2.5-flash');
-  assert.strictEqual(GEMINI_REASONING_MODEL_ID, 'gemini-2.5-pro', 'Reasoning model must be gemini-2.5-pro');
+  assert.strictEqual(GEMINI_MODEL_ID, 'gemini-3.8-flash', 'Default model must be gemini-3.8-flash');
+  assert.strictEqual(GEMINI_REASONING_MODEL_ID, 'gemini-3.8-pro', 'Reasoning model must be gemini-3.8-pro');
 
   // Verify model factory creates valid provider instances without throwing
   const defaultModel = getAIModel('default');
-  assert.strictEqual(defaultModel.modelId, 'gemini-2.5-flash');
+  assert.strictEqual(defaultModel.modelId, 'gemini-3.8-flash');
   assert.strictEqual(defaultModel.provider, 'google.generative-ai');
 
   const reasoningModel = getAIModel('reasoning');
-  assert.strictEqual(reasoningModel.modelId, 'gemini-2.5-pro');
+  assert.strictEqual(reasoningModel.modelId, 'gemini-3.8-pro');
 
   // Check config parameters
   assert.strictEqual(AI_CONFIG.streamingTimeoutSeconds, 60);

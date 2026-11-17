@@ -5,15 +5,15 @@
  * API route handlers, and shared utilities.
  *
  * Supported Production Models:
- * - Default: gemini-2.5-flash (Fast, accurate, production-supported)
- * - Reasoning: gemini-2.5-pro (In-depth analysis and complex document review)
+ * - Default: gemini-3.8-flash (Fast, accurate, production-supported)
+ * - Reasoning: gemini-3.8-pro (In-depth analysis and complex document review)
  */
 
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 // Centralized Model Identifiers
-export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-export const GEMINI_REASONING_MODEL_ID = process.env.GEMINI_REASONING_MODEL || 'gemini-2.5-pro';
+export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+export const GEMINI_REASONING_MODEL_ID = process.env.GEMINI_REASONING_MODEL || 'gemini-3.8-pro';
 
 /**
  * Checks whether the Gemini API key is configured in the environment
