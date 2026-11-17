@@ -36,6 +36,25 @@ async function verifyDatabaseCompatibility() {
     const tableNames = new Set(tables.map(t => t.table_name));
     console.log(`📊 Found ${tableNames.size} existing tables in target database:`, Array.from(tableNames));
 
+    // Audit row counts for existing tables
+    console.log('\n📈 Auditing existing record counts:');
+    if (tableNames.has('opportunities')) {
+      const oppCount = await prisma.opportunity.count();
+      console.log(`   - opportunities: ${oppCount} records`);
+    }
+    if (tableNames.has('User')) {
+      const userCount = await prisma.user.count();
+      console.log(`   - User: ${userCount} accounts`);
+    }
+    if (tableNames.has('SavedOpportunity')) {
+      const savedCount = await prisma.savedOpportunity.count();
+      console.log(`   - SavedOpportunity: ${savedCount} tracked items`);
+    }
+    if (tableNames.has('Subscription')) {
+      const subCount = await prisma.subscription.count();
+      console.log(`   - Subscription: ${subCount} subscriptions`);
+    }
+
     const requiredTables = [
       'User',
       'opportunities',
