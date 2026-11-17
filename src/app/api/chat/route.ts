@@ -245,7 +245,7 @@ ${dbContext}
       }
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('[Chat API Error]', error?.stack || error);
     return new Response(

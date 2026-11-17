@@ -420,23 +420,23 @@ export function ChatInterface() {
 
         const chunk = decoder.decode(value, { stream: true });
         
-        // Parse Next.js UI Stream response format
-        const lines = chunk.split('\n').filter(Boolean);
-        for (const line of lines) {
-          if (line.startsWith('0:')) {
-            // Strip out standard 0: stream envelope
-            let rawContent = line.slice(2);
-            // Handle quotes in response envelope
-            if (rawContent.startsWith('"') && rawContent.endsWith('"')) {
-              try {
-                rawContent = JSON.parse(rawContent);
-              } catch {}
+        // Parse stream formats (both AI SDK 0: data stream envelope and direct text stream)
+        if (chunk.includes('0:')) {
+          const lines = chunk.split('\n').filter(Boolean);
+          for (const line of lines) {
+            if (line.startsWith('0:')) {
+              let rawContent = line.slice(2);
+              if (rawContent.startsWith('"') && rawContent.endsWith('"')) {
+                try {
+                  rawContent = JSON.parse(rawContent);
+                } catch {}
+              }
+              accumulatedText += rawContent;
             }
-            accumulatedText += rawContent;
-          } else {
-            // Raw text chunk fallback
-            accumulatedText += line;
           }
+        } else {
+          // Direct text stream response
+          accumulatedText += chunk;
         }
 
         // Live update messages state
