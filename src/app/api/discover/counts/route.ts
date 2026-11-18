@@ -54,23 +54,7 @@ export async function GET() {
       baseOpps = seedOpportunities;
     }
 
-    // Get weekly auto-incrementing opportunities
-    const diffTime = Math.max(0, Date.now() - BASELINE_DATE.getTime());
-    const weeksPassed = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
-    const weeklyOpps = generateWeeklyOpportunities(weeksPassed * 2);
-
-    // Combine opportunities to compute correct aggregate filters & counts
-    const allOpps = [...baseOpps, ...weeklyOpps];
-
-    // Deduplicate by title and sponsor
-    const seenKeys = new Set<string>();
-    const uniqueOpps = allOpps.filter(opp => {
-      const key = `${opp.title.toLowerCase().trim()}||${(opp.sponsor || '').toLowerCase().trim()}`;
-      if (seenKeys.has(key)) return false;
-      seenKeys.add(key);
-      return true;
-    });
-
+    // Database-backed authentic opportunities (sole source of truth for counts and filters)
     const typeCounts: Record<string, number> = {};
     const hostCountriesSet = new Set<string>();
     const continentsSet = new Set<string>();
@@ -79,7 +63,7 @@ export async function GET() {
     const disciplinesSet = new Set<string>();
     const fundingTypesSet = new Set<string>();
 
-    uniqueOpps.forEach(opp => {
+    baseOpps.forEach(opp => {
       const typeKey = (opp.type || 'SCHOLARSHIP').toUpperCase();
       typeCounts[typeKey] = (typeCounts[typeKey] || 0) + 1;
 
@@ -105,8 +89,21 @@ export async function GET() {
       }
     });
 
+    // Separately track weekly projection metrics without mixing into verified database records
+    const diffTime = Math.max(0, Date.now() - BASELINE_DATE.getTime());
+    const weeksPassed = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+    const weeklyOpps = generateWeeklyOpportunities(weeksPassed * 2);
+    const generatedWeeklyCounts: Record<string, number> = {};
+    weeklyOpps.forEach(opp => {
+      const k = (opp.type || 'SCHOLARSHIP').toUpperCase();
+      generatedWeeklyCounts[k] = (generatedWeeklyCounts[k] || 0) + 1;
+    });
+
     return NextResponse.json({
       typeCounts,
+      databaseTotal: baseOpps.length,
+      generatedWeeklyCounts,
+      projectedWeeklyCount: weeklyOpps.length,
       filters: {
         hostCountries: Array.from(hostCountriesSet).sort(),
         continents: Array.from(continentsSet).sort(),
