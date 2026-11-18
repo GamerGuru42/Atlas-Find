@@ -201,51 +201,151 @@ ${dbContext}
 
     const conversationId = body.conversationId || 'default';
 
-    const result = streamText({
-      model: getAIModel('default'),
-      system: instructions,
-      messages: coreMessages,
-      temperature: AI_CONFIG.temperature.balanced,
-      maxOutputTokens: AI_CONFIG.maxTokens.chat,
-      onFinish: async ({ text }) => {
-        if (userId && conversationId) {
-          try {
-            const userContent = userPrompt;
-            const userJson = JSON.stringify({ conversationId, text: userContent });
+    const saveConversationLog = async (text: string) => {
+      if (userId && conversationId) {
+        try {
+          const userContent = userPrompt;
+          const userJson = JSON.stringify({ conversationId, text: userContent });
 
-            const existingUserMsg = await prisma.conversationLog.findFirst({
-              where: {
+          const existingUserMsg = await prisma.conversationLog.findFirst({
+            where: {
+              userId,
+              role: 'user',
+              content: userJson,
+            },
+          });
+
+          if (!existingUserMsg) {
+            await prisma.conversationLog.create({
+              data: {
                 userId,
                 role: 'user',
                 content: userJson,
               },
             });
-
-            if (!existingUserMsg) {
-              await prisma.conversationLog.create({
-                data: {
-                  userId,
-                  role: 'user',
-                  content: userJson,
-                },
-              });
-            }
-
-            await prisma.conversationLog.create({
-              data: {
-                userId,
-                role: 'agent',
-                content: JSON.stringify({ conversationId, text }),
-              },
-            });
-          } catch (e) {
-            console.error('[Chat API onFinish save error]', e);
           }
+
+          await prisma.conversationLog.create({
+            data: {
+              userId,
+              role: 'agent',
+              content: JSON.stringify({ conversationId, text }),
+            },
+          });
+        } catch (e) {
+          console.error('[Chat API onFinish save error]', e);
+        }
+      }
+    };
+
+    let activeStream: any = null;
+    let activeIterator: any = null;
+    let firstChunk: string | null = null;
+    let activeModelUsed = 'primary';
+
+    // 1. Attempt Primary Model (gemini-3.8-flash) with bounded retries
+    try {
+      const primaryResult = streamText({
+        model: getAIModel('primary'),
+        system: instructions,
+        messages: coreMessages,
+        temperature: AI_CONFIG.temperature.balanced,
+        maxOutputTokens: AI_CONFIG.maxTokens.chat,
+        maxRetries: AI_CONFIG.maxRetries,
+        abortSignal: AbortSignal.timeout(15000),
+        onFinish: async ({ text }) => {
+          await saveConversationLog(text);
+        },
+      });
+
+      const iterator = primaryResult.textStream[Symbol.asyncIterator]();
+      const first = await iterator.next();
+      if (!first.done) {
+        firstChunk = first.value;
+      }
+      activeStream = primaryResult;
+      activeIterator = iterator;
+      activeModelUsed = 'primary';
+    } catch (primaryErr: any) {
+      console.warn(`[Chat API] Primary model (${AI_CONFIG.primaryModelId}) failed before streaming started:`, primaryErr?.message || primaryErr);
+    }
+
+    // 2. If Primary failed before streaming started, attempt Fallback Model (gemini-3.7-flash)
+    if (!activeStream && !firstChunk) {
+      try {
+        console.info(`[Chat API] Falling back to alternative model (${AI_CONFIG.fallbackModelId})...`);
+        const fallbackResult = streamText({
+          model: getAIModel('fallback'),
+          system: instructions,
+          messages: coreMessages,
+          temperature: AI_CONFIG.temperature.balanced,
+          maxOutputTokens: AI_CONFIG.maxTokens.chat,
+          maxRetries: AI_CONFIG.maxRetries,
+          abortSignal: AbortSignal.timeout(15000),
+          onFinish: async ({ text }) => {
+            await saveConversationLog(text);
+          },
+        });
+
+        const fallbackIterator = fallbackResult.textStream[Symbol.asyncIterator]();
+        const fallbackFirst = await fallbackIterator.next();
+        if (!fallbackFirst.done) {
+          firstChunk = fallbackFirst.value;
+        }
+        activeStream = fallbackResult;
+        activeIterator = fallbackIterator;
+        activeModelUsed = 'fallback';
+      } catch (fallbackErr: any) {
+        console.error(`[Chat API] Fallback model (${AI_CONFIG.fallbackModelId}) also failed before streaming:`, fallbackErr?.message || fallbackErr);
+      }
+    }
+
+    // 3. If both models failed before streaming started, return prompt honest 503 error
+    if (!activeStream || !activeIterator) {
+      return new Response(
+        JSON.stringify({
+          error: "The AI advisor is temporarily experiencing high upstream demand from Google AI services. Please try again in a few moments."
+        }),
+        {
+          status: 503,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': '5',
+          }
+        }
+      );
+    }
+
+    // 4. Return custom ReadableStream piping the validated model output to the client
+    // Note: Do NOT switch models halfway through an already-started stream
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          if (firstChunk) {
+            controller.enqueue(encoder.encode(firstChunk));
+          }
+          while (true) {
+            const { done, value } = await activeIterator.next();
+            if (done) break;
+            controller.enqueue(encoder.encode(value));
+          }
+          controller.close();
+        } catch (streamError) {
+          console.error(`[Chat API] Stream interrupted mid-flight (${activeModelUsed}):`, streamError);
+          controller.error(streamError);
         }
       }
     });
 
-    return result.toTextStreamResponse();
+    return new Response(readable, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-AI-Model': activeModelUsed === 'primary' ? AI_CONFIG.primaryModelId : AI_CONFIG.fallbackModelId,
+      }
+    });
   } catch (error: any) {
     console.error('[Chat API Error]', error?.stack || error);
     return new Response(

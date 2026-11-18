@@ -5,15 +5,15 @@
  * API route handlers, and shared utilities.
  *
  * Supported Production Models:
- * - Default: gemini-3.8-flash (Fast, accurate, production-supported)
- * - Reasoning: gemini-3.8-pro (In-depth analysis and complex document review)
+ * - Primary: gemini-3.8-flash (Fast, accurate, primary production-supported model)
+ * - Fallback: gemini-3.7-flash (Verified alternative model for upstream resilience)
  */
 
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 // Centralized Model Identifiers
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-export const GEMINI_REASONING_MODEL_ID = process.env.GEMINI_REASONING_MODEL || 'gemini-3.8-pro';
+export const GEMINI_FALLBACK_MODEL_ID = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.7-flash';
 
 /**
  * Checks whether the Gemini API key is configured in the environment
@@ -33,8 +33,8 @@ export const googleAI = createGoogleGenerativeAI({
 /**
  * Returns the configured AI model instance
  */
-export function getAIModel(tier: 'default' | 'reasoning' = 'default') {
-  const modelId = tier === 'reasoning' ? GEMINI_REASONING_MODEL_ID : GEMINI_MODEL_ID;
+export function getAIModel(tier: 'primary' | 'fallback' | 'default' = 'primary') {
+  const modelId = tier === 'fallback' ? GEMINI_FALLBACK_MODEL_ID : GEMINI_MODEL_ID;
   return googleAI(modelId);
 }
 
@@ -42,9 +42,11 @@ export function getAIModel(tier: 'default' | 'reasoning' = 'default') {
  * Standard generation parameters
  */
 export const AI_CONFIG = {
+  primaryModelId: GEMINI_MODEL_ID,
+  fallbackModelId: GEMINI_FALLBACK_MODEL_ID,
   defaultModelId: GEMINI_MODEL_ID,
-  reasoningModelId: GEMINI_REASONING_MODEL_ID,
   streamingTimeoutSeconds: 60,
+  maxRetries: 1,
   temperature: {
     balanced: 0.6,
     creative: 0.7,
@@ -56,4 +58,3 @@ export const AI_CONFIG = {
     extraction: 1500,
   },
 } as const;
-

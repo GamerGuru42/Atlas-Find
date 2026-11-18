@@ -1,13 +1,13 @@
 import { generateText } from 'ai';
-import { getAIModel, GEMINI_MODEL_ID, GEMINI_REASONING_MODEL_ID, isAIConfigured } from '../src/lib/ai/config.ts';
+import { getAIModel, GEMINI_MODEL_ID, GEMINI_FALLBACK_MODEL_ID, isAIConfigured } from '../src/lib/ai/config.ts';
 
 async function testLiveGemini() {
   console.log('====================================================');
   console.log('🤖 AtlasFind — Gemini Live Integration Smoke Test');
   console.log('====================================================');
-  console.log(`Configured Default Model:   ${GEMINI_MODEL_ID}`);
-  console.log(`Configured Reasoning Model: ${GEMINI_REASONING_MODEL_ID}`);
-  console.log(`AI Configured in Env:       ${isAIConfigured()}`);
+  console.log(`Configured Primary Model:  ${GEMINI_MODEL_ID}`);
+  console.log(`Configured Fallback Model: ${GEMINI_FALLBACK_MODEL_ID}`);
+  console.log(`AI Configured in Env:      ${isAIConfigured()}`);
   console.log('----------------------------------------------------');
 
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -24,12 +24,12 @@ async function testLiveGemini() {
 
   console.log('🔑 API Key detected. Commencing live external provider verification...\n');
 
-  // Test 1: gemini-2.5-flash
+  // Test 1: Primary Model (gemini-3.8-flash)
   console.log(`[1/2] Testing live model connectivity: ${GEMINI_MODEL_ID}...`);
   const t0 = Date.now();
   try {
     const flashResult = await generateText({
-      model: getAIModel('default'),
+      model: getAIModel('primary'),
       prompt: 'Ping: Respond with "ATLASFIND_ONLINE" and current UTC date.',
     });
     const flashLatency = Date.now() - t0;
@@ -40,19 +40,19 @@ async function testLiveGemini() {
     throw err;
   }
 
-  // Test 2: gemini-2.5-pro
-  console.log(`\n[2/2] Testing live model connectivity: ${GEMINI_REASONING_MODEL_ID}...`);
+  // Test 2: Fallback Model (gemini-3.7-flash)
+  console.log(`\n[2/2] Testing live model connectivity: ${GEMINI_FALLBACK_MODEL_ID}...`);
   const t1 = Date.now();
   try {
-    const proResult = await generateText({
-      model: getAIModel('reasoning'),
-      prompt: 'Ping: Respond with "ATLASFIND_REASONING_ONLINE".',
+    const fallbackResult = await generateText({
+      model: getAIModel('fallback'),
+      prompt: 'Ping: Respond with "ATLASFIND_FALLBACK_ONLINE".',
     });
-    const proLatency = Date.now() - t1;
-    console.log(`✅ ${GEMINI_REASONING_MODEL_ID} responded successfully in ${proLatency}ms!`);
-    console.log(`   Response snippet: "${proResult.text.trim().slice(0, 100)}"`);
+    const fallbackLatency = Date.now() - t1;
+    console.log(`✅ ${GEMINI_FALLBACK_MODEL_ID} responded successfully in ${fallbackLatency}ms!`);
+    console.log(`   Response snippet: "${fallbackResult.text.trim().slice(0, 100)}"`);
   } catch (err: any) {
-    console.error(`❌ ${GEMINI_REASONING_MODEL_ID} live test failed:`, err?.message || err);
+    console.error(`❌ ${GEMINI_FALLBACK_MODEL_ID} live test failed:`, err?.message || err);
     throw err;
   }
 
