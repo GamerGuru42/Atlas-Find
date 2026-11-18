@@ -260,18 +260,18 @@ ${dbContext}
 
       const iterator = primaryResult.textStream[Symbol.asyncIterator]();
       const first = await iterator.next();
-      if (!first.done) {
+      if (!first.done && first.value && typeof first.value === 'string' && first.value.length > 0) {
         firstChunk = first.value;
+        activeStream = primaryResult;
+        activeIterator = iterator;
+        activeModelUsed = 'primary';
       }
-      activeStream = primaryResult;
-      activeIterator = iterator;
-      activeModelUsed = 'primary';
     } catch (primaryErr: any) {
       console.warn(`[Chat API] Primary model (${AI_CONFIG.primaryModelId}) failed before streaming started:`, primaryErr?.message || primaryErr);
     }
 
     // 2. If Primary failed before streaming started, attempt Fallback Model (gemini-3.7-flash)
-    if (!activeStream && !firstChunk) {
+    if (!activeStream) {
       try {
         console.info(`[Chat API] Falling back to alternative model (${AI_CONFIG.fallbackModelId})...`);
         const fallbackResult = streamText({
@@ -289,12 +289,12 @@ ${dbContext}
 
         const fallbackIterator = fallbackResult.textStream[Symbol.asyncIterator]();
         const fallbackFirst = await fallbackIterator.next();
-        if (!fallbackFirst.done) {
+        if (!fallbackFirst.done && fallbackFirst.value && typeof fallbackFirst.value === 'string' && fallbackFirst.value.length > 0) {
           firstChunk = fallbackFirst.value;
+          activeStream = fallbackResult;
+          activeIterator = fallbackIterator;
+          activeModelUsed = 'fallback';
         }
-        activeStream = fallbackResult;
-        activeIterator = fallbackIterator;
-        activeModelUsed = 'fallback';
       } catch (fallbackErr: any) {
         console.error(`[Chat API] Fallback model (${AI_CONFIG.fallbackModelId}) also failed before streaming:`, fallbackErr?.message || fallbackErr);
       }
