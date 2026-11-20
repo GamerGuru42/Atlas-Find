@@ -60,11 +60,41 @@ export async function GET(req: Request) {
     }
   }
 
+  let rawTestResult: any = null;
+  const rawModel = searchParams.get('rawModel');
+  if (rawModel && aiConfigured) {
+    const t0 = Date.now();
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${rawModel}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'Respond with exactly: OK' }] }]
+        }),
+        signal: AbortSignal.timeout(20000),
+      });
+      const data = await res.json();
+      rawTestResult = {
+        model: rawModel,
+        status: res.status,
+        durationMs: Date.now() - t0,
+        data,
+      };
+    } catch (e: any) {
+      rawTestResult = {
+        model: rawModel,
+        durationMs: Date.now() - t0,
+        error: e?.message || String(e),
+      };
+    }
+  }
+
   return NextResponse.json({
     status: 'ok',
     aiConfigured,
     ...(availableModels.length > 0 ? { availableModels } : {}),
     ...(modelDetails ? { modelDetails } : {}),
     ...(modelTestResult ? { modelTestResult } : {}),
+    ...(rawTestResult ? { rawTestResult } : {}),
   });
 }
