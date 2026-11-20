@@ -97,7 +97,7 @@ export const CardDetailSidebar: React.FC<CardDetailSidebarProps> = ({
           <button className={styles.closeBtn} onClick={onClose}>
             <X size={18} />
           </button>
-          
+
           <div className={styles.headerTop}>
             <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
               {opp.sponsor}
@@ -106,14 +106,42 @@ export const CardDetailSidebar: React.FC<CardDetailSidebarProps> = ({
 
           <h2 className={styles.title}>{opp.title}</h2>
 
+          {opp.deadline && (() => {
+            const parsed = new Date(opp.deadline);
+            let dDate = parsed;
+            if (dDate.getUTCHours() === 0 && dDate.getUTCMinutes() === 0) {
+              dDate = new Date(dDate);
+              dDate.setUTCHours(23, 59, 59, 999);
+            }
+            const isClosed = dDate.getTime() < Date.now();
+            return (
+              <div style={{ margin: '0.4rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    backgroundColor: isClosed ? '#fef2f2' : '#f0fdf4',
+                    color: isClosed ? '#dc2626' : '#16a34a',
+                    border: `1px solid ${isClosed ? '#fecaca' : '#bbf7d0'}`,
+                  }}
+                >
+                  {isClosed ? 'Deadline Passed · Applications Closed' : `Deadline: ${dDate.toLocaleDateString()}`}
+                </span>
+              </div>
+            );
+          })()}
+
           <div className={styles.headerBadges}>
             <a
               href={opp.applyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.openAppBtn}
+              style={opp.deadline && new Date(opp.deadline).getTime() < Date.now() ? { backgroundColor: '#64748b' } : {}}
             >
-              <span>Open Official Portal</span>
+              <span>{opp.deadline && new Date(opp.deadline).getTime() < Date.now() ? 'View Portal (Closed)' : 'Open Official Portal'}</span>
               <ExternalLink size={14} />
             </a>
           </div>

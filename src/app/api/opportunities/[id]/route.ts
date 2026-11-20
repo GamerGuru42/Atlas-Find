@@ -54,13 +54,13 @@ export async function GET(
             targetRegions: profileJson.targetRegions || [],
           };
         }
-      } catch {}
+      } catch { }
     } else {
       const guestCookie = request.cookies.get('atlas_guest_profile')?.value;
       if (guestCookie) {
         try {
           candidate = JSON.parse(decodeURIComponent(guestCookie));
-        } catch {}
+        } catch { }
       }
     }
 

@@ -54,9 +54,18 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ item, onSelect, onDelete
   // Calculate deadline days
   const getDeadlineInfo = () => {
     if (!opp.deadline) return { text: 'No deadline', colorClass: styles.dlGray };
-    const diffDays = Math.ceil((new Date(opp.deadline).getTime() - Date.now()) / (1000 * 3600 * 24));
-    if (diffDays < 0) return { text: 'Passed', colorClass: styles.dlGray };
+    const parsed = new Date(opp.deadline);
+    let dDate = parsed;
+    if (dDate.getUTCHours() === 0 && dDate.getUTCMinutes() === 0) {
+      dDate = new Date(dDate);
+      dDate.setUTCHours(23, 59, 59, 999);
+    }
+    const diffMs = dDate.getTime() - Date.now();
+    const diffDays = Math.ceil(diffMs / (1000 * 3600 * 24));
+    if (diffMs <= 0 || diffDays < 0) return { text: 'Passed', colorClass: styles.dlGray };
+    if (diffDays === 0) return { text: '⏰ Closes today', colorClass: styles.dlRed };
     if (diffDays <= 7) return { text: `⏰ ${diffDays} days`, colorClass: styles.dlRed };
+    if (diffDays <= 14) return { text: `⏰ ${diffDays} days`, colorClass: styles.dlYellow };
     if (diffDays <= 30) return { text: `⏰ ${diffDays} days`, colorClass: styles.dlYellow };
     return { text: `⏰ ${diffDays} days`, colorClass: styles.dlGreen };
   };

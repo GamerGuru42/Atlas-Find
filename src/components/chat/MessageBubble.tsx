@@ -37,10 +37,10 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
     const cleanText = text.replace(/:::profile\s*([\s\S]*?)\s*:::/g, '').trim();
     const regex = /:::opportunity\s*([\s\S]*?)\s*:::/g;
     const parts: ({ type: 'text'; content: string } | { type: 'opportunity'; data: OpportunityData })[] = [];
-    
+
     let lastIndex = 0;
     let match;
-    
+
     while ((match = regex.exec(cleanText)) !== null) {
       // Add preceding text
       if (match.index > lastIndex) {
@@ -49,7 +49,7 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
           content: cleanText.slice(lastIndex, match.index),
         });
       }
-      
+
       // Parse opportunity JSON
       try {
         const data = JSON.parse(match[1].trim());
@@ -72,17 +72,17 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
           content: match[0],
         });
       }
-      
+
       lastIndex = regex.lastIndex;
     }
-    
+
     if (lastIndex < cleanText.length) {
       parts.push({
         type: 'text',
         content: cleanText.slice(lastIndex),
       });
     }
-    
+
     return parts;
   };
 
@@ -92,17 +92,17 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
   const renderMessageContent = () => {
     const elements: React.ReactNode[] = [];
     let consecutiveOpps: OpportunityData[] = [];
-    
+
     const flushOpps = (keyPrefix: string) => {
       if (consecutiveOpps.length === 0) return;
-      
+
       const oppsToRender = consecutiveOpps;
       consecutiveOpps = [];
-      
+
       const limit = 3;
       const hasMany = oppsToRender.length > limit;
       const visibleOpps = hasMany && collapsed ? oppsToRender.slice(0, limit) : oppsToRender;
-      
+
       elements.push(
         <div key={`opp-group-${keyPrefix}`} className={styles.opportunityGroup}>
           <div className={styles.opportunitiesGrid}>
@@ -119,8 +119,8 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
               className={styles.collapseToggle}
               onClick={() => setCollapsed(!collapsed)}
             >
-              {collapsed 
-                ? `Show ${oppsToRender.length - limit} more opportunities` 
+              {collapsed
+                ? `Show ${oppsToRender.length - limit} more opportunities`
                 : 'Show fewer'
               }
             </button>
@@ -176,7 +176,7 @@ export function MessageBubble({ message, onRetryLastMsg, onAskMore }: MessageBub
 
       {status === 'error' && onRetryLastMsg && (
         <div className={styles.inlineRetryContainer}>
-          <span>⚠️ Connection interrupted.</span>
+          <span>⚠️ {role === 'assistant' ? 'Response incomplete.' : 'Connection interrupted.'}</span>
           <button className={styles.inlineRetryBtn} onClick={onRetryLastMsg}>
             Retry
           </button>
@@ -191,6 +191,15 @@ function InlineOpportunityCard({ opp, onAskMore }: { opp: OpportunityData; onAsk
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
+
+  const isClosed = (() => {
+    if (!opp.deadline) return false;
+    const lower = opp.deadline.toLowerCase();
+    if (lower.includes('closed') || lower.includes('passed')) return true;
+    if (lower.includes('rolling') || lower.includes('open')) return false;
+    const parsed = new Date(opp.deadline);
+    return !isNaN(parsed.getTime()) && parsed.getTime() < Date.now();
+  })();
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -236,7 +245,9 @@ function InlineOpportunityCard({ opp, onAskMore }: { opp: OpportunityData; onAsk
       <div className={styles.oppMeta}>
         <div className={styles.metaItem}>
           <Calendar size={13} />
-          <span>{opp.deadline}</span>
+          <span style={isClosed ? { color: '#ef4444', fontWeight: 600 } : {}}>
+            {isClosed ? 'Closed · ' : ''}{opp.deadline}
+          </span>
         </div>
       </div>
 
@@ -260,15 +271,26 @@ function InlineOpportunityCard({ opp, onAskMore }: { opp: OpportunityData; onAsk
           <span>{isSaved ? 'Saved' : isSaving ? 'Saving...' : 'Save'}</span>
         </button>
 
-        <a
-          href={opp.applyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.oppActionBtn}
-        >
-          <Compass size={12} />
-          <span>View</span>
-        </a>
+        {isClosed ? (
+          <span
+            className={styles.oppActionBtn}
+            style={{ opacity: 0.6, cursor: 'not-allowed', color: '#94a3b8' }}
+            title="Applications for this cycle have closed"
+          >
+            <Compass size={12} />
+            <span>Closed</span>
+          </span>
+        ) : (
+          <a
+            href={opp.applyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.oppActionBtn}
+          >
+            <Compass size={12} />
+            <span>View</span>
+          </a>
+        )}
 
         <button
           className={styles.oppActionBtn}

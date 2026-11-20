@@ -1,14 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert';
 
-// Simulated model runner matching the chat route's fallback architecture
+// Simulated model runner matching the chat route's 3-tier fallback architecture
 interface MockModel {
   id: string;
   failBeforeStart?: boolean;
   chunks: string[];
 }
 
-async function simulateChatStream(primaryModel: MockModel, fallbackModel: MockModel) {
+async function simulateChatStream(
+  primaryModel: MockModel,
+  fallbackModel: MockModel,
+  resilienceModel?: MockModel
+) {
   let activeModelUsed = 'primary';
   let firstChunk: string | null = null;
   let remainingChunks: string[] = [];
@@ -16,7 +20,7 @@ async function simulateChatStream(primaryModel: MockModel, fallbackModel: MockMo
   // Step 1: Attempt Primary Model
   try {
     if (primaryModel.failBeforeStart) {
-      throw new Error('503 UNAVAILABLE Model High Demand');
+      throw new Error('429 RESOURCE_EXHAUSTED Primary Quota Exceeded');
     }
     firstChunk = primaryModel.chunks[0] || null;
     remainingChunks = primaryModel.chunks.slice(1);
@@ -25,19 +29,37 @@ async function simulateChatStream(primaryModel: MockModel, fallbackModel: MockMo
     // Step 2: Primary failed before streaming started -> Try Fallback
     try {
       if (fallbackModel.failBeforeStart) {
-        throw new Error('503 UNAVAILABLE Fallback High Demand');
+        throw new Error('429 RESOURCE_EXHAUSTED Fallback Quota Exceeded');
       }
       firstChunk = fallbackModel.chunks[0] || null;
       remainingChunks = fallbackModel.chunks.slice(1);
       activeModelUsed = 'fallback';
     } catch (fallbackErr: any) {
-      // Step 3: Both failed before streaming started
-      return {
-        status: 503,
-        error: 'The AI advisor is temporarily experiencing high upstream demand from Google AI services. Please try again in a few moments.',
-        modelUsed: null,
-        fullText: null,
-      };
+      // Step 3: Fallback failed before streaming started -> Try Resilience Model
+      if (resilienceModel) {
+        try {
+          if (resilienceModel.failBeforeStart) {
+            throw new Error('503 UNAVAILABLE Resilience High Demand');
+          }
+          firstChunk = resilienceModel.chunks[0] || null;
+          remainingChunks = resilienceModel.chunks.slice(1);
+          activeModelUsed = 'resilience';
+        } catch (resilienceErr: any) {
+          return {
+            status: 503,
+            error: 'The AI advisor is temporarily experiencing high upstream demand from Google AI services. Please try again in a few moments.',
+            modelUsed: null,
+            fullText: null,
+          };
+        }
+      } else {
+        return {
+          status: 503,
+          error: 'The AI advisor is temporarily experiencing high upstream demand from Google AI services. Please try again in a few moments.',
+          modelUsed: null,
+          fullText: null,
+        };
+      }
     }
   }
 
@@ -48,9 +70,15 @@ async function simulateChatStream(primaryModel: MockModel, fallbackModel: MockMo
     chunksReceived.push(chunk);
   }
 
+  const modelUsedId = activeModelUsed === 'primary'
+    ? primaryModel.id
+    : activeModelUsed === 'fallback'
+    ? fallbackModel.id
+    : resilienceModel?.id || 'unknown';
+
   return {
     status: 200,
-    modelUsed: activeModelUsed === 'primary' ? primaryModel.id : fallbackModel.id,
+    modelUsed: modelUsedId,
     firstChunk,
     fullText: chunksReceived.join(''),
   };
@@ -65,8 +93,12 @@ test('Chat Fallback Scenario A: Successful streaming on primary model from first
     id: 'gemini-3.7-flash',
     chunks: ['Fallback chunk.'],
   };
+  const resilience: MockModel = {
+    id: 'gemini-3.5-flash',
+    chunks: ['Resilience chunk.'],
+  };
 
-  const result = await simulateChatStream(primary, fallback);
+  const result = await simulateChatStream(primary, fallback, resilience);
 
   assert.strictEqual(result.status, 200);
   assert.strictEqual(result.modelUsed, 'gemini-3.8-flash');
@@ -84,8 +116,12 @@ test('Chat Fallback Scenario B: Primary failure triggers successful fallback to 
     id: 'gemini-3.7-flash',
     chunks: ['Fallback response active. ', 'Here are the matching opportunities.'],
   };
+  const resilience: MockModel = {
+    id: 'gemini-3.5-flash',
+    chunks: ['Resilience chunk.'],
+  };
 
-  const result = await simulateChatStream(primary, fallback);
+  const result = await simulateChatStream(primary, fallback, resilience);
 
   assert.strictEqual(result.status, 200);
   assert.strictEqual(result.modelUsed, 'gemini-3.7-flash');
@@ -93,7 +129,7 @@ test('Chat Fallback Scenario B: Primary failure triggers successful fallback to 
   assert.strictEqual(result.fullText, 'Fallback response active. Here are the matching opportunities.');
 });
 
-test('Chat Fallback Scenario C: Both models fail -> returns prompt honest 503 error without hanging', async () => {
+test('Chat Fallback Scenario C: Primary and Fallback failure triggers resilience model (gemini-3.5-flash)', async () => {
   const primary: MockModel = {
     id: 'gemini-3.8-flash',
     failBeforeStart: true,
@@ -104,8 +140,37 @@ test('Chat Fallback Scenario C: Both models fail -> returns prompt honest 503 er
     failBeforeStart: true,
     chunks: [],
   };
+  const resilience: MockModel = {
+    id: 'gemini-3.5-flash',
+    chunks: ['Resilience active. ', 'Responding smoothly during high tier demand.'],
+  };
 
-  const result = await simulateChatStream(primary, fallback);
+  const result = await simulateChatStream(primary, fallback, resilience);
+
+  assert.strictEqual(result.status, 200);
+  assert.strictEqual(result.modelUsed, 'gemini-3.5-flash');
+  assert.strictEqual(result.firstChunk, 'Resilience active. ');
+  assert.strictEqual(result.fullText, 'Resilience active. Responding smoothly during high tier demand.');
+});
+
+test('Chat Fallback Scenario D: All models fail -> returns prompt honest 503 error without hanging', async () => {
+  const primary: MockModel = {
+    id: 'gemini-3.8-flash',
+    failBeforeStart: true,
+    chunks: [],
+  };
+  const fallback: MockModel = {
+    id: 'gemini-3.7-flash',
+    failBeforeStart: true,
+    chunks: [],
+  };
+  const resilience: MockModel = {
+    id: 'gemini-3.5-flash',
+    failBeforeStart: true,
+    chunks: [],
+  };
+
+  const result = await simulateChatStream(primary, fallback, resilience);
 
   assert.strictEqual(result.status, 503);
   assert.strictEqual(result.modelUsed, null);

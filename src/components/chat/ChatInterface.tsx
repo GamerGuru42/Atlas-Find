@@ -399,12 +399,35 @@ export function ChatInterface() {
           }, 3000);
           return;
         } else {
-          throw new Error("Atlas is experiencing high demand. Please try again in a moment.");
+          setMessages(prev =>
+            prev.map(m => {
+              if (m.id === userMsgId) return { ...m, status: 'sent' as const };
+              if (m.id === assistantMsgId) return { ...m, content: 'Atlas is experiencing high demand. Please try again in a moment.', status: 'error' as const };
+              return m;
+            })
+          );
+          return;
         }
       }
 
       if (!res.ok) {
-        throw new Error(`Server returned status code ${res.status}`);
+        const errData = await res.json().catch(() => null);
+        const errorText = errData?.error || (
+          res.status === 503
+            ? 'The AI advisor is temporarily experiencing high upstream demand from Google AI services. Please try again in a few moments.'
+            : res.status === 429
+            ? 'Atlas is experiencing high demand. Please try again in a moment.'
+            : `Unable to complete request (${res.status}). Please try again.`
+        );
+
+        setMessages(prev =>
+          prev.map(m => {
+            if (m.id === userMsgId) return { ...m, status: 'sent' as const };
+            if (m.id === assistantMsgId) return { ...m, content: errorText, status: 'error' as const };
+            return m;
+          })
+        );
+        return;
       }
 
       const reader = res.body?.getReader();
@@ -491,13 +514,26 @@ export function ChatInterface() {
       }
       console.error('Error during streaming:', e);
       
-      // Mark user message as errored to display Retry prompt
-      setMessages(prev => 
-        prev.map(m => m.id === userMsgId ? { ...m, status: 'error' } : m)
-      );
-
-      // Remove assistant placeholder on complete failure
-      setMessages(prev => prev.filter(m => m.id !== assistantMsgId));
+      // Preserve messages and provide clear error with retry
+      setMessages(prev => {
+        const hasAssistant = prev.some(m => m.id === assistantMsgId);
+        if (hasAssistant) {
+          return prev.map(m => {
+            if (m.id === userMsgId) return { ...m, status: 'sent' as const };
+            if (m.id === assistantMsgId) {
+              return {
+                ...m,
+                content: m.content
+                  ? `${m.content}\n\n⚠️ *(Stream interrupted. Please retry.)*`
+                  : 'Connection interrupted while contacting the AI advisor. Please check your connection and click Retry below.',
+                status: 'error' as const,
+              };
+            }
+            return m;
+          });
+        }
+        return prev.map(m => m.id === userMsgId ? { ...m, status: 'error' as const } : m);
+      });
     } finally {
       setIsStreaming(false);
       abortControllerRef.current = null;
@@ -517,12 +553,24 @@ export function ChatInterface() {
     } catch {}
   };
 
-  const handleRetry = (erroredMsgId: string, text: string) => {
-    // Remove errored user message + subsequent messages
-    const idx = messages.findIndex(m => m.id === erroredMsgId);
+  const handleRetry = (msgId: string, text: string) => {
+    const idx = messages.findIndex(m => m.id === msgId);
     if (idx !== -1) {
-      setMessages(prev => prev.slice(0, idx));
-      handleSend(text);
+      const msg = messages[idx];
+      let userPrompt = text;
+      let targetIdx = idx;
+
+      if (msg.role === 'assistant') {
+        // Find the preceding user message that prompted this response
+        const prevUserMsg = messages.slice(0, idx).reverse().find(m => m.role === 'user');
+        if (prevUserMsg) {
+          userPrompt = prevUserMsg.content;
+          targetIdx = messages.findIndex(m => m.id === prevUserMsg.id);
+        }
+      }
+
+      setMessages(prev => prev.slice(0, targetIdx));
+      handleSend(userPrompt);
     }
   };
 

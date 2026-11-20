@@ -5,6 +5,7 @@ import { SYSTEM_PROMPT } from '@/lib/gemini/prompts/systemPrompt';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { classifyIntent, buildAgentInstructionPrompt } from '@/lib/agents';
+import { evaluateOpportunityLifecycle } from '@/lib/opportunity/lifecycle';
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
@@ -88,7 +89,7 @@ export async function POST(req: Request) {
       if (guestCookie) {
         try {
           profile = JSON.parse(decodeURIComponent(guestCookie));
-        } catch {}
+        } catch { }
       }
     }
 
@@ -100,10 +101,10 @@ export async function POST(req: Request) {
 
     const intent = classifyIntent(userPrompt);
 
-    // Retrieve active, verified opportunities from database
+    // Retrieve verified opportunities from database
     let opportunities: any[] = [];
     try {
-      opportunities = await prisma.opportunity.findMany({
+      const activeOpps = await prisma.opportunity.findMany({
         where: {
           scamFlag: false,
           deadline: { gte: new Date() },
@@ -116,35 +117,96 @@ export async function POST(req: Request) {
         },
         take: 20,
       });
+
+      let contextOpps = [...activeOpps];
+      const lowerPrompt = userPrompt.toLowerCase();
+
+      // If user is inquiring about January 2027 or specific programs (e.g. ESA, CERN, Chevening) that may be closed,
+      // also fetch them so the AI can truthfully state whether their deadline has passed
+      if (
+        lowerPrompt.includes('2027') ||
+        lowerPrompt.includes('january') ||
+        lowerPrompt.includes('esa') ||
+        lowerPrompt.includes('cern') ||
+        lowerPrompt.includes('chevening') ||
+        lowerPrompt.includes('rhodes') ||
+        lowerPrompt.includes('closed') ||
+        lowerPrompt.includes('expired') ||
+        lowerPrompt.includes('past')
+      ) {
+        const specialOpps = await prisma.opportunity.findMany({
+          where: {
+            scamFlag: false,
+            OR: [
+              { title: { contains: '2027', mode: 'insensitive' } },
+              { title: { contains: 'ESA', mode: 'insensitive' } },
+              { title: { contains: 'CERN', mode: 'insensitive' } },
+              { title: { contains: 'Chevening', mode: 'insensitive' } },
+              { description: { contains: '2027', mode: 'insensitive' } },
+              {
+                intakes: {
+                  some: {
+                    OR: [
+                      { intakeName: { contains: '2027', mode: 'insensitive' } },
+                      { startDate: { gte: new Date('2027-01-01'), lte: new Date('2027-12-31') } },
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          include: { intakes: true },
+          take: 6,
+        });
+
+        for (const so of specialOpps) {
+          if (!contextOpps.some(o => o.id === so.id)) {
+            contextOpps.push(so);
+          }
+        }
+      }
+
+      opportunities = contextOpps;
     } catch (dbErr) {
       console.warn('[Chat API DB query error]', dbErr);
     }
 
-    const formattedOpportunities = opportunities.map(opp => ({
-      id: opp.id,
-      title: opp.title,
-      type: opp.type,
-      sponsor: opp.sponsor,
-      hostCountry: opp.hostCountry,
-      eligibleCountries: opp.eligibleCountries,
-      disciplines: opp.disciplines,
-      degreeLevel: opp.degreeLevel,
-      fundingType: opp.fundingType,
-      deadline: opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Rolling / Open',
-      opensDate: opp.opensDate ? new Date(opp.opensDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : undefined,
-      intakes: opp.intakes?.map((i: any) => ({
-        intakeName: i.intakeName,
-        startDate: i.startDate ? new Date(i.startDate).toISOString().split('T')[0] : null,
-        deadlineDate: i.deadlineDate ? new Date(i.deadlineDate).toISOString().split('T')[0] : null,
-        status: i.status,
-      })),
-      applyUrl: opp.applyUrl,
-      sourceUrl: opp.sourceUrl,
-      sourceDomain: opp.sourceDomain,
-      verificationStatus: opp.verificationStatus,
-      description: opp.description,
-      eligibility: opp.eligibility,
-    }));
+    const formattedOpportunities = opportunities.map(opp => {
+      const lifecycle = evaluateOpportunityLifecycle({
+        id: opp.id,
+        deadline: opp.deadline,
+        opensDate: opp.opensDate,
+        status: opp.verificationStatus,
+      });
+
+      return {
+        id: opp.id,
+        title: opp.title,
+        type: opp.type,
+        sponsor: opp.sponsor,
+        hostCountry: opp.hostCountry,
+        eligibleCountries: opp.eligibleCountries,
+        disciplines: opp.disciplines,
+        degreeLevel: opp.degreeLevel,
+        fundingType: opp.fundingType,
+        lifecycleStatus: lifecycle.status,
+        canApply: lifecycle.canApply,
+        deadline: opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Rolling / Open',
+        opensDate: opp.opensDate ? new Date(opp.opensDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : undefined,
+        intakes: opp.intakes?.map((i: any) => ({
+          intakeName: i.intakeName,
+          startDate: i.startDate ? new Date(i.startDate).toISOString().split('T')[0] : null,
+          deadlineDate: i.deadlineDate ? new Date(i.deadlineDate).toISOString().split('T')[0] : null,
+          status: i.status,
+        })),
+        applyUrl: opp.applyUrl,
+        sourceUrl: opp.sourceUrl,
+        sourceDomain: opp.sourceDomain,
+        verificationStatus: opp.verificationStatus,
+        description: opp.description,
+        eligibility: opp.eligibility,
+      };
+    });
 
     const agentDirective = buildAgentInstructionPrompt(intent, {
       profile,
@@ -166,9 +228,14 @@ ${dbContext}
 
 # Guidelines
 - **Expert, Evidence-Based Advisor**: Never hallucinate links or deadlines. If recommending an opportunity from the context, use its exact title, sponsor, application deadline, and applyUrl.
+- **Application Deadline & Lifecycle Truthfulness**:
+  - Opportunities marked with \`"lifecycleStatus": "CLOSED"\` have passed their application deadline. NEVER present them as currently open for applications.
+  - If a user inquires about an opportunity whose deadline has passed (e.g. an intake in January 2027 whose application window closed in Autumn 2026), clearly explain that the application period closed on its deadline date, state when the next cycle is expected, and suggest open or upcoming alternatives from the context.
+  - Opportunities with \`"lifecycleStatus": "CLOSING_SOON"\` must be flagged with an urgency notice.
+  - Opportunities with \`"lifecycleStatus": "UPCOMING"\` have applications opening on a future date; advise the user to prepare materials in advance.
 - **January 2027 Search Readiness**: If the user is inquiring about January 2027 internships or intakes, clearly distinguish the programme start date (January 2027) from application deadlines (which often fall in Autumn 2026).
 - **Match Explanations**: Clearly explain why the opportunity matches their nationality, degree level, and discipline. If information is missing from their profile, explain what is needed.
-- **Structured Recommendations**: Whenever you recommend an opportunity from the database context, append a structured JSON block at the very end of your response for each opportunity:
+- **Structured Recommendations**: Whenever you recommend an active opportunity from the database context, append a structured JSON block at the very end of your response for each opportunity:
 :::opportunity
 {
   "id": "OPPORTUNITY_ID",
@@ -296,11 +363,41 @@ ${dbContext}
           activeModelUsed = 'fallback';
         }
       } catch (fallbackErr: any) {
-        console.error(`[Chat API] Fallback model (${AI_CONFIG.fallbackModelId}) also failed before streaming:`, fallbackErr?.message || fallbackErr);
+        console.warn(`[Chat API] Fallback model (${AI_CONFIG.fallbackModelId}) also failed before streaming:`, fallbackErr?.message || fallbackErr);
       }
     }
 
-    // 3. If both models failed before streaming started, return prompt honest 503 error
+    // 3. If Fallback also failed before streaming started, attempt Resilience Model (gemini-3.5-flash)
+    if (!activeStream) {
+      try {
+        console.info(`[Chat API] Falling back to resilience model (${AI_CONFIG.resilienceModelId})...`);
+        const resilienceResult = streamText({
+          model: getAIModel('resilience'),
+          system: instructions,
+          messages: coreMessages,
+          temperature: AI_CONFIG.temperature.balanced,
+          maxOutputTokens: AI_CONFIG.maxTokens.chat,
+          maxRetries: AI_CONFIG.maxRetries,
+          abortSignal: AbortSignal.timeout(15000),
+          onFinish: async ({ text }) => {
+            await saveConversationLog(text);
+          },
+        });
+
+        const resilienceIterator = resilienceResult.textStream[Symbol.asyncIterator]();
+        const resilienceFirst = await resilienceIterator.next();
+        if (!resilienceFirst.done && resilienceFirst.value && typeof resilienceFirst.value === 'string' && resilienceFirst.value.length > 0) {
+          firstChunk = resilienceFirst.value;
+          activeStream = resilienceResult;
+          activeIterator = resilienceIterator;
+          activeModelUsed = 'resilience';
+        }
+      } catch (resilienceErr: any) {
+        console.error(`[Chat API] Resilience model (${AI_CONFIG.resilienceModelId}) also failed before streaming:`, resilienceErr?.message || resilienceErr);
+      }
+    }
+
+    // 4. If all models failed before streaming started, return prompt honest 503 error
     if (!activeStream || !activeIterator) {
       return new Response(
         JSON.stringify({
@@ -316,7 +413,7 @@ ${dbContext}
       );
     }
 
-    // 4. Return custom ReadableStream piping the validated model output to the client
+    // 5. Return custom ReadableStream piping the validated model output to the client
     // Note: Do NOT switch models halfway through an already-started stream
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
@@ -338,12 +435,18 @@ ${dbContext}
       }
     });
 
+    const activeModelName = activeModelUsed === 'primary'
+      ? AI_CONFIG.primaryModelId
+      : activeModelUsed === 'fallback'
+      ? AI_CONFIG.fallbackModelId
+      : AI_CONFIG.resilienceModelId;
+
     return new Response(readable, {
       status: 200,
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
-        'X-AI-Model': activeModelUsed === 'primary' ? AI_CONFIG.primaryModelId : AI_CONFIG.fallbackModelId,
+        'X-AI-Model': activeModelName,
       }
     });
   } catch (error: any) {

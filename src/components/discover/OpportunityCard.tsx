@@ -139,17 +139,47 @@ export default function OpportunityCard({
           <span style={{ textTransform: 'capitalize' }}>{opp.fundingType.replace('_', ' ')}</span>
         </div>
         {(() => {
-          const isExpired = new Date(opp.deadline).getTime() < Date.now();
+          if (!opp.deadline) return null;
+          const parsed = new Date(opp.deadline);
+          if (isNaN(parsed.getTime())) return null;
+          const deadlineDate = new Date(parsed);
+          if (deadlineDate.getUTCHours() === 0 && deadlineDate.getUTCMinutes() === 0) {
+            deadlineDate.setUTCHours(23, 59, 59, 999);
+          }
+          const diffMs = deadlineDate.getTime() - Date.now();
+          const isClosed = diffMs <= 0;
+          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          const isClosingSoon = !isClosed && diffDays <= 14;
+          const dateStr = deadlineDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+
+          if (isClosed) {
+            return (
+              <div
+                className={styles.metaBadge}
+                style={{ color: '#dc2626', backgroundColor: '#fef2f2', borderColor: '#fecaca', fontWeight: 600 }}
+              >
+                <Calendar size={13} />
+                <span>Closed · {dateStr}</span>
+              </div>
+            );
+          }
+
+          if (isClosingSoon) {
+            return (
+              <div
+                className={styles.metaBadge}
+                style={{ color: '#b45309', backgroundColor: '#fffbeb', borderColor: '#fde68a', fontWeight: 600 }}
+              >
+                <Calendar size={13} />
+                <span>{diffDays === 0 ? 'Closes Today' : `Closes in ${diffDays}d`} · {dateStr}</span>
+              </div>
+            );
+          }
+
           return (
-            <div
-              className={styles.metaBadge}
-              style={isExpired ? { color: '#dc2626', backgroundColor: '#fef2f2', borderColor: '#fecaca', fontWeight: 600 } : {}}
-            >
+            <div className={styles.metaBadge}>
               <Calendar size={13} />
-              <span>
-                {isExpired ? 'Closed · ' : ''}
-                {new Date(opp.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-              </span>
+              <span>{dateStr}</span>
             </div>
           );
         })()}

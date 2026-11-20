@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { X, ExternalLink, Calendar, MapPin, Briefcase, GraduationCap, DollarSign, CheckCircle2, AlertTriangle, Link as LinkIcon, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './OpportunityModal.module.css';
+import { evaluateOpportunityLifecycle } from '@/lib/opportunity/lifecycle';
 
 export function OpportunityModal({ id, onClose }: { id: string, onClose: () => void }) {
   const [data, setData] = useState<any>(null);
@@ -54,16 +55,34 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
   const opp = data.opportunity;
   const related = data.related || [];
 
+  const lifecycle = evaluateOpportunityLifecycle({
+    id: opp.id,
+    deadline: opp.deadline,
+    opensDate: opp.opensDate,
+    startDate: opp.startDate,
+    status: opp.verificationStatus,
+  });
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        
+
         {/* Header Bar */}
         <div className={styles.headerBar}>
           <div className={styles.badges}>
             <span className={styles.typeBadge}>
               {opp.type.replace('_', ' ')}
             </span>
+            {lifecycle.isClosed && (
+              <span style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600 }}>
+                Closed
+              </span>
+            )}
+            {lifecycle.isClosingSoon && (
+              <span style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600 }}>
+                {lifecycle.badgeText}
+              </span>
+            )}
             {opp.trustTier === 1 && (
               <span className={styles.verifiedBadge}>
                 <CheckCircle2 size={12} /> Verified Source
@@ -92,22 +111,27 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
 
           <div className={styles.metricsGrid}>
             <div className={styles.metricBox}>
-              <div className={styles.metricLabel}><MapPin size={14}/> Location</div>
+              <div className={styles.metricLabel}><MapPin size={14} /> Location</div>
               <div className={styles.metricValue}>{opp.hostCountry}</div>
             </div>
             <div className={styles.metricBox} title="Verified Application Deadline">
-              <div className={styles.metricLabel}><Calendar size={14}/> Application Deadline</div>
+              <div className={styles.metricLabel}><Calendar size={14} /> Application Deadline</div>
               <div className={styles.metricValue}>
-                {new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                {new Date(opp.deadline) < new Date() ? (
+                {lifecycle.formattedDeadline}
+                {lifecycle.isClosed ? (
                   <div style={{ marginTop: '4px', color: '#ef4444', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }} />
                     Closed
                   </div>
-                ) : opp.opensDate && new Date(opp.opensDate) > new Date() ? (
+                ) : lifecycle.isUpcoming ? (
                   <div style={{ marginTop: '4px', color: '#f59e0b', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b', display: 'inline-block' }} />
-                    Opens on {new Date(opp.opensDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {lifecycle.badgeText}
+                  </div>
+                ) : lifecycle.isClosingSoon ? (
+                  <div style={{ marginTop: '4px', color: '#d97706', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#d97706', display: 'inline-block' }} />
+                    {lifecycle.badgeText}
                   </div>
                 ) : (
                   <div style={{ marginTop: '4px', color: '#10b981', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -119,25 +143,25 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
             </div>
             {opp.startDate && (
               <div className={styles.metricBox} title="Programme / Intake Start Date">
-                <div className={styles.metricLabel}><Calendar size={14}/> Programme Start</div>
+                <div className={styles.metricLabel}><Calendar size={14} /> Programme Start</div>
                 <div className={styles.metricValue}>
                   {new Date(opp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
               </div>
             )}
             <div className={styles.metricBox}>
-              <div className={styles.metricLabel}><GraduationCap size={14}/> Degree Level</div>
+              <div className={styles.metricLabel}><GraduationCap size={14} /> Degree Level</div>
               <div className={styles.metricValue}>{opp.degreeLevel.join(', ') || 'Any'}</div>
             </div>
             <div className={styles.metricBox}>
-              <div className={styles.metricLabel}><DollarSign size={14}/> Funding</div>
+              <div className={styles.metricLabel}><DollarSign size={14} /> Funding</div>
               <div className={styles.metricValue}>{opp.fundingType?.replace('_', ' ')}</div>
             </div>
           </div>
 
           <div className={styles.mainColumns}>
             <div className={styles.detailsCol}>
-              
+
               <section>
                 <h3 className={styles.sectionTitle}>Description</h3>
                 <p className={styles.sectionText}>
@@ -161,7 +185,7 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                     if (val === true) {
                       return <span key={key} className={styles.coverageTag}><CheckCircle2 size={14} /> {key} Included</span>
                     } else if (typeof val === 'string') {
-                      return <span key={key} className={styles.coverageTagAlt}><DollarSign size={14}/> {key}: {val}</span>
+                      return <span key={key} className={styles.coverageTagAlt}><DollarSign size={14} /> {key}: {val}</span>
                     }
                     return null;
                   })}
@@ -198,25 +222,38 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
 
             <div className={styles.actionCol}>
               <div className={styles.applyBox}>
-                <h3 className={styles.applyTitle}>Ready to apply?</h3>
+                <h3 className={styles.applyTitle}>
+                  {lifecycle.isClosed ? 'Applications Closed' : lifecycle.isUpcoming ? 'Applications Upcoming' : 'Ready to apply?'}
+                </h3>
                 <p className={styles.applyDesc}>
-                  Make sure you have reviewed all eligibility criteria on the official website before starting your application.
+                  {lifecycle.notice || 'Make sure you have reviewed all eligibility criteria on the official website before starting your application.'}
                 </p>
-                <a 
-                  href={opp.applyUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={styles.applyBtn}
-                >
-                  Apply Now <ExternalLink size={18} />
-                </a>
-                <a 
-                  href={opp.sourceUrl} 
-                  target="_blank" 
+                {lifecycle.canApply ? (
+                  <a
+                    href={opp.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.applyBtn}
+                    style={lifecycle.isClosingSoon ? { background: '#d97706', borderColor: '#b45309' } : {}}
+                  >
+                    {lifecycle.applyButton.label} <ExternalLink size={18} />
+                  </a>
+                ) : (
+                  <button
+                    disabled
+                    className={styles.applyBtn}
+                    style={{ opacity: 0.6, cursor: 'not-allowed', background: '#94a3b8', borderColor: '#64748b' }}
+                  >
+                    {lifecycle.applyButton.label}
+                  </button>
+                )}
+                <a
+                  href={opp.sourceUrl}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={styles.sourceBtn}
                 >
-                  View Official Source <LinkIcon size={16} />
+                  {lifecycle.isClosed ? 'View Archived Official Source' : 'View Official Source'} <LinkIcon size={16} />
                 </a>
               </div>
 
@@ -225,8 +262,8 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                   <h4 className={styles.relatedTitle}>Similar Opportunities</h4>
                   <div className={styles.relatedList}>
                     {related.map((ro: any) => (
-                      <Link 
-                        key={ro.id} 
+                      <Link
+                        key={ro.id}
                         href={`/discover?modal=${ro.id}`}
                         className={styles.relatedItem}
                       >

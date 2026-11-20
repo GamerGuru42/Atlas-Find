@@ -164,9 +164,12 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Lifecycle Status filter (open vs closed/expired as of current date)
+    // Lifecycle Status filter (open vs closing_soon vs closed/expired as of current date)
     if (status === 'open' || status === 'active') {
       whereClause.deadline = { gte: new Date() };
+    } else if (status === 'closing_soon') {
+      const in14Days = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+      whereClause.deadline = { gte: new Date(), lte: in14Days };
     } else if (status === 'closed' || status === 'expired') {
       whereClause.deadline = { lt: new Date() };
     }
