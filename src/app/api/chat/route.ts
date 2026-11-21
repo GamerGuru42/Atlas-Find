@@ -319,7 +319,7 @@ ${dbContext}
         temperature: AI_CONFIG.temperature.balanced,
         maxOutputTokens: AI_CONFIG.maxTokens.chat,
         maxRetries: AI_CONFIG.maxRetries,
-        abortSignal: AbortSignal.timeout(15000),
+        abortSignal: AbortSignal.timeout(6000),
         onFinish: async ({ text }) => {
           await saveConversationLog(text);
         },
@@ -348,7 +348,7 @@ ${dbContext}
           temperature: AI_CONFIG.temperature.balanced,
           maxOutputTokens: AI_CONFIG.maxTokens.chat,
           maxRetries: AI_CONFIG.maxRetries,
-          abortSignal: AbortSignal.timeout(15000),
+          abortSignal: AbortSignal.timeout(6000),
           onFinish: async ({ text }) => {
             await saveConversationLog(text);
           },
@@ -378,7 +378,7 @@ ${dbContext}
           temperature: AI_CONFIG.temperature.balanced,
           maxOutputTokens: AI_CONFIG.maxTokens.chat,
           maxRetries: AI_CONFIG.maxRetries,
-          abortSignal: AbortSignal.timeout(15000),
+          abortSignal: AbortSignal.timeout(25000),
           onFinish: async ({ text }) => {
             await saveConversationLog(text);
           },
@@ -393,11 +393,41 @@ ${dbContext}
           activeModelUsed = 'resilience';
         }
       } catch (resilienceErr: any) {
-        console.error(`[Chat API] Resilience model (${AI_CONFIG.resilienceModelId}) also failed before streaming:`, resilienceErr?.message || resilienceErr);
+        console.warn(`[Chat API] Resilience model (${AI_CONFIG.resilienceModelId}) also failed before streaming:`, resilienceErr?.message || resilienceErr);
       }
     }
 
-    // 4. If all models failed before streaming started, return prompt honest 503 error
+    // 4. If Resilience also failed before streaming started, attempt Ultra-Fast Speed Model (gemini-3.5-flash-lite)
+    if (!activeStream) {
+      try {
+        console.info(`[Chat API] Falling back to speed model (${AI_CONFIG.speedModelId})...`);
+        const speedResult = streamText({
+          model: getAIModel('speed'),
+          system: instructions,
+          messages: coreMessages,
+          temperature: AI_CONFIG.temperature.balanced,
+          maxOutputTokens: AI_CONFIG.maxTokens.chat,
+          maxRetries: AI_CONFIG.maxRetries,
+          abortSignal: AbortSignal.timeout(15000),
+          onFinish: async ({ text }) => {
+            await saveConversationLog(text);
+          },
+        });
+
+        const speedIterator = speedResult.textStream[Symbol.asyncIterator]();
+        const speedFirst = await speedIterator.next();
+        if (!speedFirst.done && speedFirst.value && typeof speedFirst.value === 'string' && speedFirst.value.length > 0) {
+          firstChunk = speedFirst.value;
+          activeStream = speedResult;
+          activeIterator = speedIterator;
+          activeModelUsed = 'speed';
+        }
+      } catch (speedErr: any) {
+        console.error(`[Chat API] Speed model (${AI_CONFIG.speedModelId}) also failed before streaming:`, speedErr?.message || speedErr);
+      }
+    }
+
+    // 5. If all models failed before streaming started, return prompt honest 503 error
     if (!activeStream || !activeIterator) {
       return new Response(
         JSON.stringify({
@@ -439,7 +469,9 @@ ${dbContext}
       ? AI_CONFIG.primaryModelId
       : activeModelUsed === 'fallback'
       ? AI_CONFIG.fallbackModelId
-      : AI_CONFIG.resilienceModelId;
+      : activeModelUsed === 'resilience'
+      ? AI_CONFIG.resilienceModelId
+      : AI_CONFIG.speedModelId;
 
     return new Response(readable, {
       status: 200,

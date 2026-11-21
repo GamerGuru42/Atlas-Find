@@ -15,6 +15,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 export const GEMINI_FALLBACK_MODEL_ID = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.7-flash';
 export const GEMINI_RESILIENCE_MODEL_ID = process.env.GEMINI_RESILIENCE_MODEL || 'gemini-3.5-flash';
+export const GEMINI_SPEED_MODEL_ID = process.env.GEMINI_SPEED_MODEL || 'gemini-3.5-flash-lite';
 
 /**
  * Checks whether the Gemini API key is configured in the environment
@@ -34,12 +35,14 @@ export const googleAI = createGoogleGenerativeAI({
 /**
  * Returns the configured AI model instance
  */
-export function getAIModel(tier: 'primary' | 'fallback' | 'resilience' | 'default' = 'primary') {
+export function getAIModel(tier: 'primary' | 'fallback' | 'resilience' | 'speed' | 'default' = 'primary') {
   let modelId = GEMINI_MODEL_ID;
   if (tier === 'fallback') {
     modelId = GEMINI_FALLBACK_MODEL_ID;
   } else if (tier === 'resilience') {
     modelId = GEMINI_RESILIENCE_MODEL_ID;
+  } else if (tier === 'speed') {
+    modelId = GEMINI_SPEED_MODEL_ID;
   }
   return googleAI(modelId);
 }
@@ -51,6 +54,7 @@ export const AI_CONFIG = {
   primaryModelId: GEMINI_MODEL_ID,
   fallbackModelId: GEMINI_FALLBACK_MODEL_ID,
   resilienceModelId: GEMINI_RESILIENCE_MODEL_ID,
+  speedModelId: GEMINI_SPEED_MODEL_ID,
   defaultModelId: GEMINI_MODEL_ID,
   streamingTimeoutSeconds: 60,
   maxRetries: 1,
