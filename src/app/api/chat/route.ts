@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     let userId: string | undefined;
+    let userMetadata: Record<string, any> | undefined;
 
     if (supabaseUrl && supabaseAnonKey) {
       const supabase = createServerClient(
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         userId = session?.user?.id;
+        userMetadata = session?.user?.user_metadata;
       } catch {
         // Continue as anonymous guest
       }
@@ -68,17 +70,28 @@ export async function POST(req: Request) {
       return new Response('Messages array is required', { status: 400 });
     }
 
+    let userName: string | undefined;
     let profile: Record<string, any> = {};
+
     if (userId) {
       try {
         const user = await prisma.user.findUnique({ where: { id: userId } });
+        const meta = userMetadata;
+        const profileJson = (user?.profileJson as Record<string, any>) || {};
+        const rawName = meta?.full_name || meta?.name || meta?.first_name || profileJson?.name || profileJson?.fullName || profileJson?.firstName;
+
+        if (rawName && typeof rawName === 'string') {
+          userName = rawName.trim().split(/\s+/)[0]; // First name only
+        }
+
         profile = {
+          name: userName,
           nationality: user?.countryCode,
           fieldOfStudy: user?.fieldOfStudy,
           level: user?.level,
           institution: user?.institution,
           graduationYear: user?.graduationYear,
-          ...((user?.profileJson as Record<string, any>) || {}),
+          ...profileJson,
         };
       } catch {
         // Database error — continue without user profile
@@ -89,86 +102,108 @@ export async function POST(req: Request) {
       if (guestCookie) {
         try {
           profile = JSON.parse(decodeURIComponent(guestCookie));
+          if (profile.name && typeof profile.name === 'string') {
+            userName = profile.name.trim().split(/\s+/)[0];
+          }
         } catch { }
       }
     }
 
-    // Get latest user prompt to classify intent
+    const coreMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: (msg.parts && Array.isArray(msg.parts))
+        ? msg.parts.map((p: any) => p.text || '').join('')
+        : (msg.content || '')
+    }));
+
+    // Get latest user prompt
     const lastUserMsg = messages[messages.length - 1];
     const userPrompt = (lastUserMsg?.parts && Array.isArray(lastUserMsg.parts))
       ? lastUserMsg.parts.map((p: any) => p.text || '').join('')
       : (lastUserMsg?.content || '');
 
-    const intent = classifyIntent(userPrompt);
+    // Classify intent using multi-turn conversation context
+    const intent = classifyIntent(userPrompt, coreMessages);
 
-    // Retrieve verified opportunities from database
+    // Intent-gated research: only query opportunities when user is actually researching
+    const isResearchIntent = [
+      'DISCOVERY',
+      'CONTEXTUAL_FOLLOWUP',
+      'RESEARCH',
+      'ELIGIBILITY_CHECK',
+      'DEADLINE_MONITORING'
+    ].includes(intent);
+
+    // Retrieve verified opportunities from database if user is seeking opportunities
     let opportunities: any[] = [];
-    try {
-      const activeOpps = await prisma.opportunity.findMany({
-        where: {
-          scamFlag: false,
-          deadline: { gte: new Date() },
-        },
-        include: {
-          intakes: true,
-        },
-        orderBy: {
-          deadline: 'asc',
-        },
-        take: 20,
-      });
-
-      let contextOpps = [...activeOpps];
-      const lowerPrompt = userPrompt.toLowerCase();
-
-      // If user is inquiring about January 2027 or specific programs (e.g. ESA, CERN, Chevening) that may be closed,
-      // also fetch them so the AI can truthfully state whether their deadline has passed
-      if (
-        lowerPrompt.includes('2027') ||
-        lowerPrompt.includes('january') ||
-        lowerPrompt.includes('esa') ||
-        lowerPrompt.includes('cern') ||
-        lowerPrompt.includes('chevening') ||
-        lowerPrompt.includes('rhodes') ||
-        lowerPrompt.includes('closed') ||
-        lowerPrompt.includes('expired') ||
-        lowerPrompt.includes('past')
-      ) {
-        const specialOpps = await prisma.opportunity.findMany({
+    if (isResearchIntent) {
+      try {
+        const activeOpps = await prisma.opportunity.findMany({
           where: {
             scamFlag: false,
-            OR: [
-              { title: { contains: '2027', mode: 'insensitive' } },
-              { title: { contains: 'ESA', mode: 'insensitive' } },
-              { title: { contains: 'CERN', mode: 'insensitive' } },
-              { title: { contains: 'Chevening', mode: 'insensitive' } },
-              { description: { contains: '2027', mode: 'insensitive' } },
-              {
-                intakes: {
-                  some: {
-                    OR: [
-                      { intakeName: { contains: '2027', mode: 'insensitive' } },
-                      { startDate: { gte: new Date('2027-01-01'), lte: new Date('2027-12-31') } },
-                    ]
-                  }
-                }
-              }
-            ]
+            deadline: { gte: new Date() },
           },
-          include: { intakes: true },
-          take: 6,
+          include: {
+            intakes: true,
+          },
+          orderBy: {
+            deadline: 'asc',
+          },
+          take: 20,
         });
 
-        for (const so of specialOpps) {
-          if (!contextOpps.some(o => o.id === so.id)) {
-            contextOpps.push(so);
+        let contextOpps = [...activeOpps];
+        const lowerPrompt = (userPrompt + ' ' + coreMessages.slice(-3).map(m => m.content).join(' ')).toLowerCase();
+
+        // If user is inquiring about January 2027 or specific programs that may be closed,
+        // also fetch them so the AI can truthfully state whether their deadline has passed
+        if (
+          lowerPrompt.includes('2027') ||
+          lowerPrompt.includes('january') ||
+          lowerPrompt.includes('esa') ||
+          lowerPrompt.includes('cern') ||
+          lowerPrompt.includes('chevening') ||
+          lowerPrompt.includes('rhodes') ||
+          lowerPrompt.includes('closed') ||
+          lowerPrompt.includes('expired') ||
+          lowerPrompt.includes('past')
+        ) {
+          const specialOpps = await prisma.opportunity.findMany({
+            where: {
+              scamFlag: false,
+              OR: [
+                { title: { contains: '2027', mode: 'insensitive' } },
+                { title: { contains: 'ESA', mode: 'insensitive' } },
+                { title: { contains: 'CERN', mode: 'insensitive' } },
+                { title: { contains: 'Chevening', mode: 'insensitive' } },
+                { description: { contains: '2027', mode: 'insensitive' } },
+                {
+                  intakes: {
+                    some: {
+                      OR: [
+                        { intakeName: { contains: '2027', mode: 'insensitive' } },
+                        { startDate: { gte: new Date('2027-01-01'), lte: new Date('2027-12-31') } },
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            include: { intakes: true },
+            take: 6,
+          });
+
+          for (const so of specialOpps) {
+            if (!contextOpps.some(o => o.id === so.id)) {
+              contextOpps.push(so);
+            }
           }
         }
-      }
 
-      opportunities = contextOpps;
-    } catch (dbErr) {
-      console.warn('[Chat API DB query error]', dbErr);
+        opportunities = contextOpps;
+      } catch (dbErr) {
+        console.warn('[Chat API DB query error]', dbErr);
+      }
     }
 
     const formattedOpportunities = opportunities.map(opp => {
@@ -214,24 +249,17 @@ export async function POST(req: Request) {
     });
 
     const agentDirective = buildAgentInstructionPrompt(intent, {
+      userName,
       profile,
       verifiedOpportunities: formattedOpportunities as any,
     });
 
-    const dbContext = formattedOpportunities.length > 0
-      ? `VERIFIED DATABASE CONTEXT:\n${JSON.stringify(formattedOpportunities, null, 2)}`
-      : `VERIFIED DATABASE CONTEXT:\nNo active opportunities currently returned from the database.`;
-
-    const instructions = `
-${SYSTEM_PROMPT}
-
-# Multi-Agent Coordination Directives
-${agentDirective}
-
+    const researchGuidelines = isResearchIntent
+      ? `
 # Grounded Database Records
-${dbContext}
+${formattedOpportunities.length > 0 ? `VERIFIED DATABASE CONTEXT:\n${JSON.stringify(formattedOpportunities, null, 2)}` : 'No active opportunities matched in local database.'}
 
-# Guidelines
+# Opportunity Guidelines
 - **Expert, Evidence-Based Advisor**: Never hallucinate links or deadlines. If recommending an opportunity from the context, use its exact title, sponsor, application deadline, and applyUrl.
 - **Application Deadline & Lifecycle Truthfulness**:
   - Opportunities marked with \`"lifecycleStatus": "CLOSED"\` have passed their application deadline. NEVER present them as currently open for applications.
@@ -239,7 +267,7 @@ ${dbContext}
   - Opportunities with \`"lifecycleStatus": "CLOSING_SOON"\` must be flagged with an urgency notice.
   - Opportunities with \`"lifecycleStatus": "UPCOMING"\` have applications opening on a future date; advise the user to prepare materials in advance.
 - **January 2027 Search Readiness**: If the user is inquiring about January 2027 internships or intakes, clearly distinguish the programme start date (January 2027) from application deadlines (which often fall in Autumn 2026).
-- **Match Explanations**: Clearly explain why the opportunity matches their nationality, degree level, and discipline. If information is missing from their profile, explain what is needed.
+- **Match Explanations**: Clearly explain why the opportunity matches their nationality, degree level, and discipline.
 - **Structured Recommendations**: Whenever you recommend an active opportunity from the database context, append a structured JSON block at the very end of your response for each opportunity:
 :::opportunity
 {
@@ -251,8 +279,18 @@ ${dbContext}
   "applyUrl": "APPLY_URL"
 }
 :::
+`
+      : '';
 
-- **Profile Extraction**: If the user shares new profile facts (field, degree level, nationality, GPA, graduation year), append:
+    const instructions = `
+${SYSTEM_PROMPT}
+
+# Multi-Agent Coordination Directives
+${agentDirective}
+${researchGuidelines}
+
+# Profile Learning Guidelines
+- If the user naturally shares new profile facts (field, degree level, nationality, GPA, graduation year), append at the very end:
 :::profile
 {
   "fieldOfStudy": "FIELD_OF_STUDY",
@@ -263,13 +301,6 @@ ${dbContext}
 }
 :::
 `;
-
-    const coreMessages = messages.map((msg: any) => ({
-      role: msg.role,
-      content: (msg.parts && Array.isArray(msg.parts))
-        ? msg.parts.map((p: any) => p.text || '').join('')
-        : (msg.content || '')
-    }));
 
     const conversationId = body.conversationId || 'default';
 

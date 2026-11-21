@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert';
 import {
   GEMINI_MODEL_ID,
+  GEMINI_REASONING_MODEL_ID,
   GEMINI_FALLBACK_MODEL_ID,
   getAIModel,
   isAIConfigured,
@@ -19,12 +20,16 @@ import { verifyCronAuthorization } from '../src/lib/auth/cronAuth.ts';
 // 1. Centralized AI Model Configuration Tests
 test('AI Configuration: Centralizes supported production Gemini model', () => {
   assert.strictEqual(GEMINI_MODEL_ID, 'gemini-3.8-flash', 'Primary model must be gemini-3.8-flash');
+  assert.strictEqual(GEMINI_REASONING_MODEL_ID, 'gemini-4-argon', 'Reasoning model must be gemini-4-argon');
   assert.strictEqual(GEMINI_FALLBACK_MODEL_ID, 'gemini-3.6-flash', 'Fallback model must be gemini-3.6-flash');
 
   // Verify model factory creates valid provider instances without throwing
   const primaryModel = getAIModel('primary');
   assert.strictEqual(primaryModel.modelId, 'gemini-3.8-flash');
   assert.strictEqual(primaryModel.provider, 'google.generative-ai');
+
+  const reasoningModel = getAIModel('reasoning');
+  assert.strictEqual(reasoningModel.modelId, 'gemini-4-argon');
 
   const defaultModel = getAIModel('default');
   assert.strictEqual(defaultModel.modelId, 'gemini-3.8-flash');
@@ -34,6 +39,7 @@ test('AI Configuration: Centralizes supported production Gemini model', () => {
 
   // Check config parameters
   assert.strictEqual(AI_CONFIG.primaryModelId, 'gemini-3.8-flash');
+  assert.strictEqual(AI_CONFIG.reasoningModelId, 'gemini-4-argon');
   assert.strictEqual(AI_CONFIG.fallbackModelId, 'gemini-3.6-flash');
   assert.strictEqual(AI_CONFIG.streamingTimeoutSeconds, 60);
   assert.strictEqual(AI_CONFIG.maxRetries, 1);
@@ -157,8 +163,40 @@ test('Agent G (Orchestrator): Accurately routes user intents across 7 specializa
   assert.strictEqual(classifyIntent('Which opportunities are closing soon or have expired deadlines?'), 'DEADLINE_MONITORING');
   assert.strictEqual(classifyIntent('Hello! How does AtlasFind work?'), 'GENERAL_CONVERSATION');
 
-  // Verify prompt assembly includes grounded context
+  // Conversational intelligence: Pure Greetings
+  assert.strictEqual(classifyIntent('Hello'), 'GREETING');
+  assert.strictEqual(classifyIntent('Hi!'), 'GREETING');
+  assert.strictEqual(classifyIntent('Good morning'), 'GREETING');
+
+  // Conversational intelligence: Casual Chitchat
+  assert.strictEqual(classifyIntent('How are you doing today?'), 'CASUAL_CHITCHAT');
+  assert.strictEqual(classifyIntent("I'm fine, thanks"), 'CASUAL_CHITCHAT');
+
+  // Conversational intelligence: Multi-turn Contextual Follow-up
+  const history = [
+    { role: 'user', content: "I'm looking for internships." },
+    { role: 'assistant', content: 'Nice! What kind of internships are you interested in?' }
+  ];
+  assert.strictEqual(classifyIntent('Software engineering', history), 'CONTEXTUAL_FOLLOWUP');
+
+  // Name Personalization: When user name is known
+  const userNamedInstruction = buildAgentInstructionPrompt('GREETING', {
+    userName: 'Benny',
+    verifiedOpportunities: [],
+  });
+  assert.ok(userNamedInstruction.includes('First Name: "Benny"'));
+  assert.ok(userNamedInstruction.includes('address them by first name'));
+
+  // Name Personalization: When guest/anonymous (no name)
+  const anonymousInstruction = buildAgentInstructionPrompt('GREETING', {
+    verifiedOpportunities: [],
+  });
+  assert.ok(anonymousInstruction.includes('DO NOT invent, guess, or assume a name'));
+  assert.ok(anonymousInstruction.includes('do NOT call them Benny'));
+
+  // Verify prompt assembly includes grounded context for discovery
   const instruction = buildAgentInstructionPrompt('DISCOVERY', {
+    userName: 'Chioma',
     verifiedOpportunities: [
       {
         id: 'opp_esa',

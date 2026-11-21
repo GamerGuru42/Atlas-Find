@@ -322,6 +322,56 @@
   border-bottom-left-radius: 4px;
 }
 
+/* Light Mode: AI text must be black instead of green/slate */
+:global([data-theme='light']) .bubbleAgent,
+:global(html[data-theme='light']) .bubbleAgent,
+:global(body[data-theme='light']) .bubbleAgent {
+  background-color: #f1f5f9;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: #000000;
+}
+
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown p,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown span,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown li,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown strong,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown h1,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown h2,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown h3,
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown h4 {
+  color: #000000 !important;
+}
+
+:global([data-theme='light']) .bubbleAgent .messageTextMarkdown a {
+  color: #2563eb !important;
+}
+
+@media (prefers-color-scheme: light) {
+  :global(:root:not([data-theme='dark'])) .bubbleAgent,
+  :global(body:not([data-theme='dark'])) .bubbleAgent {
+    background-color: #f1f5f9;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    color: #000000;
+  }
+
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown p,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown span,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown li,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown strong,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown h1,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown h2,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown h3,
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown h4 {
+    color: #000000 !important;
+  }
+
+  :global(:root:not([data-theme='dark'])) .bubbleAgent .messageTextMarkdown a {
+    color: #2563eb !important;
+  }
+}
+
 .messageTextMarkdown {
   font-size: 0.95rem;
   line-height: 1.6;

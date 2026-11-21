@@ -14,10 +14,12 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 // Centralized Distinct Model Identifiers
 // Genuinely distinct Google Gemini models confirmed via production API audit:
 // 1. Primary: gemini-3.8-flash (Flagship production generation, 65k output limit)
-// 2. Distinct Fallback 1: gemini-3.6-flash (Distinct generation endpoint, verified 961ms)
-// 3. Distinct Fallback 2: gemini-3.5-flash-lite (Dedicated lightweight architecture, verified 793ms)
-// 4. Distinct Fallback 3: gemini-3.1-flash-lite (Stable fallback architecture, verified 908ms)
+// 2. Advanced Reasoning Tier: gemini-4-argon (Deep research & document analysis; ready for paid Tier 1 activation)
+// 3. Distinct Fallback 1: gemini-3.6-flash (Distinct generation endpoint, verified 961ms)
+// 4. Distinct Fallback 2: gemini-3.5-flash-lite (Dedicated lightweight architecture, verified 793ms)
+// 5. Distinct Fallback 3: gemini-3.1-flash-lite (Stable fallback architecture, verified 908ms)
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+export const GEMINI_REASONING_MODEL_ID = process.env.GEMINI_REASONING_MODEL || 'gemini-4-argon';
 export const GEMINI_FALLBACK_MODEL_ID = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.6-flash';
 export const GEMINI_RESILIENCE_MODEL_ID = process.env.GEMINI_RESILIENCE_MODEL || 'gemini-3.5-flash-lite';
 export const GEMINI_SPEED_MODEL_ID = process.env.GEMINI_SPEED_MODEL || 'gemini-3.1-flash-lite';
@@ -40,9 +42,11 @@ export const googleAI = createGoogleGenerativeAI({
 /**
  * Returns the configured AI model instance
  */
-export function getAIModel(tier: 'primary' | 'fallback' | 'resilience' | 'speed' | 'default' = 'primary') {
+export function getAIModel(tier: 'primary' | 'reasoning' | 'fallback' | 'resilience' | 'speed' | 'default' = 'primary') {
   let modelId = GEMINI_MODEL_ID;
-  if (tier === 'fallback') {
+  if (tier === 'reasoning') {
+    modelId = GEMINI_REASONING_MODEL_ID;
+  } else if (tier === 'fallback') {
     modelId = GEMINI_FALLBACK_MODEL_ID;
   } else if (tier === 'resilience') {
     modelId = GEMINI_RESILIENCE_MODEL_ID;
@@ -57,6 +61,7 @@ export function getAIModel(tier: 'primary' | 'fallback' | 'resilience' | 'speed'
  */
 export const AI_CONFIG = {
   primaryModelId: GEMINI_MODEL_ID,
+  reasoningModelId: GEMINI_REASONING_MODEL_ID,
   fallbackModelId: GEMINI_FALLBACK_MODEL_ID,
   resilienceModelId: GEMINI_RESILIENCE_MODEL_ID,
   speedModelId: GEMINI_SPEED_MODEL_ID,
