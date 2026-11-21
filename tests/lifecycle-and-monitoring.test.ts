@@ -130,8 +130,9 @@ test('Case 4: Timezone boundary check — Opportunity whose deadline is today', 
   // Deadline was entered as date-only "2026-11-20"
   const dateOnlyDeadline = '2026-11-20';
 
-  const normalized = normalizeDeadlineDate(dateOnlyDeadline);
+  const { normalized, isDateOnly } = normalizeDeadlineDate(dateOnlyDeadline);
   assert.ok(normalized);
+  assert.strictEqual(isDateOnly, true);
   // Must normalize to end of day: 23:59:59.999Z
   assert.strictEqual(normalized.getUTCHours(), 23);
   assert.strictEqual(normalized.getUTCMinutes(), 59);
@@ -185,22 +186,38 @@ test('Case 6: Opportunity whose deadline was extended', () => {
   assert.strictEqual(resExtended.daysRemaining, 25);
 });
 
-test('Case 7: Opportunity with an unconfirmed or rolling deadline', () => {
+test('Case 7a: Verified rolling intake confirmed by official source', () => {
   const refDate = new Date('2026-11-20T12:00:00.000Z');
 
-  // Rolling admissions
-  const rollingRes = evaluateOpportunityLifecycle({ isRolling: true }, refDate);
-  assert.strictEqual(rollingRes.status, 'UNCONFIRMED');
-  assert.strictEqual(rollingRes.isRolling, true);
-  assert.strictEqual(rollingRes.canApply, true);
-  assert.strictEqual(rollingRes.applyButton.label, 'Apply Now (Rolling)');
-  assert.strictEqual(rollingRes.formattedDeadline, 'Rolling / Open');
+  // Verified rolling admissions (e.g. IAESTE or OECD continuous intake)
+  const rollingRes = evaluateOpportunityLifecycle({
+    isRolling: true,
+    verificationStatus: 'verified',
+  }, refDate);
 
-  // Missing deadline (dates unconfirmed)
-  const unconfirmedRes = evaluateOpportunityLifecycle({ deadline: null }, refDate);
-  assert.strictEqual(unconfirmedRes.status, 'UNCONFIRMED');
-  assert.strictEqual(unconfirmedRes.canApply, true);
-  assert.strictEqual(unconfirmedRes.applyButton.label, 'Apply Now (Rolling)');
+  assert.strictEqual(rollingRes.status, 'ROLLING_INTAKE', 'Verified rolling must have status ROLLING_INTAKE');
+  assert.strictEqual(rollingRes.isRolling, true);
+  assert.strictEqual(rollingRes.canApply, true, 'Verified rolling intake has active apply link');
+  assert.strictEqual(rollingRes.applyButton.label, 'Apply Now (Rolling)');
+  assert.strictEqual(rollingRes.formattedDeadline, 'Rolling Admissions');
+});
+
+test('Case 7b: Unconfirmed opportunity must not be presented as definitely open or rolling', () => {
+  const refDate = new Date('2026-11-20T12:00:00.000Z');
+
+  // Missing / unknown deadline without verified rolling status
+  const unconfirmedRes = evaluateOpportunityLifecycle({
+    deadline: null,
+    isRolling: false,
+    verificationStatus: 'unverified',
+  }, refDate);
+
+  assert.strictEqual(unconfirmedRes.status, 'UNCONFIRMED', 'Unknown deadline must be UNCONFIRMED');
+  assert.strictEqual(unconfirmedRes.isOpen, false, 'Unconfirmed opportunity must never be presented as definitely open');
+  assert.strictEqual(unconfirmedRes.canApply, false, 'Cannot present active apply claim without verified dates');
+  assert.strictEqual(unconfirmedRes.applyButton.label, 'Check Official Website');
+  assert.strictEqual(unconfirmedRes.applyButton.style, 'secondary');
+  assert.ok(unconfirmedRes.notice?.includes('unconfirmed'));
 });
 
 test('Case 8: Programme starting in January 2027 whose application deadline has passed', () => {

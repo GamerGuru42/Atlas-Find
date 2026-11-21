@@ -19,7 +19,7 @@ import { verifyCronAuthorization } from '../src/lib/auth/cronAuth.ts';
 // 1. Centralized AI Model Configuration Tests
 test('AI Configuration: Centralizes supported production Gemini model', () => {
   assert.strictEqual(GEMINI_MODEL_ID, 'gemini-3.8-flash', 'Primary model must be gemini-3.8-flash');
-  assert.strictEqual(GEMINI_FALLBACK_MODEL_ID, 'gemini-3.7-flash', 'Fallback model must be gemini-3.7-flash');
+  assert.strictEqual(GEMINI_FALLBACK_MODEL_ID, 'gemini-3.6-flash', 'Fallback model must be gemini-3.6-flash');
 
   // Verify model factory creates valid provider instances without throwing
   const primaryModel = getAIModel('primary');
@@ -30,11 +30,11 @@ test('AI Configuration: Centralizes supported production Gemini model', () => {
   assert.strictEqual(defaultModel.modelId, 'gemini-3.8-flash');
 
   const fallbackModel = getAIModel('fallback');
-  assert.strictEqual(fallbackModel.modelId, 'gemini-3.7-flash');
+  assert.strictEqual(fallbackModel.modelId, 'gemini-3.6-flash');
 
   // Check config parameters
   assert.strictEqual(AI_CONFIG.primaryModelId, 'gemini-3.8-flash');
-  assert.strictEqual(AI_CONFIG.fallbackModelId, 'gemini-3.7-flash');
+  assert.strictEqual(AI_CONFIG.fallbackModelId, 'gemini-3.6-flash');
   assert.strictEqual(AI_CONFIG.streamingTimeoutSeconds, 60);
   assert.strictEqual(AI_CONFIG.maxRetries, 1);
   assert.strictEqual(AI_CONFIG.temperature.balanced, 0.6);

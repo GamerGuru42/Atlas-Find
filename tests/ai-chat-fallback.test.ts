@@ -90,11 +90,11 @@ test('Chat Fallback Scenario A: Successful streaming on primary model from first
     chunks: ['Welcome to AtlasFind! ', 'Here is your personalized roadmap.'],
   };
   const fallback: MockModel = {
-    id: 'gemini-3.7-flash',
+    id: 'gemini-3.6-flash',
     chunks: ['Fallback chunk.'],
   };
   const resilience: MockModel = {
-    id: 'gemini-3.5-flash',
+    id: 'gemini-3.5-flash-lite',
     chunks: ['Resilience chunk.'],
   };
 
@@ -106,49 +106,49 @@ test('Chat Fallback Scenario A: Successful streaming on primary model from first
   assert.strictEqual(result.fullText, 'Welcome to AtlasFind! Here is your personalized roadmap.');
 });
 
-test('Chat Fallback Scenario B: Primary failure triggers successful fallback to gemini-3.7-flash', async () => {
+test('Chat Fallback Scenario B: Primary failure triggers successful fallback to gemini-3.6-flash', async () => {
   const primary: MockModel = {
     id: 'gemini-3.8-flash',
     failBeforeStart: true,
     chunks: [],
   };
   const fallback: MockModel = {
-    id: 'gemini-3.7-flash',
+    id: 'gemini-3.6-flash',
     chunks: ['Fallback response active. ', 'Here are the matching opportunities.'],
   };
   const resilience: MockModel = {
-    id: 'gemini-3.5-flash',
+    id: 'gemini-3.5-flash-lite',
     chunks: ['Resilience chunk.'],
   };
 
   const result = await simulateChatStream(primary, fallback, resilience);
 
   assert.strictEqual(result.status, 200);
-  assert.strictEqual(result.modelUsed, 'gemini-3.7-flash');
+  assert.strictEqual(result.modelUsed, 'gemini-3.6-flash');
   assert.strictEqual(result.firstChunk, 'Fallback response active. ');
   assert.strictEqual(result.fullText, 'Fallback response active. Here are the matching opportunities.');
 });
 
-test('Chat Fallback Scenario C: Primary and Fallback failure triggers resilience model (gemini-3.5-flash)', async () => {
+test('Chat Fallback Scenario C: Primary and Fallback failure triggers resilience model (gemini-3.5-flash-lite)', async () => {
   const primary: MockModel = {
     id: 'gemini-3.8-flash',
     failBeforeStart: true,
     chunks: [],
   };
   const fallback: MockModel = {
-    id: 'gemini-3.7-flash',
+    id: 'gemini-3.6-flash',
     failBeforeStart: true,
     chunks: [],
   };
   const resilience: MockModel = {
-    id: 'gemini-3.5-flash',
+    id: 'gemini-3.5-flash-lite',
     chunks: ['Resilience active. ', 'Responding smoothly during high tier demand.'],
   };
 
   const result = await simulateChatStream(primary, fallback, resilience);
 
   assert.strictEqual(result.status, 200);
-  assert.strictEqual(result.modelUsed, 'gemini-3.5-flash');
+  assert.strictEqual(result.modelUsed, 'gemini-3.5-flash-lite');
   assert.strictEqual(result.firstChunk, 'Resilience active. ');
   assert.strictEqual(result.fullText, 'Resilience active. Responding smoothly during high tier demand.');
 });
@@ -160,12 +160,12 @@ test('Chat Fallback Scenario D: All models fail -> returns prompt honest 503 err
     chunks: [],
   };
   const fallback: MockModel = {
-    id: 'gemini-3.7-flash',
+    id: 'gemini-3.6-flash',
     failBeforeStart: true,
     chunks: [],
   };
   const resilience: MockModel = {
-    id: 'gemini-3.5-flash',
+    id: 'gemini-3.5-flash-lite',
     failBeforeStart: true,
     chunks: [],
   };

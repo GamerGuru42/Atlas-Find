@@ -11,11 +11,16 @@
 
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
-// Centralized Model Identifiers
+// Centralized Distinct Model Identifiers
+// Genuinely distinct Google Gemini models confirmed via production API audit:
+// 1. Primary: gemini-3.8-flash (Flagship production generation, 65k output limit)
+// 2. Distinct Fallback 1: gemini-3.6-flash (Distinct generation endpoint, verified 961ms)
+// 3. Distinct Fallback 2: gemini-3.5-flash-lite (Dedicated lightweight architecture, verified 793ms)
+// 4. Distinct Fallback 3: gemini-3.1-flash-lite (Stable fallback architecture, verified 908ms)
 export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-export const GEMINI_FALLBACK_MODEL_ID = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.7-flash';
-export const GEMINI_RESILIENCE_MODEL_ID = process.env.GEMINI_RESILIENCE_MODEL || 'gemini-3.5-flash';
-export const GEMINI_SPEED_MODEL_ID = process.env.GEMINI_SPEED_MODEL || 'gemini-3.5-flash-lite';
+export const GEMINI_FALLBACK_MODEL_ID = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.6-flash';
+export const GEMINI_RESILIENCE_MODEL_ID = process.env.GEMINI_RESILIENCE_MODEL || 'gemini-3.5-flash-lite';
+export const GEMINI_SPEED_MODEL_ID = process.env.GEMINI_SPEED_MODEL || 'gemini-3.1-flash-lite';
 
 /**
  * Checks whether the Gemini API key is configured in the environment

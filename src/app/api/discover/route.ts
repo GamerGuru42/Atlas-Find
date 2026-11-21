@@ -164,12 +164,20 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Lifecycle Status filter (open vs closing_soon vs closed/expired as of current date)
+    // Lifecycle Status filter (open includes OPEN, CLOSING_SOON, and ROLLING_INTAKE)
     if (status === 'open' || status === 'active') {
-      whereClause.deadline = { gte: new Date() };
+      const openFilter = {
+        OR: [
+          { deadline: { gte: new Date() } },
+          { intakes: { some: { isRolling: true } } },
+        ],
+      };
+      whereClause.AND = [...(whereClause.AND || []), openFilter];
     } else if (status === 'closing_soon') {
       const in14Days = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
       whereClause.deadline = { gte: new Date(), lte: in14Days };
+    } else if (status === 'rolling' || status === 'rolling_intake') {
+      whereClause.intakes = { some: { isRolling: true } };
     } else if (status === 'closed' || status === 'expired') {
       whereClause.deadline = { lt: new Date() };
     }
@@ -272,7 +280,7 @@ export async function GET(request: NextRequest) {
           sourceDomain: opp.sourceDomain,
           trustTier: opp.trustTier,
           verificationStatus: opp.verificationStatus,
-          lifecycleStatus: health.lifecycleStatus,
+          lifecycleStatus: health.status || health.lifecycleStatus,
           daysUntilDeadline: health.daysUntilDeadline,
           isUrgent: health.isUrgent,
           description: opp.description,
@@ -317,7 +325,7 @@ export async function GET(request: NextRequest) {
         sourceDomain: opp.sourceDomain,
         trustTier: opp.trustTier,
         verificationStatus: opp.verificationStatus,
-        lifecycleStatus: health.lifecycleStatus,
+        lifecycleStatus: health.status || health.lifecycleStatus,
         daysUntilDeadline: health.daysUntilDeadline,
         isUrgent: health.isUrgent,
         description: opp.description,

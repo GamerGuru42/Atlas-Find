@@ -83,6 +83,16 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                 {lifecycle.badgeText}
               </span>
             )}
+            {lifecycle.status === 'ROLLING_INTAKE' && (
+              <span style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600 }}>
+                Rolling Intake
+              </span>
+            )}
+            {lifecycle.status === 'UNCONFIRMED' && (
+              <span style={{ background: '#f8fafc', color: '#64748b', border: '1px solid #cbd5e1', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600 }}>
+                ⚠️ Unconfirmed Deadline
+              </span>
+            )}
             {opp.trustTier === 1 && (
               <span className={styles.verifiedBadge}>
                 <CheckCircle2 size={12} /> Verified Source
@@ -223,7 +233,7 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
             <div className={styles.actionCol}>
               <div className={styles.applyBox}>
                 <h3 className={styles.applyTitle}>
-                  {lifecycle.isClosed ? 'Applications Closed' : lifecycle.isUpcoming ? 'Applications Upcoming' : 'Ready to apply?'}
+                  {lifecycle.isClosed ? 'Applications Closed' : lifecycle.isUpcoming ? 'Applications Upcoming' : lifecycle.isRolling ? 'Rolling Admissions' : lifecycle.isUnconfirmed ? 'Date Unconfirmed' : 'Ready to apply?'}
                 </h3>
                 <p className={styles.applyDesc}>
                   {lifecycle.notice || 'Make sure you have reviewed all eligibility criteria on the official website before starting your application.'}
@@ -235,6 +245,16 @@ export function OpportunityModal({ id, onClose }: { id: string, onClose: () => v
                     rel="noopener noreferrer"
                     className={styles.applyBtn}
                     style={lifecycle.isClosingSoon ? { background: '#d97706', borderColor: '#b45309' } : {}}
+                  >
+                    {lifecycle.applyButton.label} <ExternalLink size={18} />
+                  </a>
+                ) : lifecycle.isUnconfirmed ? (
+                  <a
+                    href={opp.sourceUrl || opp.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.applyBtn}
+                    style={{ background: '#475569', borderColor: '#334155' }}
                   >
                     {lifecycle.applyButton.label} <ExternalLink size={18} />
                   </a>

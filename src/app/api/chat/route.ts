@@ -172,10 +172,13 @@ export async function POST(req: Request) {
     }
 
     const formattedOpportunities = opportunities.map(opp => {
+      const isRolling = opp.intakes?.some((i: any) => i.isRolling) || false;
       const lifecycle = evaluateOpportunityLifecycle({
         id: opp.id,
         deadline: opp.deadline,
         opensDate: opp.opensDate,
+        isRolling,
+        verificationStatus: opp.verificationStatus,
         status: opp.verificationStatus,
       });
 
@@ -191,6 +194,8 @@ export async function POST(req: Request) {
         fundingType: opp.fundingType,
         lifecycleStatus: lifecycle.status,
         canApply: lifecycle.canApply,
+        badgeText: lifecycle.badgeText,
+        formattedDeadline: lifecycle.formattedDeadline,
         deadline: opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Rolling / Open',
         opensDate: opp.opensDate ? new Date(opp.opensDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : undefined,
         intakes: opp.intakes?.map((i: any) => ({
