@@ -110,7 +110,7 @@ export async function POST(req: Request) {
     }
 
     const coreMessages = messages.map((msg: any) => ({
-      role: msg.role,
+      role: msg.role === 'model' ? 'assistant' : (msg.role || 'user'),
       content: (msg.parts && Array.isArray(msg.parts))
         ? msg.parts.map((p: any) => p.text || '').join('')
         : (msg.content || '')

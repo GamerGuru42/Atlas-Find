@@ -218,7 +218,21 @@ export function ChatInterface() {
           setMessages(prev => [...data.messages, ...prev]);
         } else {
           // Fresh conversation load
-          setMessages(data.messages);
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages);
+          } else {
+            // For guests or empty DB responses, fall back to localStorage
+            try {
+              const guestHistory = localStorage.getItem(`atlas_chat_history_${id}`);
+              if (guestHistory) {
+                setMessages(JSON.parse(guestHistory));
+              } else {
+                setMessages([]);
+              }
+            } catch {
+              setMessages([]);
+            }
+          }
         }
         setHasMoreHistory(data.hasMore);
         setNextCursor(data.nextCursor);
@@ -374,7 +388,7 @@ export function ChatInterface() {
       // Gather active messages for context (filtering out placeholders)
       const currentHistory = messages
         .filter(m => m.content && m.id !== userMsgId)
-        .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', content: m.content }));
+        .map(m => ({ role: m.role, content: m.content }));
       
       const payloadMessages = [...currentHistory, { role: 'user', content: text }];
 
